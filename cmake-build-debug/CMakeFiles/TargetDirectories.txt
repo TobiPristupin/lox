@@ -1,0 +1,3 @@
+/home/pristu/Documents/jlox/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/pristu/Documents/jlox/cmake-build-debug/CMakeFiles/jlox.dir
+/home/pristu/Documents/jlox/cmake-build-debug/CMakeFiles/edit_cache.dir

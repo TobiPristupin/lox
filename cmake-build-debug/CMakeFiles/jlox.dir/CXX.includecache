@@ -1,0 +1,18 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/pristu/Documents/jlox/ErrorLogger.cpp
+iostream
+-
+ErrorLogger.h
+/home/pristu/Documents/jlox/ErrorLogger.h
+
+/home/pristu/Documents/jlox/ErrorLogger.h
+string
+-
+
