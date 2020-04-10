@@ -1,4 +1,5 @@
 #include <optional>
+#include <iostream>
 #include "Scanner.h"
 #include "TokenType.h"
 #include "ErrorLogger.h"
@@ -9,7 +10,7 @@ Scanner::Scanner(const std::string &source) {
 
 std::vector<Token> Scanner::scanTokens() {
     while (!isAtEnd()) {
-        start = next;
+        start = current;
         std::optional<Token> nextToken = scanNextToken();
         if (nextToken.has_value()) tokens.emplace_back(*nextToken);
     }
@@ -20,11 +21,16 @@ std::vector<Token> Scanner::scanTokens() {
 }
 
 bool Scanner::isAtEnd() {
-    return next >= source.length();
+    return current >= source.length();
 }
 
 std::optional<Token> Scanner::scanNextToken() {
-    char c = advanceChar();
+    if (isAtEnd()){
+        return std::nullopt;
+    }
+
+    char c = peek();
+    advance();
     switch (c) {
         //whitespace
         case ' ':
@@ -59,33 +65,57 @@ std::optional<Token> Scanner::scanNextToken() {
 
             //one or two character tokens
         case '!':
-            if (nextCharMatches('=')) {
-                advanceChar();
+            if (currentCharMatches('=')) {
+                advance();
                 return createToken(TokenType::BANG_EQUAL, nullptr);
             } else {
                 return createToken(TokenType::BANG, nullptr);
             }
         case '=':
-            if (nextCharMatches('=')) {
-                advanceChar();
+            if (currentCharMatches('=')) {
+                advance();
                 return createToken(TokenType::EQUAL_EQUAL, nullptr);
             } else {
                 return createToken(TokenType::EQUAL, nullptr);
             }
         case '>':
-            if (nextCharMatches('=')) {
-                advanceChar();
+            if (currentCharMatches('=')) {
+                advance();
                 return createToken(TokenType::GREATER_EQUAL, nullptr);
             } else {
                 return createToken(TokenType::GREATER, nullptr);
             }
         case '<':
-            if (nextCharMatches('=')) {
-                advanceChar();
+            if (currentCharMatches('=')) {
+                advance();
                 return createToken(TokenType::LESS_EQUAL, nullptr);
             } else {
                 return createToken(TokenType::LESS, nullptr);
             }
+        case '/':
+            if (currentCharMatches('/')){
+                while (!isAtEnd() && peek() != '\n') advance();
+                return std::nullopt;
+            } else {
+                return createToken(TokenType::SLASH, nullptr);
+            }
+
+            //strings
+        case '"': {
+            while (!isAtEnd() && peek() != '"') {
+                if (peek() == '\n') line++; //support for multi-line strings
+                advance();
+            }
+
+            if (isAtEnd()) {
+                ErrorLogger::error(line, "Unterminated string");
+                return std::nullopt;
+            }
+
+            advance(); //consume closing "
+            std::string s = source.substr(start + 1, (current - start - 2));//+1 and -1 to remove the quotes from each end
+            return createToken(TokenType::STRING, s);
+        }
 
         default:
             std::string errorMessage = "Unexpected character when scanning : ";
@@ -95,18 +125,22 @@ std::optional<Token> Scanner::scanNextToken() {
     }
 }
 
-
-char Scanner::advanceChar() {
-    next++;
-    return source[next - 1];
+char Scanner::peek(){
+    return source[current];
 }
 
-bool Scanner::nextCharMatches(char expected) {
+void Scanner::advance() {
+    current++;
+}
+
+bool Scanner::currentCharMatches(char expected) {
     if (isAtEnd()) return false;
-    return source[next] == expected;
+    //check at position current and not current + 1 because advance should have been called before this method,
+    //so the next char to evaluate is at current and not current + 1
+    return source[current] == expected;
 }
 
-Token Scanner::createToken(TokenType type, std::any literal) {
-    return Token(type, source.substr(start, (next - start)), literal, line);
+Token Scanner::createToken(TokenType type, const std::variant<int, float, std::string, std::nullptr_t>& literal) {
+    return Token(type, source.substr(start, (current - start)), literal, line);
 }
 

@@ -204,6 +204,33 @@ Scanner.cpp.s:
 	$(MAKE) -f CMakeFiles/jlox.dir/build.make CMakeFiles/jlox.dir/Scanner.cpp.s
 .PHONY : Scanner.cpp.s
 
+TokenType.o: TokenType.cpp.o
+
+.PHONY : TokenType.o
+
+# target to build an object file
+TokenType.cpp.o:
+	$(MAKE) -f CMakeFiles/jlox.dir/build.make CMakeFiles/jlox.dir/TokenType.cpp.o
+.PHONY : TokenType.cpp.o
+
+TokenType.i: TokenType.cpp.i
+
+.PHONY : TokenType.i
+
+# target to preprocess a source file
+TokenType.cpp.i:
+	$(MAKE) -f CMakeFiles/jlox.dir/build.make CMakeFiles/jlox.dir/TokenType.cpp.i
+.PHONY : TokenType.cpp.i
+
+TokenType.s: TokenType.cpp.s
+
+.PHONY : TokenType.s
+
+# target to generate assembly for a file
+TokenType.cpp.s:
+	$(MAKE) -f CMakeFiles/jlox.dir/build.make CMakeFiles/jlox.dir/TokenType.cpp.s
+.PHONY : TokenType.cpp.s
+
 main.o: main.cpp.o
 
 .PHONY : main.o
@@ -249,6 +276,9 @@ help:
 	@echo "... Scanner.o"
 	@echo "... Scanner.i"
 	@echo "... Scanner.s"
+	@echo "... TokenType.o"
+	@echo "... TokenType.i"
+	@echo "... TokenType.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"

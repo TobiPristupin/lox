@@ -32,7 +32,7 @@ void Runner::runCode(const std::string& code) {
     Scanner scanner(code);
     std::vector<Token> tokens = scanner.scanTokens();
     for (Token t : tokens){
-        std::cout << t.lexeme << " " << t.line << "\n";
+        std::cout << t.to_string() << "\n";
     }
 
     bool error = false;

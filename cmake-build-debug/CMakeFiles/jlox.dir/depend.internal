@@ -8,6 +8,18 @@ CMakeFiles/jlox.dir/Runner.cpp.o
  /home/pristu/Documents/jlox/ErrorLogger.h
  /home/pristu/Documents/jlox/Runner.cpp
  /home/pristu/Documents/jlox/Runner.h
+ /home/pristu/Documents/jlox/Scanner.h
+ /home/pristu/Documents/jlox/Token.h
+ /home/pristu/Documents/jlox/TokenType.h
+CMakeFiles/jlox.dir/Scanner.cpp.o
+ /home/pristu/Documents/jlox/ErrorLogger.h
+ /home/pristu/Documents/jlox/Scanner.cpp
+ /home/pristu/Documents/jlox/Scanner.h
+ /home/pristu/Documents/jlox/Token.h
+ /home/pristu/Documents/jlox/TokenType.h
+CMakeFiles/jlox.dir/TokenType.cpp.o
+ /home/pristu/Documents/jlox/TokenType.cpp
+ /home/pristu/Documents/jlox/TokenType.h
 CMakeFiles/jlox.dir/main.cpp.o
  /home/pristu/Documents/jlox/Runner.h
  /home/pristu/Documents/jlox/main.cpp

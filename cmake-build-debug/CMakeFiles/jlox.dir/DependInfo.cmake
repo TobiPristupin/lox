@@ -7,6 +7,7 @@ set(CMAKE_DEPENDS_CHECK_CXX
   "/home/pristu/Documents/jlox/ErrorLogger.cpp" "/home/pristu/Documents/jlox/cmake-build-debug/CMakeFiles/jlox.dir/ErrorLogger.cpp.o"
   "/home/pristu/Documents/jlox/Runner.cpp" "/home/pristu/Documents/jlox/cmake-build-debug/CMakeFiles/jlox.dir/Runner.cpp.o"
   "/home/pristu/Documents/jlox/Scanner.cpp" "/home/pristu/Documents/jlox/cmake-build-debug/CMakeFiles/jlox.dir/Scanner.cpp.o"
+  "/home/pristu/Documents/jlox/TokenType.cpp" "/home/pristu/Documents/jlox/cmake-build-debug/CMakeFiles/jlox.dir/TokenType.cpp.o"
   "/home/pristu/Documents/jlox/main.cpp" "/home/pristu/Documents/jlox/cmake-build-debug/CMakeFiles/jlox.dir/main.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")

@@ -105,6 +105,9 @@
 		<Unit filename="/home/pristu/Documents/jlox/Token.h">
 			<Option target="jlox"/>
 		</Unit>
+		<Unit filename="/home/pristu/Documents/jlox/TokenType.cpp">
+			<Option target="jlox"/>
+		</Unit>
 		<Unit filename="/home/pristu/Documents/jlox/TokenType.h">
 			<Option target="jlox"/>
 		</Unit>

@@ -7,6 +7,18 @@ CMakeFiles/jlox.dir/ErrorLogger.cpp.o: ../ErrorLogger.h
 CMakeFiles/jlox.dir/Runner.cpp.o: ../ErrorLogger.h
 CMakeFiles/jlox.dir/Runner.cpp.o: ../Runner.cpp
 CMakeFiles/jlox.dir/Runner.cpp.o: ../Runner.h
+CMakeFiles/jlox.dir/Runner.cpp.o: ../Scanner.h
+CMakeFiles/jlox.dir/Runner.cpp.o: ../Token.h
+CMakeFiles/jlox.dir/Runner.cpp.o: ../TokenType.h
+
+CMakeFiles/jlox.dir/Scanner.cpp.o: ../ErrorLogger.h
+CMakeFiles/jlox.dir/Scanner.cpp.o: ../Scanner.cpp
+CMakeFiles/jlox.dir/Scanner.cpp.o: ../Scanner.h
+CMakeFiles/jlox.dir/Scanner.cpp.o: ../Token.h
+CMakeFiles/jlox.dir/Scanner.cpp.o: ../TokenType.h
+
+CMakeFiles/jlox.dir/TokenType.cpp.o: ../TokenType.cpp
+CMakeFiles/jlox.dir/TokenType.cpp.o: ../TokenType.h
 
 CMakeFiles/jlox.dir/main.cpp.o: ../Runner.h
 CMakeFiles/jlox.dir/main.cpp.o: ../main.cpp

@@ -2,6 +2,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/jlox.dir/ErrorLogger.cpp.o"
   "CMakeFiles/jlox.dir/Runner.cpp.o"
   "CMakeFiles/jlox.dir/Scanner.cpp.o"
+  "CMakeFiles/jlox.dir/TokenType.cpp.o"
   "CMakeFiles/jlox.dir/main.cpp.o"
   "jlox"
   "jlox.pdb"
