@@ -17,7 +17,7 @@ struct Token {
                                                                                           line(line) {}
 
     std::string to_string(){
-        return std::to_string(type) + " " + lexeme;
+        return lexeme;
     }
 };
 

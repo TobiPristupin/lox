@@ -2,6 +2,7 @@
 #include <iostream>
 #include "Runner.h"
 #include "ErrorLogger.h"
+#include "Scanner.h"
 
 void Runner::runScript(const std::string& filename) {
     std::ifstream file(filename);
@@ -28,7 +29,11 @@ void Runner::runRepl() {
 }
 
 void Runner::runCode(const std::string& code) {
-    std::cout << "Running code :\n" << code << "\n";
+    Scanner scanner(code);
+    std::vector<Token> tokens = scanner.scanTokens();
+    for (Token t : tokens){
+        std::cout << t.lexeme << " " << t.line << "\n";
+    }
 
     bool error = false;
     if (error){
