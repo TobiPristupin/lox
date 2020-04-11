@@ -1,5 +1,6 @@
 #include <optional>
 #include <iostream>
+#include <algorithm>
 #include "Scanner.h"
 #include "TokenType.h"
 #include "ErrorLogger.h"
@@ -25,13 +26,15 @@ bool Scanner::isAtEnd() {
 }
 
 std::optional<Token> Scanner::scanNextToken() {
-    if (isAtEnd()){
+    if (isAtEnd()) {
         return std::nullopt;
     }
 
     char c = peek();
     advance();
+
     switch (c) {
+
         //whitespace
         case ' ':
         case '\r':
@@ -81,6 +84,7 @@ std::optional<Token> Scanner::scanNextToken() {
         case '>':
             if (currentCharMatches('=')) {
                 advance();
+                logError(c);
                 return createToken(TokenType::GREATER_EQUAL, nullptr);
             } else {
                 return createToken(TokenType::GREATER, nullptr);
@@ -93,7 +97,7 @@ std::optional<Token> Scanner::scanNextToken() {
                 return createToken(TokenType::LESS, nullptr);
             }
         case '/':
-            if (currentCharMatches('/')){
+            if (currentCharMatches('/')) {
                 while (!isAtEnd() && peek() != '\n') advance();
                 return std::nullopt;
             } else {
@@ -101,31 +105,87 @@ std::optional<Token> Scanner::scanNextToken() {
             }
 
             //strings
-        case '"': {
-            while (!isAtEnd() && peek() != '"') {
-                if (peek() == '\n') line++; //support for multi-line strings
-                advance();
-            }
-
-            if (isAtEnd()) {
-                ErrorLogger::error(line, "Unterminated string");
-                return std::nullopt;
-            }
-
-            advance(); //consume closing "
-            std::string s = source.substr(start + 1, (current - start - 2));//+1 and -1 to remove the quotes from each end
-            return createToken(TokenType::STRING, s);
-        }
+        case '"':
+            return scanString();
 
         default:
-            std::string errorMessage = "Unexpected character when scanning : ";
-            errorMessage.push_back(c);
-            ErrorLogger::error(line, errorMessage);
+            if (isdigit(c)) {
+                return scanNumber();
+            } else if (isalpha(c) or c == '_') {
+                return scanIdentifier();
+            }
+
+            //unexpected character
+            logError(c);
             return std::nullopt;
     }
 }
 
-char Scanner::peek(){
+void Scanner::logError(char c) const {
+    std::string errorMessage = "Unexpected character when scanning : ";
+    errorMessage.push_back(c);
+    ErrorLogger::error(line, errorMessage);
+}
+
+std::optional<Token> Scanner::scanIdentifier() {
+    while (!isAtEnd() && peek() != ' ') {
+        if (!validForIdentifier(peek())) {
+            ErrorLogger::error(line, "Invalid identifier");
+            return std::nullopt; //TODO: Stop parsing here
+        }
+        advance();
+    }
+
+    std::string identifier = source.substr(start, (current - start));
+    if (reservedKeywords.count(identifier) > 0){
+        return createToken(reservedKeywords[identifier], nullptr);
+    }
+    return createToken(IDENTIFIER, nullptr);
+}
+
+std::optional<Token> Scanner::scanNumber() {
+    while (!isAtEnd() && peek() != ' '){
+        if (!isdigit(peek()) && peek() != '.'){
+            ErrorLogger::error(line, "Invalid number literal");
+            return std::nullopt; //TODO: Stop parsing here
+        }
+        advance();
+    }
+
+    std::string number = source.substr(start, (current - start));
+    int decimal = std::count(number.begin(), number.end(), '.');
+    if (decimal > 1) { //can't have a number with two decimals like 2.1.3
+        ErrorLogger::error(line, "Invalid number literal");
+    }
+
+    if (decimal == 1){
+        return createToken(NUMBER, std::stof(number));
+    }
+
+    return createToken(NUMBER, std::stoi(number));
+}
+
+std::optional<Token> Scanner::scanString() {
+    while (!isAtEnd() && peek() != '"') {
+        if (peek() == '\n') line++; //support for multi-line strings
+        advance();
+    }
+
+    if (isAtEnd()) {
+        ErrorLogger::error(line, "Unterminated string");
+        return std::nullopt;
+    }
+
+    advance(); //consume closing "
+    std::string s = source.substr(start + 1, (current - start - 2));//+1 and -1 to remove the quotes from each end
+    return createToken(STRING, s);
+}
+
+bool Scanner::validForIdentifier(char c) {
+    return isalpha(c) || isdigit(c) || c == '_';
+}
+
+char Scanner::peek() {
     return source[current];
 }
 
@@ -140,7 +200,25 @@ bool Scanner::currentCharMatches(char expected) {
     return source[current] == expected;
 }
 
-Token Scanner::createToken(TokenType type, const std::variant<int, float, std::string, std::nullptr_t>& literal) {
+Token Scanner::createToken(TokenType type, const lox_literal_t &literal) {
     return Token(type, source.substr(start, (current - start)), literal, line);
 }
 
+std::map<std::string, TokenType> Scanner::reservedKeywords = {
+        {"and", TokenType::AND},
+        {"class", TokenType::CLASS},
+        {"else", TokenType::ELSE},
+        {"false", TokenType::FALSE},
+        {"fun", TokenType::FUN},
+        {"for", TokenType::FOR},
+        {"if", TokenType::IF},
+        {"nil", TokenType::NIL},
+        {"or", TokenType::OR},
+        {"print", TokenType::PRINT},
+        {"return", TokenType::RETURN},
+        {"super", TokenType::SUPER},
+        {"this", TokenType::THIS},
+        {"true", TokenType::TRUE},
+        {"var", TokenType::VAR},
+        {"while", TokenType::WHILE}
+};

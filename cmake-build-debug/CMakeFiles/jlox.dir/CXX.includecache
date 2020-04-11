@@ -31,6 +31,8 @@ optional
 -
 iostream
 -
+algorithm
+-
 Scanner.h
 /home/pristu/Documents/jlox/Scanner.h
 TokenType.h
@@ -44,6 +46,8 @@ vector
 Token.h
 /home/pristu/Documents/jlox/Token.h
 optional
+-
+map
 -
 
 /home/pristu/Documents/jlox/Token.h

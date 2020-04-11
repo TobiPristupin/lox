@@ -3,6 +3,7 @@
 #include <vector>
 #include "Token.h"
 #include <optional>
+#include <map>
 
 class Scanner {
 public:
@@ -13,13 +14,24 @@ private:
     int start = 0, current = 0, line = 1;
     std::string source;
     std::vector<Token> tokens;
+    static std::map<std::string, TokenType> reservedKeywords;
 
     bool isAtEnd();
     std::optional<Token> scanNextToken();
     void advance();
     bool currentCharMatches(char expected);
     char peek();
-    Token createToken(TokenType type, const std::variant<int, float, std::string, std::nullptr_t>& literal);
+    Token createToken(TokenType type, const lox_literal_t &literal);
+    static bool validForIdentifier(char c);
+
+
+    std::optional<Token> scanString();
+
+    std::optional<Token> scanNumber();
+
+    std::optional<Token> scanIdentifier();
+
+    void logError(char c) const;
 };
 
 
