@@ -11,7 +11,7 @@ public:
     std::vector<Token> scanTokens();
 
 private:
-    int start = 0, current = 0, line = 1;
+    int start = 0, current = 0, line = 1, pos_in_line = 1;
     std::string source;
     std::vector<Token> tokens;
     static std::map<std::string, TokenType> reservedKeywords;
@@ -23,15 +23,11 @@ private:
     char peek();
     Token createToken(TokenType type, const lox_literal_t &literal);
     static bool validForIdentifier(char c);
-
-
     std::optional<Token> scanString();
-
     std::optional<Token> scanNumber();
-
     std::optional<Token> scanIdentifier();
-
-    void logError(char c) const;
+    static bool isWhitespace(char c);
+    void nextLine();
 };
 
 

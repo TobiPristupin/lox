@@ -1,5 +1,5 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/jlox.dir/ErrorLogger.cpp.o"
+  "CMakeFiles/jlox.dir/LoxException.cpp.o"
   "CMakeFiles/jlox.dir/Runner.cpp.o"
   "CMakeFiles/jlox.dir/Scanner.cpp.o"
   "CMakeFiles/jlox.dir/TokenType.cpp.o"

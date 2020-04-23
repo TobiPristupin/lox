@@ -3,7 +3,26 @@
 #include <algorithm>
 #include "Scanner.h"
 #include "TokenType.h"
-#include "ErrorLogger.h"
+#include "LoxException.h"
+
+std::map<std::string, TokenType> Scanner::reservedKeywords = {
+        {"and", TokenType::AND},
+        {"class", TokenType::CLASS},
+        {"else", TokenType::ELSE},
+        {"false", TokenType::FALSE},
+        {"fun", TokenType::FUN},
+        {"for", TokenType::FOR},
+        {"if", TokenType::IF},
+        {"nil", TokenType::NIL},
+        {"or", TokenType::OR},
+        {"print", TokenType::PRINT},
+        {"return", TokenType::RETURN},
+        {"super", TokenType::SUPER},
+        {"this", TokenType::THIS},
+        {"true", TokenType::TRUE},
+        {"var", TokenType::VAR},
+        {"while", TokenType::WHILE}
+};
 
 Scanner::Scanner(const std::string &source) {
     this->source = source;
@@ -41,7 +60,7 @@ std::optional<Token> Scanner::scanNextToken() {
         case '\t':
             return std::nullopt; //ignore whitespace
         case '\n':
-            line++;
+            nextLine();
             return std::nullopt;
 
             //one character tokens
@@ -84,7 +103,6 @@ std::optional<Token> Scanner::scanNextToken() {
         case '>':
             if (currentCharMatches('=')) {
                 advance();
-                logError(c);
                 return createToken(TokenType::GREATER_EQUAL, nullptr);
             } else {
                 return createToken(TokenType::GREATER, nullptr);
@@ -116,22 +134,16 @@ std::optional<Token> Scanner::scanNextToken() {
             }
 
             //unexpected character
-            logError(c);
-            return std::nullopt;
+            std::string errorMessage = "Unexpected character when scanning : ";
+            errorMessage.push_back(c);
+            throw ScanningException(errorMessage, line, pos_in_line);
     }
 }
 
-void Scanner::logError(char c) const {
-    std::string errorMessage = "Unexpected character when scanning : ";
-    errorMessage.push_back(c);
-    ErrorLogger::error(line, errorMessage);
-}
-
 std::optional<Token> Scanner::scanIdentifier() {
-    while (!isAtEnd() && peek() != ' ') {
+    while (!isAtEnd() && !isWhitespace(peek())) {
         if (!validForIdentifier(peek())) {
-            ErrorLogger::error(line, "Invalid identifier");
-            return std::nullopt; //TODO: Stop parsing here
+            throw ScanningException("Invalid identifier", line, pos_in_line);
         }
         advance();
     }
@@ -144,10 +156,9 @@ std::optional<Token> Scanner::scanIdentifier() {
 }
 
 std::optional<Token> Scanner::scanNumber() {
-    while (!isAtEnd() && peek() != ' '){
+    while (!isAtEnd() && !isWhitespace(peek())){
         if (!isdigit(peek()) && peek() != '.'){
-            ErrorLogger::error(line, "Invalid number literal");
-            return std::nullopt; //TODO: Stop parsing here
+            throw ScanningException("Invalid number literal", line, pos_in_line);
         }
         advance();
     }
@@ -155,7 +166,7 @@ std::optional<Token> Scanner::scanNumber() {
     std::string number = source.substr(start, (current - start));
     int decimal = std::count(number.begin(), number.end(), '.');
     if (decimal > 1) { //can't have a number with two decimals like 2.1.3
-        ErrorLogger::error(line, "Invalid number literal");
+        throw ScanningException("Invalid number literal", line, pos_in_line);
     }
 
     if (decimal == 1){
@@ -167,17 +178,17 @@ std::optional<Token> Scanner::scanNumber() {
 
 std::optional<Token> Scanner::scanString() {
     while (!isAtEnd() && peek() != '"') {
-        if (peek() == '\n') line++; //support for multi-line strings
+        if (peek() == '\n') throw ScanningException("Unterminated string", line, pos_in_line);
         advance();
     }
 
+
     if (isAtEnd()) {
-        ErrorLogger::error(line, "Unterminated string");
-        return std::nullopt;
+        throw ScanningException("Unterminated string", line, pos_in_line);
     }
 
     advance(); //consume closing "
-    std::string s = source.substr(start + 1, (current - start - 2));//+1 and -1 to remove the quotes from each end
+    std::string s = source.substr(start + 1, (current - start - 1 - 1));//+1 and -1 to remove the quotes from each end
     return createToken(STRING, s);
 }
 
@@ -191,6 +202,7 @@ char Scanner::peek() {
 
 void Scanner::advance() {
     current++;
+    pos_in_line++;
 }
 
 bool Scanner::currentCharMatches(char expected) {
@@ -200,25 +212,16 @@ bool Scanner::currentCharMatches(char expected) {
     return source[current] == expected;
 }
 
+bool Scanner::isWhitespace(char c) {
+    return c == ' ' || c == '\n' || c == '\t' || c == '\r';
+}
+
 Token Scanner::createToken(TokenType type, const lox_literal_t &literal) {
     return Token(type, source.substr(start, (current - start)), literal, line);
 }
 
-std::map<std::string, TokenType> Scanner::reservedKeywords = {
-        {"and", TokenType::AND},
-        {"class", TokenType::CLASS},
-        {"else", TokenType::ELSE},
-        {"false", TokenType::FALSE},
-        {"fun", TokenType::FUN},
-        {"for", TokenType::FOR},
-        {"if", TokenType::IF},
-        {"nil", TokenType::NIL},
-        {"or", TokenType::OR},
-        {"print", TokenType::PRINT},
-        {"return", TokenType::RETURN},
-        {"super", TokenType::SUPER},
-        {"this", TokenType::THIS},
-        {"true", TokenType::TRUE},
-        {"var", TokenType::VAR},
-        {"while", TokenType::WHILE}
-};
+void Scanner::nextLine() {
+    line++;
+    pos_in_line = 1;
+}
+

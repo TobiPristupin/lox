@@ -1,1 +1,1 @@
-/usr/bin/c++  -g   CMakeFiles/jlox.dir/main.cpp.o CMakeFiles/jlox.dir/Runner.cpp.o CMakeFiles/jlox.dir/ErrorLogger.cpp.o CMakeFiles/jlox.dir/Scanner.cpp.o CMakeFiles/jlox.dir/TokenType.cpp.o  -o jlox 
+/usr/bin/c++  -g   CMakeFiles/jlox.dir/main.cpp.o CMakeFiles/jlox.dir/Runner.cpp.o CMakeFiles/jlox.dir/Scanner.cpp.o CMakeFiles/jlox.dir/TokenType.cpp.o CMakeFiles/jlox.dir/LoxException.cpp.o  -o jlox 

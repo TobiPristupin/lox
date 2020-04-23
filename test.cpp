@@ -1,5 +1,10 @@
 #include <iostream>
 
-int main(){
-    std::cout << isalpha('_') << "\n";
+void tes(const char* str){
+    std::cout << str << "\n";
 }
+int main(){
+    std::string a = "hello";
+    tes(a.c_str());
+}
+

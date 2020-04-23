@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/home/pristu/Documents/jlox/ErrorLogger.h
+/home/pristu/Documents/jlox/LoxException.h
 string
 -
 
@@ -17,10 +17,10 @@ iostream
 -
 Runner.h
 /home/pristu/Documents/jlox/Runner.h
-ErrorLogger.h
-/home/pristu/Documents/jlox/ErrorLogger.h
 Scanner.h
 /home/pristu/Documents/jlox/Scanner.h
+LoxException.h
+/home/pristu/Documents/jlox/LoxException.h
 
 /home/pristu/Documents/jlox/Runner.h
 string
@@ -37,8 +37,8 @@ Scanner.h
 /home/pristu/Documents/jlox/Scanner.h
 TokenType.h
 /home/pristu/Documents/jlox/TokenType.h
-ErrorLogger.h
-/home/pristu/Documents/jlox/ErrorLogger.h
+LoxException.h
+/home/pristu/Documents/jlox/LoxException.h
 
 /home/pristu/Documents/jlox/Scanner.h
 vector

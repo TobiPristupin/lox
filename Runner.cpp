@@ -1,14 +1,13 @@
 #include <fstream>
 #include <iostream>
 #include "Runner.h"
-#include "ErrorLogger.h"
 #include "Scanner.h"
+#include "LoxException.h"
 
 void Runner::runScript(const std::string& filename) {
     std::ifstream file(filename);
     if (!file.is_open()){
-        ErrorLogger::error("File " + filename + " not found");
-        return;
+        throw LoxException("File " + filename + " not found");
     }
 
     std::string data((std::istreambuf_iterator<char>(file)),std::istreambuf_iterator<char>());
@@ -37,7 +36,7 @@ void Runner::runCode(const std::string& code) {
 
     bool error = false;
     if (error){
-        ErrorLogger::error("Program terminated with an error");
+        throw LoxException("Program terminated with an error");
     }
 }
 
