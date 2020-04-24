@@ -84,6 +84,9 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/home/pristu/Documents/jlox/Expression.h">
+			<Option target="jlox"/>
+		</Unit>
 		<Unit filename="/home/pristu/Documents/jlox/LoxException.cpp">
 			<Option target="jlox"/>
 		</Unit>

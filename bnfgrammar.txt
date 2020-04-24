@@ -1,0 +1,17 @@
+GRAMMAR ADJUSTED FOR PRECEDENCE AND ASSOCIATIVITY:
+equality :== comparison ( ("==" | "!=") comparison )* ;
+comparison :== addition ( (">" | ">=" | "<" | "<=") addition )* ;
+addition :== multiplication ( ("-" | "+") multiplication )* ;
+multiplication :== unary ( ("/" | "*") unary )* ;
+unary :== ("!" | "-") unary | primary ;
+primary :== NUMBER | STRING | "false" | "true" | "nil" | "(" expression ")" ;
+
+
+
+SIMPLIFIED GRAMMAR:
+expression :== literal | unary | binary | grouping ;
+literal :== NUMBER | STRING | "true" | "false" | "nil" ;
+unary :== ("-" | "!") expression ;
+grouping :== "(" expression ")" ;
+binary :== expression operator expression
+operator:== "==" | "!=" | "<" | "<=" | ">" | ">=" | "+"  | "-"  | "*" | "/" ;
