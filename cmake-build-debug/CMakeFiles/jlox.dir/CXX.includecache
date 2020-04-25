@@ -6,49 +6,33 @@
 
 #IncludeRegexTransform: 
 
+/home/pristu/Documents/jlox/Expression.h
+sstream
+-
+Token.h
+/home/pristu/Documents/jlox/Token.h
+
 /home/pristu/Documents/jlox/LoxException.h
 string
 -
 
-/home/pristu/Documents/jlox/Runner.cpp
-fstream
--
-iostream
--
-Runner.h
-/home/pristu/Documents/jlox/Runner.h
-Scanner.h
-/home/pristu/Documents/jlox/Scanner.h
-LoxException.h
-/home/pristu/Documents/jlox/LoxException.h
-
-/home/pristu/Documents/jlox/Runner.h
-string
--
-
-/home/pristu/Documents/jlox/Scanner.cpp
-optional
--
-iostream
--
-algorithm
--
-Scanner.h
-/home/pristu/Documents/jlox/Scanner.h
+/home/pristu/Documents/jlox/Parser.cpp
+Parser.h
+/home/pristu/Documents/jlox/Parser.h
 TokenType.h
 /home/pristu/Documents/jlox/TokenType.h
 LoxException.h
 /home/pristu/Documents/jlox/LoxException.h
 
-/home/pristu/Documents/jlox/Scanner.h
+/home/pristu/Documents/jlox/Parser.h
 vector
+-
+optional
 -
 Token.h
 /home/pristu/Documents/jlox/Token.h
-optional
--
-map
--
+Expression.h
+/home/pristu/Documents/jlox/Expression.h
 
 /home/pristu/Documents/jlox/Token.h
 string

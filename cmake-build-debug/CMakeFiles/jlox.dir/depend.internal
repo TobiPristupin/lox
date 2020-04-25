@@ -4,8 +4,17 @@
 CMakeFiles/jlox.dir/LoxException.cpp.o
  /home/pristu/Documents/jlox/LoxException.cpp
  /home/pristu/Documents/jlox/LoxException.h
-CMakeFiles/jlox.dir/Runner.cpp.o
+CMakeFiles/jlox.dir/Parser.cpp.o
+ /home/pristu/Documents/jlox/Expression.h
  /home/pristu/Documents/jlox/LoxException.h
+ /home/pristu/Documents/jlox/Parser.cpp
+ /home/pristu/Documents/jlox/Parser.h
+ /home/pristu/Documents/jlox/Token.h
+ /home/pristu/Documents/jlox/TokenType.h
+CMakeFiles/jlox.dir/Runner.cpp.o
+ /home/pristu/Documents/jlox/Expression.h
+ /home/pristu/Documents/jlox/LoxException.h
+ /home/pristu/Documents/jlox/Parser.h
  /home/pristu/Documents/jlox/Runner.cpp
  /home/pristu/Documents/jlox/Runner.h
  /home/pristu/Documents/jlox/Scanner.h
@@ -24,3 +33,6 @@ CMakeFiles/jlox.dir/main.cpp.o
  /home/pristu/Documents/jlox/LoxException.h
  /home/pristu/Documents/jlox/Runner.h
  /home/pristu/Documents/jlox/main.cpp
+CMakeFiles/jlox.dir/tools/AstPrinter.cpp.o
+ /home/pristu/Documents/jlox/tools/AstPrinter.cpp
+ /home/pristu/Documents/jlox/tools/AstPrinter.h

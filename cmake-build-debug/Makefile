@@ -150,6 +150,33 @@ LoxException.cpp.s:
 	$(MAKE) -f CMakeFiles/jlox.dir/build.make CMakeFiles/jlox.dir/LoxException.cpp.s
 .PHONY : LoxException.cpp.s
 
+Parser.o: Parser.cpp.o
+
+.PHONY : Parser.o
+
+# target to build an object file
+Parser.cpp.o:
+	$(MAKE) -f CMakeFiles/jlox.dir/build.make CMakeFiles/jlox.dir/Parser.cpp.o
+.PHONY : Parser.cpp.o
+
+Parser.i: Parser.cpp.i
+
+.PHONY : Parser.i
+
+# target to preprocess a source file
+Parser.cpp.i:
+	$(MAKE) -f CMakeFiles/jlox.dir/build.make CMakeFiles/jlox.dir/Parser.cpp.i
+.PHONY : Parser.cpp.i
+
+Parser.s: Parser.cpp.s
+
+.PHONY : Parser.s
+
+# target to generate assembly for a file
+Parser.cpp.s:
+	$(MAKE) -f CMakeFiles/jlox.dir/build.make CMakeFiles/jlox.dir/Parser.cpp.s
+.PHONY : Parser.cpp.s
+
 Runner.o: Runner.cpp.o
 
 .PHONY : Runner.o
@@ -258,6 +285,33 @@ main.cpp.s:
 	$(MAKE) -f CMakeFiles/jlox.dir/build.make CMakeFiles/jlox.dir/main.cpp.s
 .PHONY : main.cpp.s
 
+tools/AstPrinter.o: tools/AstPrinter.cpp.o
+
+.PHONY : tools/AstPrinter.o
+
+# target to build an object file
+tools/AstPrinter.cpp.o:
+	$(MAKE) -f CMakeFiles/jlox.dir/build.make CMakeFiles/jlox.dir/tools/AstPrinter.cpp.o
+.PHONY : tools/AstPrinter.cpp.o
+
+tools/AstPrinter.i: tools/AstPrinter.cpp.i
+
+.PHONY : tools/AstPrinter.i
+
+# target to preprocess a source file
+tools/AstPrinter.cpp.i:
+	$(MAKE) -f CMakeFiles/jlox.dir/build.make CMakeFiles/jlox.dir/tools/AstPrinter.cpp.i
+.PHONY : tools/AstPrinter.cpp.i
+
+tools/AstPrinter.s: tools/AstPrinter.cpp.s
+
+.PHONY : tools/AstPrinter.s
+
+# target to generate assembly for a file
+tools/AstPrinter.cpp.s:
+	$(MAKE) -f CMakeFiles/jlox.dir/build.make CMakeFiles/jlox.dir/tools/AstPrinter.cpp.s
+.PHONY : tools/AstPrinter.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -270,6 +324,9 @@ help:
 	@echo "... LoxException.o"
 	@echo "... LoxException.i"
 	@echo "... LoxException.s"
+	@echo "... Parser.o"
+	@echo "... Parser.i"
+	@echo "... Parser.s"
 	@echo "... Runner.o"
 	@echo "... Runner.i"
 	@echo "... Runner.s"
@@ -282,6 +339,9 @@ help:
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
+	@echo "... tools/AstPrinter.o"
+	@echo "... tools/AstPrinter.i"
+	@echo "... tools/AstPrinter.s"
 .PHONY : help
 
 

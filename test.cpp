@@ -1,10 +1,20 @@
 #include <iostream>
 
-void tes(const char* str){
-    std::cout << str << "\n";
-}
+class Base {};
+
+class Derived : public Base {
+
+    void ye(){
+        std::cout << "ye" << std::endl;
+    }
+};
+
+
 int main(){
-    std::string a = "hello";
-    tes(a.c_str());
+    Base b;
+    Derived c;
+    b = c;
+    b.ye();
+
 }
 

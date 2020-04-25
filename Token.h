@@ -6,7 +6,7 @@
 #include <variant>
 #include "TokenType.h"
 
-using lox_literal_t = std::variant<int, float, std::string, std::nullptr_t>;
+using lox_literal_t = std::variant<int, float, std::string, bool, std::nullptr_t>;
 
 struct Token {
 
@@ -25,7 +25,11 @@ struct Token {
         } else if (std::holds_alternative<int>(literal)){
             s += " " + std::to_string(std::get<int>(literal));
         } else if (std::holds_alternative<float>(literal)){
-            s += " " + std::to_string(std::get<float >(literal));
+            s += " " + std::to_string(std::get<float>(literal));
+        } else if (std::holds_alternative<bool>(literal)){
+            s += " " + std::to_string(std::get<bool>(literal));
+        } else if (std::holds_alternative<nullptr_t>(literal)) {
+            s += " null";
         }
 
         s += " " + std::to_string(line);

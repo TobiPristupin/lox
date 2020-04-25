@@ -150,6 +150,12 @@ std::optional<Token> Scanner::scanIdentifier() {
 
     std::string identifier = source.substr(start, (current - start));
     if (reservedKeywords.count(identifier) > 0){
+        if (identifier == "false"){
+            return createToken(TokenType::FALSE, false);
+        } else if (identifier == "true"){
+            return createToken(TokenType::TRUE, true);
+        }
+
         return createToken(reservedKeywords[identifier], nullptr);
     }
     return createToken(IDENTIFIER, nullptr);
@@ -187,7 +193,7 @@ std::optional<Token> Scanner::scanString() {
         throw ScanningException("Unterminated string", line, pos_in_line);
     }
 
-    advance(); //consume closing "
+    advance(); //advance closing "
     std::string s = source.substr(start + 1, (current - start - 1 - 1));//+1 and -1 to remove the quotes from each end
     return createToken(STRING, s);
 }
@@ -208,7 +214,7 @@ void Scanner::advance() {
 bool Scanner::currentCharMatches(char expected) {
     if (isAtEnd()) return false;
     //check at position current and not current + 1 because advance should have been called before this method,
-    //so the next char to evaluate is at current and not current + 1
+    //so the peek char to evaluate is at current and not current + 1
     return source[current] == expected;
 }
 

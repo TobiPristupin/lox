@@ -1,4 +1,5 @@
 GRAMMAR ADJUSTED FOR PRECEDENCE AND ASSOCIATIVITY:
+expression :== equality
 equality :== comparison ( ("==" | "!=") comparison )* ;
 comparison :== addition ( (">" | ">=" | "<" | "<=") addition )* ;
 addition :== multiplication ( ("-" | "+") multiplication )* ;

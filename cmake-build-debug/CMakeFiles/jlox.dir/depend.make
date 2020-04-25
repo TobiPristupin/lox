@@ -4,7 +4,16 @@
 CMakeFiles/jlox.dir/LoxException.cpp.o: ../LoxException.cpp
 CMakeFiles/jlox.dir/LoxException.cpp.o: ../LoxException.h
 
+CMakeFiles/jlox.dir/Parser.cpp.o: ../Expression.h
+CMakeFiles/jlox.dir/Parser.cpp.o: ../LoxException.h
+CMakeFiles/jlox.dir/Parser.cpp.o: ../Parser.cpp
+CMakeFiles/jlox.dir/Parser.cpp.o: ../Parser.h
+CMakeFiles/jlox.dir/Parser.cpp.o: ../Token.h
+CMakeFiles/jlox.dir/Parser.cpp.o: ../TokenType.h
+
+CMakeFiles/jlox.dir/Runner.cpp.o: ../Expression.h
 CMakeFiles/jlox.dir/Runner.cpp.o: ../LoxException.h
+CMakeFiles/jlox.dir/Runner.cpp.o: ../Parser.h
 CMakeFiles/jlox.dir/Runner.cpp.o: ../Runner.cpp
 CMakeFiles/jlox.dir/Runner.cpp.o: ../Runner.h
 CMakeFiles/jlox.dir/Runner.cpp.o: ../Scanner.h
@@ -23,4 +32,7 @@ CMakeFiles/jlox.dir/TokenType.cpp.o: ../TokenType.h
 CMakeFiles/jlox.dir/main.cpp.o: ../LoxException.h
 CMakeFiles/jlox.dir/main.cpp.o: ../Runner.h
 CMakeFiles/jlox.dir/main.cpp.o: ../main.cpp
+
+CMakeFiles/jlox.dir/tools/AstPrinter.cpp.o: ../tools/AstPrinter.cpp
+CMakeFiles/jlox.dir/tools/AstPrinter.cpp.o: ../tools/AstPrinter.h
 

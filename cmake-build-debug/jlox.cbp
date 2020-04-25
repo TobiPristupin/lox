@@ -93,6 +93,12 @@
 		<Unit filename="/home/pristu/Documents/jlox/LoxException.h">
 			<Option target="jlox"/>
 		</Unit>
+		<Unit filename="/home/pristu/Documents/jlox/Parser.cpp">
+			<Option target="jlox"/>
+		</Unit>
+		<Unit filename="/home/pristu/Documents/jlox/Parser.h">
+			<Option target="jlox"/>
+		</Unit>
 		<Unit filename="/home/pristu/Documents/jlox/Runner.cpp">
 			<Option target="jlox"/>
 		</Unit>
@@ -115,6 +121,12 @@
 			<Option target="jlox"/>
 		</Unit>
 		<Unit filename="/home/pristu/Documents/jlox/main.cpp">
+			<Option target="jlox"/>
+		</Unit>
+		<Unit filename="/home/pristu/Documents/jlox/tools/AstPrinter.cpp">
+			<Option target="jlox"/>
+		</Unit>
+		<Unit filename="/home/pristu/Documents/jlox/tools/AstPrinter.h">
 			<Option target="jlox"/>
 		</Unit>
 		<Unit filename="/home/pristu/Documents/jlox/CMakeLists.txt">
