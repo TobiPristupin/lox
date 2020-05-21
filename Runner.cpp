@@ -32,19 +32,19 @@ void Runner::runCode(const std::string& code) {
     Scanner scanner(code);
     std::vector<Token> tokens = scanner.scanTokens();
     for (Token t : tokens){
-        //std::cout << t.to_string() << "\n";
+        std::cout << t.to_string() << "\n";
     }
 
-    Parser parser(tokens);
-    Expression* expr = parser.parse();
-    BinaryExpr* binary = dynamic_cast<BinaryExpr*>(expr);
-    std::cout << binary->op->to_string() << std::endl;
-
-
-    bool error = false;
-    if (error){
-        throw LoxException("Program terminated with an error");
-    }
+//    Parser parser(tokens);
+//    Expression* expr = parser.parse();
+//    BinaryExpr* binary = dynamic_cast<BinaryExpr*>(expr);
+//    std::cout << binary->op->to_string() << std::endl;
+//
+//
+//    bool error = false;
+//    if (error){
+//        throw LoxException("Program terminated with an error");
+//    }
 }
 
 void Runner::displayLoxUsage(){
