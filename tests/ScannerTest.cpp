@@ -134,6 +134,28 @@ TEST_F(ScannerTest, ignoreComments){
     EXPECT_EQ(tokens[0].lexeme, "123");
 }
 
+TEST_F(ScannerTest, createLiteralTokens){
+    Scanner scanner1("false");
+    Token _false = scanner1.scanTokens()[0];
+    ASSERT_EQ(_false.type, TokenType::FALSE);
+    EXPECT_EQ(std::get<bool>(_false.literal), false);
+
+    Scanner scanner2("true");
+    Token _true = scanner2.scanTokens()[0];
+    ASSERT_EQ(_true.type, TokenType::TRUE);
+    EXPECT_EQ(std::get<bool>(_true.literal), true);
+
+    Scanner scanner3("123");
+    Token number = scanner3.scanTokens()[0];
+    ASSERT_EQ(number.type, TokenType::NUMBER);
+    EXPECT_EQ(std::get<int>(number.literal), 123);
+
+    Scanner scanner4("0.25");
+    Token number2 = scanner4.scanTokens()[0];
+    ASSERT_EQ(number2.type, TokenType::NUMBER);
+    EXPECT_EQ(std::get<float>(number2.literal), 0.25);
+}
+
 TEST_F(ScannerTest, lines){
     std::string code = "hello 123 \n hello \n 123";
     Scanner scanner(code);
