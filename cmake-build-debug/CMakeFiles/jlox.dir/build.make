@@ -168,18 +168,31 @@ CMakeFiles/jlox.dir/tools/AstPrinter.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/jlox.dir/tools/AstPrinter.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pristu/Documents/lox/tools/AstPrinter.cpp -o CMakeFiles/jlox.dir/tools/AstPrinter.cpp.s
 
-CMakeFiles/jlox.dir/tests/test1.cpp.o: CMakeFiles/jlox.dir/flags.make
-CMakeFiles/jlox.dir/tests/test1.cpp.o: ../tests/test1.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pristu/Documents/lox/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/jlox.dir/tests/test1.cpp.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/jlox.dir/tests/test1.cpp.o -c /home/pristu/Documents/lox/tests/test1.cpp
+CMakeFiles/jlox.dir/FileReader.cpp.o: CMakeFiles/jlox.dir/flags.make
+CMakeFiles/jlox.dir/FileReader.cpp.o: ../FileReader.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pristu/Documents/lox/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/jlox.dir/FileReader.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/jlox.dir/FileReader.cpp.o -c /home/pristu/Documents/lox/FileReader.cpp
 
-CMakeFiles/jlox.dir/tests/test1.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/jlox.dir/tests/test1.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/pristu/Documents/lox/tests/test1.cpp > CMakeFiles/jlox.dir/tests/test1.cpp.i
+CMakeFiles/jlox.dir/FileReader.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/jlox.dir/FileReader.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/pristu/Documents/lox/FileReader.cpp > CMakeFiles/jlox.dir/FileReader.cpp.i
 
-CMakeFiles/jlox.dir/tests/test1.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/jlox.dir/tests/test1.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pristu/Documents/lox/tests/test1.cpp -o CMakeFiles/jlox.dir/tests/test1.cpp.s
+CMakeFiles/jlox.dir/FileReader.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/jlox.dir/FileReader.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pristu/Documents/lox/FileReader.cpp -o CMakeFiles/jlox.dir/FileReader.cpp.s
+
+CMakeFiles/jlox.dir/tests/ScannerTest.cpp.o: CMakeFiles/jlox.dir/flags.make
+CMakeFiles/jlox.dir/tests/ScannerTest.cpp.o: ../tests/ScannerTest.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pristu/Documents/lox/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/jlox.dir/tests/ScannerTest.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/jlox.dir/tests/ScannerTest.cpp.o -c /home/pristu/Documents/lox/tests/ScannerTest.cpp
+
+CMakeFiles/jlox.dir/tests/ScannerTest.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/jlox.dir/tests/ScannerTest.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/pristu/Documents/lox/tests/ScannerTest.cpp > CMakeFiles/jlox.dir/tests/ScannerTest.cpp.i
+
+CMakeFiles/jlox.dir/tests/ScannerTest.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/jlox.dir/tests/ScannerTest.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pristu/Documents/lox/tests/ScannerTest.cpp -o CMakeFiles/jlox.dir/tests/ScannerTest.cpp.s
 
 # Object files for target jlox
 jlox_OBJECTS = \
@@ -190,7 +203,8 @@ jlox_OBJECTS = \
 "CMakeFiles/jlox.dir/LoxException.cpp.o" \
 "CMakeFiles/jlox.dir/Parser.cpp.o" \
 "CMakeFiles/jlox.dir/tools/AstPrinter.cpp.o" \
-"CMakeFiles/jlox.dir/tests/test1.cpp.o"
+"CMakeFiles/jlox.dir/FileReader.cpp.o" \
+"CMakeFiles/jlox.dir/tests/ScannerTest.cpp.o"
 
 # External object files for target jlox
 jlox_EXTERNAL_OBJECTS =
@@ -202,13 +216,14 @@ jlox: CMakeFiles/jlox.dir/TokenType.cpp.o
 jlox: CMakeFiles/jlox.dir/LoxException.cpp.o
 jlox: CMakeFiles/jlox.dir/Parser.cpp.o
 jlox: CMakeFiles/jlox.dir/tools/AstPrinter.cpp.o
-jlox: CMakeFiles/jlox.dir/tests/test1.cpp.o
+jlox: CMakeFiles/jlox.dir/FileReader.cpp.o
+jlox: CMakeFiles/jlox.dir/tests/ScannerTest.cpp.o
 jlox: CMakeFiles/jlox.dir/build.make
 jlox: lib/libgtestd.a
 jlox: lib/libgtest_maind.a
 jlox: lib/libgtestd.a
 jlox: CMakeFiles/jlox.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/pristu/Documents/lox/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Linking CXX executable jlox"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/pristu/Documents/lox/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Linking CXX executable jlox"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/jlox.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

@@ -341,6 +341,12 @@
 		<Unit filename="/home/pristu/Documents/lox/Expression.h">
 			<Option target="jlox"/>
 		</Unit>
+		<Unit filename="/home/pristu/Documents/lox/FileReader.cpp">
+			<Option target="jlox"/>
+		</Unit>
+		<Unit filename="/home/pristu/Documents/lox/FileReader.h">
+			<Option target="jlox"/>
+		</Unit>
 		<Unit filename="/home/pristu/Documents/lox/LoxException.cpp">
 			<Option target="jlox"/>
 		</Unit>
@@ -389,7 +395,7 @@
 		<Unit filename="/home/pristu/Documents/lox/main.cpp">
 			<Option target="jlox"/>
 		</Unit>
-		<Unit filename="/home/pristu/Documents/lox/tests/test1.cpp">
+		<Unit filename="/home/pristu/Documents/lox/tests/ScannerTest.cpp">
 			<Option target="jlox"/>
 		</Unit>
 		<Unit filename="/home/pristu/Documents/lox/tools/AstPrinter.cpp">

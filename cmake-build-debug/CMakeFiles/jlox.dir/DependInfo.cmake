@@ -4,13 +4,14 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
+  "/home/pristu/Documents/lox/FileReader.cpp" "/home/pristu/Documents/lox/cmake-build-debug/CMakeFiles/jlox.dir/FileReader.cpp.o"
   "/home/pristu/Documents/lox/LoxException.cpp" "/home/pristu/Documents/lox/cmake-build-debug/CMakeFiles/jlox.dir/LoxException.cpp.o"
   "/home/pristu/Documents/lox/Parser.cpp" "/home/pristu/Documents/lox/cmake-build-debug/CMakeFiles/jlox.dir/Parser.cpp.o"
   "/home/pristu/Documents/lox/Runner.cpp" "/home/pristu/Documents/lox/cmake-build-debug/CMakeFiles/jlox.dir/Runner.cpp.o"
   "/home/pristu/Documents/lox/Scanner.cpp" "/home/pristu/Documents/lox/cmake-build-debug/CMakeFiles/jlox.dir/Scanner.cpp.o"
   "/home/pristu/Documents/lox/TokenType.cpp" "/home/pristu/Documents/lox/cmake-build-debug/CMakeFiles/jlox.dir/TokenType.cpp.o"
   "/home/pristu/Documents/lox/main.cpp" "/home/pristu/Documents/lox/cmake-build-debug/CMakeFiles/jlox.dir/main.cpp.o"
-  "/home/pristu/Documents/lox/tests/test1.cpp" "/home/pristu/Documents/lox/cmake-build-debug/CMakeFiles/jlox.dir/tests/test1.cpp.o"
+  "/home/pristu/Documents/lox/tests/ScannerTest.cpp" "/home/pristu/Documents/lox/cmake-build-debug/CMakeFiles/jlox.dir/tests/ScannerTest.cpp.o"
   "/home/pristu/Documents/lox/tools/AstPrinter.cpp" "/home/pristu/Documents/lox/cmake-build-debug/CMakeFiles/jlox.dir/tools/AstPrinter.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")

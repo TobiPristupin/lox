@@ -316,6 +316,12 @@ cxxabi.h
 acxx_demangle.h
 -
 
+/home/pristu/Documents/lox/FileReader.h
+string
+-
+fstream
+-
+
 /home/pristu/Documents/lox/LoxException.h
 string
 -
@@ -324,13 +330,37 @@ string
 string
 -
 
-/home/pristu/Documents/lox/main.cpp
-iostream
+/home/pristu/Documents/lox/Scanner.h
+vector
 -
-Runner.h
-/home/pristu/Documents/lox/Runner.h
-LoxException.h
-/home/pristu/Documents/lox/LoxException.h
+Token.h
+/home/pristu/Documents/lox/Token.h
+optional
+-
+map
+-
+
+/home/pristu/Documents/lox/Token.h
+string
+-
+any
+-
+variant
+-
+TokenType.h
+/home/pristu/Documents/lox/TokenType.h
+
+/home/pristu/Documents/lox/TokenType.h
+
+/home/pristu/Documents/lox/tests/ScannerTest.cpp
 gtest/gtest.h
-/home/pristu/Documents/lox/gtest/gtest.h
+/home/pristu/Documents/lox/tests/gtest/gtest.h
+../Runner.h
+/home/pristu/Documents/lox/Runner.h
+../FileReader.h
+/home/pristu/Documents/lox/FileReader.h
+../Scanner.h
+/home/pristu/Documents/lox/Scanner.h
+../LoxException.h
+/home/pristu/Documents/lox/LoxException.h
 

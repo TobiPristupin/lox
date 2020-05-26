@@ -11,10 +11,7 @@ class Derived : public Base {
 
 
 int main(){
-    Base b;
-    Derived c;
-    b = c;
-    b.ye();
-
+    std::string a = " \"ahs\" ";
+    std::cout << a << "\n";
 }
 

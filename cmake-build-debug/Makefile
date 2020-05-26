@@ -241,6 +241,33 @@ gtest/fast:
 	$(MAKE) $(MAKESILENT) -f lib/googletest-master/googletest/CMakeFiles/gtest.dir/build.make lib/googletest-master/googletest/CMakeFiles/gtest.dir/build
 .PHONY : gtest/fast
 
+FileReader.o: FileReader.cpp.o
+
+.PHONY : FileReader.o
+
+# target to build an object file
+FileReader.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/jlox.dir/build.make CMakeFiles/jlox.dir/FileReader.cpp.o
+.PHONY : FileReader.cpp.o
+
+FileReader.i: FileReader.cpp.i
+
+.PHONY : FileReader.i
+
+# target to preprocess a source file
+FileReader.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/jlox.dir/build.make CMakeFiles/jlox.dir/FileReader.cpp.i
+.PHONY : FileReader.cpp.i
+
+FileReader.s: FileReader.cpp.s
+
+.PHONY : FileReader.s
+
+# target to generate assembly for a file
+FileReader.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/jlox.dir/build.make CMakeFiles/jlox.dir/FileReader.cpp.s
+.PHONY : FileReader.cpp.s
+
 LoxException.o: LoxException.cpp.o
 
 .PHONY : LoxException.o
@@ -403,32 +430,32 @@ main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/jlox.dir/build.make CMakeFiles/jlox.dir/main.cpp.s
 .PHONY : main.cpp.s
 
-tests/test1.o: tests/test1.cpp.o
+tests/ScannerTest.o: tests/ScannerTest.cpp.o
 
-.PHONY : tests/test1.o
+.PHONY : tests/ScannerTest.o
 
 # target to build an object file
-tests/test1.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/jlox.dir/build.make CMakeFiles/jlox.dir/tests/test1.cpp.o
-.PHONY : tests/test1.cpp.o
+tests/ScannerTest.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/jlox.dir/build.make CMakeFiles/jlox.dir/tests/ScannerTest.cpp.o
+.PHONY : tests/ScannerTest.cpp.o
 
-tests/test1.i: tests/test1.cpp.i
+tests/ScannerTest.i: tests/ScannerTest.cpp.i
 
-.PHONY : tests/test1.i
+.PHONY : tests/ScannerTest.i
 
 # target to preprocess a source file
-tests/test1.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/jlox.dir/build.make CMakeFiles/jlox.dir/tests/test1.cpp.i
-.PHONY : tests/test1.cpp.i
+tests/ScannerTest.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/jlox.dir/build.make CMakeFiles/jlox.dir/tests/ScannerTest.cpp.i
+.PHONY : tests/ScannerTest.cpp.i
 
-tests/test1.s: tests/test1.cpp.s
+tests/ScannerTest.s: tests/ScannerTest.cpp.s
 
-.PHONY : tests/test1.s
+.PHONY : tests/ScannerTest.s
 
 # target to generate assembly for a file
-tests/test1.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/jlox.dir/build.make CMakeFiles/jlox.dir/tests/test1.cpp.s
-.PHONY : tests/test1.cpp.s
+tests/ScannerTest.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/jlox.dir/build.make CMakeFiles/jlox.dir/tests/ScannerTest.cpp.s
+.PHONY : tests/ScannerTest.cpp.s
 
 tools/AstPrinter.o: tools/AstPrinter.cpp.o
 
@@ -474,6 +501,9 @@ help:
 	@echo "... gtest"
 	@echo "... gtest_main"
 	@echo "... jlox"
+	@echo "... FileReader.o"
+	@echo "... FileReader.i"
+	@echo "... FileReader.s"
 	@echo "... LoxException.o"
 	@echo "... LoxException.i"
 	@echo "... LoxException.s"
@@ -492,9 +522,9 @@ help:
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
-	@echo "... tests/test1.o"
-	@echo "... tests/test1.i"
-	@echo "... tests/test1.s"
+	@echo "... tests/ScannerTest.o"
+	@echo "... tests/ScannerTest.i"
+	@echo "... tests/ScannerTest.s"
 	@echo "... tools/AstPrinter.o"
 	@echo "... tools/AstPrinter.i"
 	@echo "... tools/AstPrinter.s"

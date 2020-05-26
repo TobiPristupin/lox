@@ -1,11 +1,12 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/jlox.dir/FileReader.cpp.o"
   "CMakeFiles/jlox.dir/LoxException.cpp.o"
   "CMakeFiles/jlox.dir/Parser.cpp.o"
   "CMakeFiles/jlox.dir/Runner.cpp.o"
   "CMakeFiles/jlox.dir/Scanner.cpp.o"
   "CMakeFiles/jlox.dir/TokenType.cpp.o"
   "CMakeFiles/jlox.dir/main.cpp.o"
-  "CMakeFiles/jlox.dir/tests/test1.cpp.o"
+  "CMakeFiles/jlox.dir/tests/ScannerTest.cpp.o"
   "CMakeFiles/jlox.dir/tools/AstPrinter.cpp.o"
   "jlox"
   "jlox.pdb"

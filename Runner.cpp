@@ -4,17 +4,12 @@
 #include "Scanner.h"
 #include "LoxException.h"
 #include "Parser.h"
+#include "FileReader.h"
+
 
 void Runner::runScript(const std::string& filename) {
-    std::ifstream file(filename);
-    if (!file.is_open()){
-        throw LoxException("File " + filename + " not found");
-    }
-
-    std::string data((std::istreambuf_iterator<char>(file)),std::istreambuf_iterator<char>());
-    file.close();
-
-    runCode(data);
+    FileReader reader(filename);
+    runCode(reader.readAll());
 }
 
 void Runner::runRepl() {

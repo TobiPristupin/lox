@@ -141,10 +141,7 @@ std::optional<Token> Scanner::scanNextToken() {
 }
 
 std::optional<Token> Scanner::scanIdentifier() {
-    while (!isAtEnd() && !isWhitespace(peek())) {
-        if (!validForIdentifier(peek())) {
-            throw ScanningException("Invalid identifier", line, pos_in_line);
-        }
+    while (!isAtEnd() && validForIdentifier(peek())){
         advance();
     }
 
@@ -162,18 +159,19 @@ std::optional<Token> Scanner::scanIdentifier() {
 }
 
 std::optional<Token> Scanner::scanNumber() {
-    while (!isAtEnd() && !isWhitespace(peek())){
-        if (!isdigit(peek()) && peek() != '.'){
-            throw ScanningException("Invalid number literal", line, pos_in_line);
-        }
+    while (!isAtEnd() && isdigit(peek())){
         advance();
+    }
+
+    if (peek() == '.'){
+        advance();
+        while (!isAtEnd() && isdigit(peek())){
+            advance();
+        }
     }
 
     std::string number = source.substr(start, (current - start));
     int decimal = std::count(number.begin(), number.end(), '.');
-    if (decimal > 1) { //can't have a number with two decimals like 2.1.3
-        throw ScanningException("Invalid number literal", line, pos_in_line);
-    }
 
     if (decimal == 1){
         return createToken(NUMBER, std::stof(number));
