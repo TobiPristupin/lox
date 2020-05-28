@@ -43,7 +43,9 @@ void Runner::runCode(const std::string& code) {
 //    }
 
 
-//    LiteralExpr* left = new LiteralExpr(2);
+
+//    LiteralExpr* literal = new LiteralExpr(2);
+//    UnaryExpr* left = new UnaryExpr(new Token(TokenType::MINUS, "-", nullptr, 1), literal);
 //    LiteralExpr* right = new LiteralExpr(std::string("ooo"));
 //    Token* op = new Token(TokenType::PLUS, "+", nullptr, 1);
 //    BinaryExpr* expr = new BinaryExpr(left, right, op);
