@@ -35,7 +35,7 @@ std::vector<Token> Scanner::scanTokens() {
         if (nextToken.has_value()) tokens.emplace_back(*nextToken);
     }
 
-    Token eof(TokenType::END_OF_FILE, "", nullptr, line);
+    Token eof(TokenType::END_OF_FILE, "", line);
     tokens.emplace_back(eof);
     return tokens;
 }
@@ -65,61 +65,61 @@ std::optional<Token> Scanner::scanNextToken() {
 
             //one character tokens
         case '(':
-            return createToken(TokenType::LEFT_PAREN, nullptr);
+            return createToken(TokenType::LEFT_PAREN);
         case ')':
-            return createToken(TokenType::RIGHT_PAREN, nullptr);
+            return createToken(TokenType::RIGHT_PAREN);
         case '{':
-            return createToken(TokenType::LEFT_BRACE, nullptr);
+            return createToken(TokenType::LEFT_BRACE);
         case '}':
-            return createToken(TokenType::RIGHT_BRACE, nullptr);
+            return createToken(TokenType::RIGHT_BRACE);
         case ',':
-            return createToken(TokenType::COMMA, nullptr);
+            return createToken(TokenType::COMMA);
         case '.':
-            return createToken(TokenType::DOT, nullptr);
+            return createToken(TokenType::DOT);
         case '-':
-            return createToken(TokenType::MINUS, nullptr);
+            return createToken(TokenType::MINUS);
         case '+':
-            return createToken(TokenType::PLUS, nullptr);
+            return createToken(TokenType::PLUS);
         case ';':
-            return createToken(TokenType::SEMICOLON, nullptr);
+            return createToken(TokenType::SEMICOLON);
         case '*':
-            return createToken(TokenType::STAR, nullptr);
+            return createToken(TokenType::STAR);
 
             //one or two character tokens
         case '!':
             if (currentCharMatches('=')) {
                 advance();
-                return createToken(TokenType::BANG_EQUAL, nullptr);
+                return createToken(TokenType::BANG_EQUAL);
             } else {
-                return createToken(TokenType::BANG, nullptr);
+                return createToken(TokenType::BANG);
             }
         case '=':
             if (currentCharMatches('=')) {
                 advance();
-                return createToken(TokenType::EQUAL_EQUAL, nullptr);
+                return createToken(TokenType::EQUAL_EQUAL);
             } else {
-                return createToken(TokenType::EQUAL, nullptr);
+                return createToken(TokenType::EQUAL);
             }
         case '>':
             if (currentCharMatches('=')) {
                 advance();
-                return createToken(TokenType::GREATER_EQUAL, nullptr);
+                return createToken(TokenType::GREATER_EQUAL);
             } else {
-                return createToken(TokenType::GREATER, nullptr);
+                return createToken(TokenType::GREATER);
             }
         case '<':
             if (currentCharMatches('=')) {
                 advance();
-                return createToken(TokenType::LESS_EQUAL, nullptr);
+                return createToken(TokenType::LESS_EQUAL);
             } else {
-                return createToken(TokenType::LESS, nullptr);
+                return createToken(TokenType::LESS);
             }
         case '/':
             if (currentCharMatches('/')) {
                 while (!isAtEnd() && peek() != '\n') advance();
                 return std::nullopt;
             } else {
-                return createToken(TokenType::SLASH, nullptr);
+                return createToken(TokenType::SLASH);
             }
 
             //strings
@@ -153,9 +153,9 @@ std::optional<Token> Scanner::scanIdentifier() {
             return createToken(TokenType::TRUE, true);
         }
 
-        return createToken(reservedKeywords[identifier], nullptr);
+        return createToken(reservedKeywords[identifier]);
     }
-    return createToken(IDENTIFIER, nullptr);
+    return createToken(IDENTIFIER);
 }
 
 std::optional<Token> Scanner::scanNumber() {
@@ -220,8 +220,24 @@ bool Scanner::isWhitespace(char c) {
     return c == ' ' || c == '\n' || c == '\t' || c == '\r';
 }
 
-Token Scanner::createToken(TokenType type, const lox_literal_t &literal) {
+Token Scanner::createToken(TokenType type, const std::string &literal) {
     return Token(type, source.substr(start, (current - start)), literal, line);
+}
+
+Token Scanner::createToken(TokenType type, int literal) {
+    return Token(type, source.substr(start, (current - start)), literal, line);
+}
+
+Token Scanner::createToken(TokenType type, float literal) {
+    return Token(type, source.substr(start, (current - start)), literal, line);
+}
+
+Token Scanner::createToken(TokenType type, bool literal) {
+    return Token(type, source.substr(start, (current - start)), literal, line);
+}
+
+Token Scanner::createToken(TokenType type) {
+    return Token(type, source.substr(start, (current - start)), line);
 }
 
 void Scanner::nextLine() {

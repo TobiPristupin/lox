@@ -21,7 +21,11 @@ private:
     void advance();
     bool currentCharMatches(char expected);
     char peek();
-    Token createToken(TokenType type, const lox_literal_t &literal);
+    Token createToken(TokenType type, const std::string &literal);
+    Token createToken(TokenType type, int literal);
+    Token createToken(TokenType type, float literal);
+    Token createToken(TokenType type, bool literal);
+    Token createToken(TokenType type);
     static bool validForIdentifier(char c);
     std::optional<Token> scanString();
     std::optional<Token> scanNumber();
