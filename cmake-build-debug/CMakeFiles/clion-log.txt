@@ -1,4 +1,0 @@
-/home/pristu/.local/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/pristu/Documents/lox
--- Configuring done
--- Generating done
--- Build files have been written to: /home/pristu/Documents/lox/cmake-build-debug
