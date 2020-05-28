@@ -6,10 +6,20 @@
 #define JLOX_ASTPRINTER_H
 
 
-class AstPrinter {
+#include <sstream>
+#include "../Expr.h"
 
-    static void print();
+class AstPrinter : public ExprVisitor {
 
+public:
+    std::string print(Expr *expr);
+
+private:
+    std::stringstream ss;
+    void visit(const BinaryExpr *binaryExpr) override;
+    void visit(const GroupingExpr *groupingExpr) override;
+    void visit(const UnaryExpr *unaryExpr) override;
+    void visit(const LiteralExpr *literalExpr) override;
 };
 
 

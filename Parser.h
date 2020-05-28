@@ -9,23 +9,23 @@
 #include <vector>
 #include <optional>
 #include "Token.h"
-#include "Expression.h"
+#include "Expr.h"
 
 class Parser {
 public:
     Parser(const std::vector<Token> &tokens);
-    Expression* parse();
+    Expr* parse();
 
 private:
     std::vector<Token> tokens;
     int current = 0;
-    Expression* expression();
-    Expression* equality();
-    Expression* comparison();
-    Expression* addition();
-    Expression* multiplication();
-    Expression* unary();
-    Expression* primary();
+    Expr* expression();
+    Expr* equality();
+    Expr* comparison();
+    Expr* addition();
+    Expr* multiplication();
+    Expr* unary();
+    Expr* primary();
     bool match(TokenType type);
     bool match(std::vector<TokenType> &types);
     Token peek();

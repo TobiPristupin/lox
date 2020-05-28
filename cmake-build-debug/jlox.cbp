@@ -338,7 +338,10 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/home/pristu/Documents/lox/Expression.h">
+		<Unit filename="/home/pristu/Documents/lox/Expr.cpp">
+			<Option target="jlox"/>
+		</Unit>
+		<Unit filename="/home/pristu/Documents/lox/Expr.h">
 			<Option target="jlox"/>
 		</Unit>
 		<Unit filename="/home/pristu/Documents/lox/FileReader.cpp">
@@ -393,6 +396,9 @@
 			<Option target="gtest_main"/>
 		</Unit>
 		<Unit filename="/home/pristu/Documents/lox/main.cpp">
+			<Option target="jlox"/>
+		</Unit>
+		<Unit filename="/home/pristu/Documents/lox/tests/ParserTest.cpp">
 			<Option target="jlox"/>
 		</Unit>
 		<Unit filename="/home/pristu/Documents/lox/tests/ScannerTest.cpp">

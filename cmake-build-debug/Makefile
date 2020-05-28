@@ -241,6 +241,33 @@ gtest/fast:
 	$(MAKE) $(MAKESILENT) -f lib/googletest-master/googletest/CMakeFiles/gtest.dir/build.make lib/googletest-master/googletest/CMakeFiles/gtest.dir/build
 .PHONY : gtest/fast
 
+Expr.o: Expr.cpp.o
+
+.PHONY : Expr.o
+
+# target to build an object file
+Expr.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/jlox.dir/build.make CMakeFiles/jlox.dir/Expr.cpp.o
+.PHONY : Expr.cpp.o
+
+Expr.i: Expr.cpp.i
+
+.PHONY : Expr.i
+
+# target to preprocess a source file
+Expr.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/jlox.dir/build.make CMakeFiles/jlox.dir/Expr.cpp.i
+.PHONY : Expr.cpp.i
+
+Expr.s: Expr.cpp.s
+
+.PHONY : Expr.s
+
+# target to generate assembly for a file
+Expr.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/jlox.dir/build.make CMakeFiles/jlox.dir/Expr.cpp.s
+.PHONY : Expr.cpp.s
+
 FileReader.o: FileReader.cpp.o
 
 .PHONY : FileReader.o
@@ -430,6 +457,33 @@ main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/jlox.dir/build.make CMakeFiles/jlox.dir/main.cpp.s
 .PHONY : main.cpp.s
 
+tests/ParserTest.o: tests/ParserTest.cpp.o
+
+.PHONY : tests/ParserTest.o
+
+# target to build an object file
+tests/ParserTest.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/jlox.dir/build.make CMakeFiles/jlox.dir/tests/ParserTest.cpp.o
+.PHONY : tests/ParserTest.cpp.o
+
+tests/ParserTest.i: tests/ParserTest.cpp.i
+
+.PHONY : tests/ParserTest.i
+
+# target to preprocess a source file
+tests/ParserTest.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/jlox.dir/build.make CMakeFiles/jlox.dir/tests/ParserTest.cpp.i
+.PHONY : tests/ParserTest.cpp.i
+
+tests/ParserTest.s: tests/ParserTest.cpp.s
+
+.PHONY : tests/ParserTest.s
+
+# target to generate assembly for a file
+tests/ParserTest.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/jlox.dir/build.make CMakeFiles/jlox.dir/tests/ParserTest.cpp.s
+.PHONY : tests/ParserTest.cpp.s
+
 tests/ScannerTest.o: tests/ScannerTest.cpp.o
 
 .PHONY : tests/ScannerTest.o
@@ -501,6 +555,9 @@ help:
 	@echo "... gtest"
 	@echo "... gtest_main"
 	@echo "... jlox"
+	@echo "... Expr.o"
+	@echo "... Expr.i"
+	@echo "... Expr.s"
 	@echo "... FileReader.o"
 	@echo "... FileReader.i"
 	@echo "... FileReader.s"
@@ -522,6 +579,9 @@ help:
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
+	@echo "... tests/ParserTest.o"
+	@echo "... tests/ParserTest.i"
+	@echo "... tests/ParserTest.s"
 	@echo "... tests/ScannerTest.o"
 	@echo "... tests/ScannerTest.i"
 	@echo "... tests/ScannerTest.s"

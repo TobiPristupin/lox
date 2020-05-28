@@ -5,6 +5,7 @@
 #include "LoxException.h"
 #include "Parser.h"
 #include "FileReader.h"
+#include "tools/AstPrinter.h"
 
 
 void Runner::runScript(const std::string& filename) {
@@ -40,6 +41,17 @@ void Runner::runCode(const std::string& code) {
 //    if (error){
 //        throw LoxException("Program terminated with an error");
 //    }
+
+
+//    LiteralExpr* left = new LiteralExpr(2);
+//    LiteralExpr* right = new LiteralExpr(std::string("ooo"));
+//    Token* op = new Token(TokenType::PLUS, "+", nullptr, 1);
+//    BinaryExpr* expr = new BinaryExpr(left, right, op);
+//    AstPrinter printer;
+//    std::cout << printer.print(expr) << "\n";
+
+//    Token t(TokenType::STRING, "hey", "hey", 1);
+//    std::cout << std::holds_alternative<std::string>(t.literal) << "\n";
 }
 
 void Runner::displayLoxUsage(){

@@ -157,12 +157,12 @@ CMakeFiles/jlox.dir/all: lib/googletest-master/googletest/CMakeFiles/gtest_main.
 CMakeFiles/jlox.dir/all: lib/googletest-master/googletest/CMakeFiles/gtest.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/jlox.dir/build.make CMakeFiles/jlox.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/jlox.dir/build.make CMakeFiles/jlox.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/pristu/Documents/lox/cmake-build-debug/CMakeFiles --progress-num=9,10,11,12,13,14,15,16,17,18 "Built target jlox"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/pristu/Documents/lox/cmake-build-debug/CMakeFiles --progress-num=9,10,11,12,13,14,15,16,17,18,19,20 "Built target jlox"
 .PHONY : CMakeFiles/jlox.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/jlox.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/pristu/Documents/lox/cmake-build-debug/CMakeFiles 14
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/pristu/Documents/lox/cmake-build-debug/CMakeFiles 16
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/jlox.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/pristu/Documents/lox/cmake-build-debug/CMakeFiles 0
 .PHONY : CMakeFiles/jlox.dir/rule
