@@ -22,10 +22,18 @@ const char *LoxException::what() const noexcept {
     return message.c_str();
 }
 
-ScanningException::ScanningException(std::string message, int line, int pos) : LoxException(message, line) {
+ScanningException::ScanningException(std::string message, int line, int pos) : LoxException(message, line, pos) {
     this->message = "[" + std::to_string(line) + ":" + std::to_string(pos) + "] " +  "Scanning Error: " + message;
 }
 
 const char *ScanningException::what() const noexcept {
+    return message.c_str();
+}
+
+ParsingException::ParsingException(std::string message, int line) : LoxException(message, line) {
+    this->message = "[" + std::to_string(line) + "] " +  "Parsing Error: " + message;
+}
+
+const char *ParsingException::what() const noexcept {
     return message.c_str();
 }

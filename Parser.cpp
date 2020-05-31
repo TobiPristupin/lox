@@ -15,12 +15,11 @@ Expr *Parser::expression() {
 
 Expr *Parser::equality() {
     Expr *expr = comparison();
-    std::vector<TokenType> equalityTokens = {TokenType::EQUAL_EQUAL, TokenType::BANG_EQUAL};
+    std::vector<TokenType> equalityTokens = {TokenType ::EQUAL_EQUAL, TokenType::BANG_EQUAL};
     while (match(equalityTokens)){
-        Token op = peek();
-        advance();
-        Expr* e = comparison();
-        expr = new BinaryExpr(expr, e, &op);
+        Token op = previous();
+        Expr* right = comparison();
+        expr = new BinaryExpr(expr, right, &op);
     }
 
     return expr;
@@ -30,10 +29,9 @@ Expr *Parser::comparison() {
     Expr *expr = addition();
     std::vector<TokenType> comparisonTokens = {TokenType::GREATER, TokenType::GREATER_EQUAL, TokenType::LESS, TokenType::LESS_EQUAL};
     while (match(comparisonTokens)){
-        Token op = peek();
-        advance();
-        Expr *e = addition();
-        expr = new BinaryExpr(expr, e, &op);
+        Token op = previous();
+        Expr* right = addition();
+        expr = new BinaryExpr(expr, right, &op);
     }
 
     return expr;
@@ -43,10 +41,9 @@ Expr *Parser::addition() {
     Expr *expr = multiplication();
     std::vector<TokenType> additionTokens = {TokenType::MINUS, TokenType::PLUS};
     while (match(additionTokens)){
-        Token op = peek();
-        advance();
-        Expr *e = multiplication();
-        expr = new BinaryExpr(expr, e, &op);
+        Token op = previous();
+        Expr* right = multiplication();
+        expr = new BinaryExpr(expr, right, &op);
     }
 
     return expr;
@@ -56,10 +53,9 @@ Expr *Parser::multiplication() {
     Expr *expr = unary();
     std::vector<TokenType> multiplicationTokens = {TokenType::SLASH, TokenType::STAR};
     while (match(multiplicationTokens)){
-        Token op = peek();
-        advance();
-        Expr *e = unary();
-        expr = new BinaryExpr(expr, e, &op);
+        Token op = previous();
+        Expr* right = unary();
+        expr = new BinaryExpr(expr, right, &op);
     }
 
     return expr;
@@ -68,62 +64,71 @@ Expr *Parser::multiplication() {
 Expr *Parser::unary() {
     std::vector<TokenType> unaryTokens = {TokenType::MINUS, TokenType::BANG};
     if (match(unaryTokens)){
-        Token op = peek();
-        advance();
-        Expr *right = unary();
-        Expr *expr = new UnaryExpr(&op, right);
-        return expr;
+        Token op = previous();
+        Expr* right = unary();
+        return new UnaryExpr(&op, right);
     }
 
     return primary();
 }
 
 Expr *Parser::primary() {
-    std::vector<TokenType> primaryTokens = {TokenType::TRUE, TokenType::FALSE, TokenType::NIL, TokenType::NUMBER, TokenType::STRING};
-    if (match(primaryTokens)){
-        advance();
-        return new LiteralExpr(peek().literal);
-    }
+    if (match(TokenType::NUMBER)) return new LiteralExpr(previous().literal);
+    if (match(TokenType::STRING)) return new LiteralExpr(previous().literal);
+    if (match(TokenType::TRUE)) return new LiteralExpr(previous().literal);
+    if (match(TokenType::FALSE)) return new LiteralExpr(previous().literal);
+    if (match(TokenType::NIL)) return new LiteralExpr(previous().literal);
 
     if (match(TokenType::LEFT_PAREN)){
         Expr *expr = expression();
-        if (!match(TokenType::RIGHT_PAREN)){
-            throw LoxException("Missing closing parenthesis", peek().line);
-        }
-        advance();
+        expect(TokenType::RIGHT_PAREN, "Expect ')' after expression");
         return new GroupingExpr(expr);
     }
 
-    throw LoxException("Expected expression");
+    throw ParsingException("Expected expression", peek().line);
 }
 
 bool Parser::match(TokenType type) {
-    Token t = peek();
-    return t.type == type;
+    std::vector<TokenType> vec = {type};
+    return match(vec);
 }
 
+//Checks if the current token type matches one from types AND CONSUMES IT
 bool Parser::match(std::vector<TokenType> &types) {
-    for (TokenType type : types){
-        if (match(type)){
+    for (TokenType &type : types){
+        if (check(type)){
+            advance();
             return true;
         }
     }
-
     return false;
+}
+
+bool Parser::check(TokenType &type) {
+    if (isAtEnd()) return false;
+    return peek().type == type;
 }
 
 Token Parser::peek() {
     return tokens[current];
 }
 
-void Parser::advance() {
-    current++;
+Token Parser::previous() {
+    return tokens[current-1];
+}
+
+Token Parser::advance() {
+    if (!isAtEnd()) current++;
+    return previous();
 }
 
 bool Parser::isAtEnd() {
     return peek().type == TokenType::END_OF_FILE;
 }
 
-
+void Parser::expect(TokenType type, std::string error_message){
+    if (check(type)) advance();
+    else throw ParsingException(error_message, peek().line);
+}
 
 

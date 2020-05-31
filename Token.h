@@ -22,16 +22,15 @@ struct Token {
     lox_literal_t literal;
     int line{};
 
-    /*NOTE: Here we have an overloaded constructor for each literal type, instead of having one constructor that accepts
-     * a literal parameter of type lox_literal_t. This is because in the special case in which a string is passed as the literal,
-     * we need to make sure that we are passing an std::string to the lox_literal_t constructor instead of a char* .
-     * If we pass a char* accidentally, char* will decay into a bool and literal will hold a bool instead of a string.
-     * This is explained much more clearly here: https://stackoverflow.com/questions/44086269/why-does-my-variant-convert-a-stdstring-to-a-bool
-     * Having a separate constructor for std::string allows us to make sure that we are always working with an std::string.
-     *
-     * Don't ask me how I found this bug. Just crazy C++ shit.
+    /*NOTE: It is important here to have a different overloaded constructor for each type of literal instead of simplifying it
+     * to one constructor that accepts a lox_literal_t. This is because if we pass a const char* string directly to the
+     * lox_literal_t constructor it will be converted it to a bool (if we pass an std::string instead it will remain as a string).
+     * This is explained here: https://stackoverflow.com/questions/44086269/why-does-my-variant-convert-a-stdstring-to-a-bool
+     * Having a separate constructor for each type allows us to manually cover the case in which the caller passes a const char* and
+     * convert it into an std::string.
      * */
     Token(TokenType type, const std::string &lexeme, const std::string &literal, int line);
+    Token(TokenType type, const std::string &lexeme, const char* literal, int line);
     Token(TokenType type, const std::string &lexeme, const int &literal, int line);
     Token(TokenType type, const std::string &lexeme, const float &literal, int line);
     Token(TokenType type, const std::string &lexeme, const bool &literal, int line);

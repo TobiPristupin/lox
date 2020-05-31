@@ -28,9 +28,13 @@ private:
     Expr* primary();
     bool match(TokenType type);
     bool match(std::vector<TokenType> &types);
+    bool check(TokenType &type);
+    void expect(TokenType type, std::string error_message);
     Token peek();
-    void advance();
+    Token advance();
+    Token previous();
     bool isAtEnd();
+
 };
 
 

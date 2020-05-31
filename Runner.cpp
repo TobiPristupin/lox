@@ -27,9 +27,13 @@ void Runner::runRepl() {
 void Runner::runCode(const std::string& code) {
     Scanner scanner(code);
     std::vector<Token> tokens = scanner.scanTokens();
-    for (Token t : tokens){
-        std::cout << t.to_string() << "\n";
-    }
+//    for (Token t : tokens){
+//        std::cout << t.to_string() << "\n";
+//    }
+
+//    std::vector<Token> v = {Token(TokenType::NUMBER, "123", 123, 1)};
+//    Parser parser(v);
+//    Expr* expr = parser.parse();
 
 //    Parser parser(tokens);
 //    Expression* expr = parser.parse();
@@ -41,16 +45,6 @@ void Runner::runCode(const std::string& code) {
 //    if (error){
 //        throw LoxException("Program terminated with an error");
 //    }
-
-
-
-//    LiteralExpr* literal = new LiteralExpr(2);
-//    UnaryExpr* left = new UnaryExpr(new Token(TokenType::MINUS, "-", nullptr, 1), literal);
-//    LiteralExpr* right = new LiteralExpr(std::string("ooo"));
-//    Token* op = new Token(TokenType::PLUS, "+", nullptr, 1);
-//    BinaryExpr* expr = new BinaryExpr(left, right, op);
-//    AstPrinter printer;
-//    std::cout << printer.print(expr) << "\n";
 
 //    Token t(TokenType::STRING, "hey", "hey", 1);
 //    std::cout << std::holds_alternative<std::string>(t.literal) << "\n";

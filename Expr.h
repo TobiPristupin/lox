@@ -1,7 +1,6 @@
 #ifndef JLOX_EXPR_H
 #define JLOX_EXPR_H
 
-
 #include "Token.h"
 
 class BinaryExpr;
@@ -20,6 +19,7 @@ public:
 
 class Expr {
 public:
+    virtual ~Expr() = 0;
     virtual void accept(ExprVisitor& visitor) = 0;
 };
 

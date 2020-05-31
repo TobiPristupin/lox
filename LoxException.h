@@ -21,4 +21,10 @@ class ScanningException : public LoxException {
         const char* what() const noexcept override;
 };
 
+class ParsingException : public LoxException {
+public:
+    ParsingException(std::string message, int line);
+    const char* what() const noexcept override;
+};
+
 #endif //JLOX_LOXEXCEPTION_H

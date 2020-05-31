@@ -1,4 +1,4 @@
-//#define DEBUG
+#define DEBUG
 
 #include <iostream>
 #include "Runner.h"

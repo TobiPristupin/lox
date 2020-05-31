@@ -1,17 +1,22 @@
-#include <iostream>
+#include "iostream"
 
-class Base {};
+class Base {
+public:
 
-class Derived : public Base {
+    Base(std::string hey){
+        std::cout << hey << "\n";
+    }
 
-    void ye(){
-        std::cout << "ye" << std::endl;
+    Base(const char* hey){
+        Base(std::string(hey));
+    }
+
+    Base(bool hey){
+        std::cout << hey << "\n";
     }
 };
 
-
 int main(){
-    std::string a = " \"ahs\" ";
-    std::cout << a << "\n";
+    Base a("hello");
+    Base b(true);
 }
-

@@ -1,10 +1,9 @@
 
 #include "Token.h"
 
-Token::Token(TokenType type, const std::string &lexeme, const std::string &literal, int line) : type(type), lexeme(lexeme), line(line){
-    //explicitly create an std::string, reason for this is explained in the token header file
-    this->literal = std::string(literal);
-}
+Token::Token(TokenType type, const std::string &lexeme, const std::string &literal, int line) : type(type), lexeme(lexeme), line(line), literal(literal) {}
+
+Token::Token(TokenType type, const std::string &lexeme, const char *literal, int line) : Token(type, lexeme, std::string(literal), line) {}
 
 Token::Token(TokenType type, const std::string &lexeme, const int &literal, int line) : type(type), lexeme(lexeme), line(line), literal(literal) {}
 
