@@ -1,3 +1,4 @@
+#include <iostream>
 #include "Parser.h"
 #include "TokenType.h"
 #include "LoxException.h"
@@ -19,7 +20,7 @@ Expr *Parser::equality() {
     while (match(equalityTokens)){
         Token op = previous();
         Expr* right = comparison();
-        expr = new BinaryExpr(expr, right, &op);
+        expr = new BinaryExpr(expr, right, op);
     }
 
     return expr;
@@ -31,7 +32,7 @@ Expr *Parser::comparison() {
     while (match(comparisonTokens)){
         Token op = previous();
         Expr* right = addition();
-        expr = new BinaryExpr(expr, right, &op);
+        expr = new BinaryExpr(expr, right, op);
     }
 
     return expr;
@@ -43,10 +44,11 @@ Expr *Parser::addition() {
     while (match(additionTokens)){
         Token op = previous();
         Expr* right = multiplication();
-        expr = new BinaryExpr(expr, right, &op);
+        expr = new BinaryExpr(expr, right, op);
     }
 
     return expr;
+
 }
 
 Expr *Parser::multiplication() {
@@ -55,7 +57,7 @@ Expr *Parser::multiplication() {
     while (match(multiplicationTokens)){
         Token op = previous();
         Expr* right = unary();
-        expr = new BinaryExpr(expr, right, &op);
+        expr = new BinaryExpr(expr, right, op);
     }
 
     return expr;
@@ -66,7 +68,7 @@ Expr *Parser::unary() {
     if (match(unaryTokens)){
         Token op = previous();
         Expr* right = unary();
-        return new UnaryExpr(&op, right);
+        return new UnaryExpr(op, right);
     }
 
     return primary();

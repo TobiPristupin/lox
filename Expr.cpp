@@ -3,7 +3,7 @@
 
 Expr::~Expr() = default;
 
-BinaryExpr::BinaryExpr(Expr *left, Expr *right, Token *op) : left(left), right(right), op(op) {}
+BinaryExpr::BinaryExpr(Expr *left, Expr *right, Token op) : left(left), right(right), op(op) {}
 
 void BinaryExpr::accept(ExprVisitor& visitor) {
     visitor.visit(this);
@@ -16,7 +16,7 @@ void GroupingExpr::accept(ExprVisitor& visitor) {
 }
 
 
-UnaryExpr::UnaryExpr(Token *op, Expr *expr) : op(op), expr(expr) {}
+UnaryExpr::UnaryExpr(Token op, Expr *expr) : op(op), expr(expr) {}
 
 void UnaryExpr::accept(ExprVisitor& visitor) {
     visitor.visit(this);

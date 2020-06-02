@@ -7,12 +7,15 @@ public:
         std::cout << hey << "\n";
     }
 
-    Base(const char* hey){
-        Base(std::string(hey));
-    }
+    virtual std::string to_string();
+};
 
-    Base(bool hey){
-        std::cout << hey << "\n";
+class Derived : public Base {
+
+    Derived(std::string hey) : Base(hey) {}
+
+    std::string to_string(){
+        std::cout <<
     }
 };
 

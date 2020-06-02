@@ -31,9 +31,12 @@ void Runner::runCode(const std::string& code) {
 //        std::cout << t.to_string() << "\n";
 //    }
 
-//    std::vector<Token> v = {Token(TokenType::NUMBER, "123", 123, 1)};
-//    Parser parser(v);
+
+//    Parser parser(tokens);
 //    Expr* expr = parser.parse();
+//    AstPrinter printer;
+//    std::cout << printer.print(expr) << "\n";
+
 
 //    Parser parser(tokens);
 //    Expression* expr = parser.parse();

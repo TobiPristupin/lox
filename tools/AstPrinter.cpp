@@ -11,7 +11,7 @@ std::string AstPrinter::print(Expr *expr) {
 }
 
 void AstPrinter::visit(const BinaryExpr *binaryExpr) {
-    ss << "(" << binaryExpr->op->lexeme << " ";
+    ss << "(" << binaryExpr->op.lexeme << " ";
     binaryExpr->left->accept(*this);
     ss << " ";
     binaryExpr->right->accept(*this);
@@ -25,7 +25,7 @@ void AstPrinter::visit(const GroupingExpr *groupingExpr) {
 }
 
 void AstPrinter::visit(const UnaryExpr *unaryExpr) {
-    ss << "(" << unaryExpr->op->lexeme;
+    ss << "(" << unaryExpr->op.lexeme;
     unaryExpr->expr->accept(*this);
     ss << ")";
 }

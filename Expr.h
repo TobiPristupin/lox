@@ -27,9 +27,9 @@ class BinaryExpr : public Expr {
 public:
     Expr* left;
     Expr* right;
-    Token* op;
+    Token op;
 
-    BinaryExpr (Expr* left, Expr* right, Token* op);
+    BinaryExpr (Expr* left, Expr* right, Token op);
     void accept(ExprVisitor& visitor) override;
 };
 
@@ -43,10 +43,10 @@ public:
 
 class UnaryExpr : public Expr {
 public:
-    Token* op;
+    Token op;
     Expr* expr;
 
-    UnaryExpr(Token *op, Expr *expr);
+    UnaryExpr(Token op, Expr *expr);
     void accept(ExprVisitor& visitor) override;
 };
 
@@ -56,6 +56,7 @@ public:
 
     LiteralExpr(const lox_literal_t &literal);
     void accept(ExprVisitor& visitor) override;
+
 };
 
 
