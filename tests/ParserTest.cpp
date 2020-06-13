@@ -9,9 +9,9 @@ protected:
     void TearDown() override {}
 
     Token eof = Token(TokenType::END_OF_FILE, "", 1);
-    Token number = Token(TokenType::NUMBER, "123", 2, 1);
+    Token number = Token(TokenType::NUMBER, "123", 2.0, 1);
     Token string = Token(TokenType::STRING, "hello", std::string("hello"), 1);
-    Token trueToken = Token(TokenType::TRUE, "true", true, 1);
+    Token trueToken = Token(TokenType::TRUE, "true", true,1);
     Token falseToken = Token(TokenType::FALSE, "false", false, 1);
     Token nil = Token(TokenType::NIL, "nil", 1);
     Token plus = Token(TokenType::PLUS, "+", 1), minus = Token(TokenType::MINUS, "-", 1);
@@ -26,8 +26,8 @@ TEST_F(ParserTest, parseNumber){
     Parser parser({number, eof});
     LiteralExpr *expr = dynamic_cast<LiteralExpr*>(parser.parse());
     ASSERT_TRUE(expr);
-    ASSERT_TRUE(std::holds_alternative<int>(expr->literal));
-    EXPECT_EQ(std::get<int>(expr->literal), std::get<int>(number.literal));
+    ASSERT_TRUE(std::holds_alternative<double>(expr->literal));
+    EXPECT_EQ(std::get<double>(expr->literal), std::get<double>(number.literal));
 }
 
 TEST_F(ParserTest, parseString){
@@ -77,8 +77,8 @@ TEST_F(ParserTest, parseBinaryExpressions){
     LiteralExpr* right = dynamic_cast<LiteralExpr*>(binary->right);
     ASSERT_TRUE(left);
     ASSERT_TRUE(right);
-    EXPECT_EQ(std::get<int>(left->literal),std::get<int>(number.literal));
-    EXPECT_EQ(std::get<int>(right->literal),std::get<int>(number.literal));
+    EXPECT_EQ(std::get<double>(left->literal),std::get<double>(number.literal));
+    EXPECT_EQ(std::get<double>(right->literal),std::get<double>(number.literal));
 }
 
 TEST_F(ParserTest, obeyPrecedence){
@@ -100,7 +100,7 @@ TEST_F(ParserTest, obeyPrecedence){
 
     LiteralExpr* binaryGreaterRight = dynamic_cast<LiteralExpr*>(binaryGreater->right);
     ASSERT_TRUE(binaryGreaterRight);
-    EXPECT_EQ(std::get<int>(binaryGreaterRight->literal), 2);
+    EXPECT_EQ(std::get<double>(binaryGreaterRight->literal), 2);
 
     BinaryExpr* binaryPlus = dynamic_cast<BinaryExpr*>(binaryGreater->left);
     ASSERT_TRUE(binaryPlus);
@@ -108,7 +108,7 @@ TEST_F(ParserTest, obeyPrecedence){
 
     LiteralExpr* binaryPlusRight = dynamic_cast<LiteralExpr*>(binaryPlus->right);
     ASSERT_TRUE(binaryPlusRight);
-    EXPECT_EQ(std::get<int>(binaryPlusRight->literal), 2);
+    EXPECT_EQ(std::get<double>(binaryPlusRight->literal), 2);
 
     BinaryExpr* binaryMult = dynamic_cast<BinaryExpr*>(binaryPlus->left);
     ASSERT_TRUE(binaryMult);
@@ -130,54 +130,54 @@ TEST_F(ParserTest, obeyParenthesis){
 
 TEST_F(ParserTest, obeyAssociativityMult){
     //2 * 2 * 3 should be parsed as (2*2)*3
-    Token three(TokenType::NUMBER, "3", 3, 1);
-    Parser parser({number, star, number, star, three});
+    Token three(TokenType::NUMBER, "3", 3.0, 1);
+    Parser parser({number, star, number, star, three, eof});
     Expr *expr = parser.parse();
     BinaryExpr *binary = dynamic_cast<BinaryExpr*>(expr);
     ASSERT_TRUE(binary);
     EXPECT_EQ(binary->op.type, star.type);
     LiteralExpr* right = dynamic_cast<LiteralExpr*>(binary->right);
     ASSERT_TRUE(right);
-    EXPECT_EQ(std::get<int>(right->literal), 3);
+    EXPECT_EQ(std::get<double>(right->literal), 3.0);
 }
 
 TEST_F(ParserTest, obeyAssociativityAddition){
     //2 + 2 + 3 should be parsed as (2+2)+3
-    Token three(TokenType::NUMBER, "3", 3, 1);
-    Parser parser({number, plus, number, plus, three});
+    Token three(TokenType::NUMBER, "3", 3.0, 1);
+    Parser parser({number, plus, number, plus, three, eof});
     Expr *expr = parser.parse();
     BinaryExpr *binary = dynamic_cast<BinaryExpr*>(expr);
     ASSERT_TRUE(binary);
     EXPECT_EQ(binary->op.type, plus.type);
     LiteralExpr* right = dynamic_cast<LiteralExpr*>(binary->right);
     ASSERT_TRUE(right);
-    EXPECT_EQ(std::get<int>(right->literal), 3);
+    EXPECT_EQ(std::get<double>(right->literal), 3.0);
 }
 
 TEST_F(ParserTest, obeyAssociativityComparison){
     //2 > 2 > 3 should be parsed as (2>2)>3
-    Token three(TokenType::NUMBER, "3", 3, 1);
-    Parser parser({number, greater, number, greater, three});
+    Token three(TokenType::NUMBER, "3", 3.0, 1);
+    Parser parser({number, greater, number, greater, three, eof});
     Expr *expr = parser.parse();
     BinaryExpr *binary = dynamic_cast<BinaryExpr*>(expr);
     ASSERT_TRUE(binary);
     EXPECT_EQ(binary->op.type, greater.type);
     LiteralExpr* right = dynamic_cast<LiteralExpr*>(binary->right);
     ASSERT_TRUE(right);
-    EXPECT_EQ(std::get<int>(right->literal), 3);
+    EXPECT_EQ(std::get<double>(right->literal), 3.0);
 }
 
 TEST_F(ParserTest, obeyAssociativityEquality){
     //2 == 2 == 3 should be parsed as (2==2)==3
-    Token three(TokenType::NUMBER, "3", 3, 1);
-    Parser parser({number, equalequal, number, equalequal, three});
+    Token three(TokenType::NUMBER, "3", 3.0, 1);
+    Parser parser({number, equalequal, number, equalequal, three, eof});
     Expr *expr = parser.parse();
     BinaryExpr *binary = dynamic_cast<BinaryExpr*>(expr);
     ASSERT_TRUE(binary);
     EXPECT_EQ(binary->op.type, equalequal.type);
     LiteralExpr* right = dynamic_cast<LiteralExpr*>(binary->right);
     ASSERT_TRUE(right);
-    EXPECT_EQ(std::get<int>(right->literal), 3);
+    EXPECT_EQ(std::get<double>(right->literal), 3.0);
 }
 
 

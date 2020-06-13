@@ -6,7 +6,7 @@
 #include <variant>
 #include "TokenType.h"
 
-using lox_literal_t = std::variant<int, float, std::string, bool, std::nullptr_t>;
+using lox_literal_t = std::variant<double, std::string, bool, std::nullptr_t>;
 /*NOTE: There is some ambiguity when using std::variant for type safety because tokens that do not have an intrinsic literal value (IF, VAR...)
  * are created with a literal value of nullptr. However, the token NIL does have an intrinsic literal value (null) and is also
  * created with a literal value of nullptr. So a nullptr literal value means that the token has no intrinsic literal value,
@@ -31,8 +31,7 @@ struct Token {
      * */
     Token(TokenType type, const std::string &lexeme, const std::string &literal, int line);
     Token(TokenType type, const std::string &lexeme, const char* literal, int line);
-    Token(TokenType type, const std::string &lexeme, const int &literal, int line);
-    Token(TokenType type, const std::string &lexeme, const float &literal, int line);
+    Token(TokenType type, const std::string &lexeme, const double &literal, int line);
     Token(TokenType type, const std::string &lexeme, const bool &literal, int line);
     Token(TokenType type, const std::string &lexeme, int line);
 

@@ -177,7 +177,7 @@ std::optional<Token> Scanner::scanNumber() {
         return createToken(NUMBER, std::stof(number));
     }
 
-    return createToken(NUMBER, std::stoi(number));
+    return createToken(NUMBER, std::stof(number));
 }
 
 std::optional<Token> Scanner::scanString() {
@@ -224,11 +224,7 @@ Token Scanner::createToken(TokenType type, const std::string &literal) {
     return Token(type, source.substr(start, (current - start)), literal, line);
 }
 
-Token Scanner::createToken(TokenType type, int literal) {
-    return Token(type, source.substr(start, (current - start)), literal, line);
-}
-
-Token Scanner::createToken(TokenType type, float literal) {
+Token Scanner::createToken(TokenType type, double literal) {
     return Token(type, source.substr(start, (current - start)), literal, line);
 }
 

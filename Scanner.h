@@ -22,8 +22,7 @@ private:
     bool currentCharMatches(char expected);
     char peek();
     Token createToken(TokenType type, const std::string &literal);
-    Token createToken(TokenType type, int literal);
-    Token createToken(TokenType type, float literal);
+    Token createToken(TokenType type, double literal);
     Token createToken(TokenType type, bool literal);
     Token createToken(TokenType type);
     static bool validForIdentifier(char c);

@@ -27,9 +27,9 @@ void Runner::runRepl() {
 void Runner::runCode(const std::string& code) {
     Scanner scanner(code);
     std::vector<Token> tokens = scanner.scanTokens();
-//    for (Token t : tokens){
-//        std::cout << t.to_string() << "\n";
-//    }
+    for (Token t : tokens){
+        std::cout << t.to_string() << "\n";
+    }
 
 
 //    Parser parser(tokens);

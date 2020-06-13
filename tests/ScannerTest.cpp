@@ -79,13 +79,9 @@ TEST_F(ScannerTest, scanNumbers){
         Token token = scanner.scanTokens()[0];
         EXPECT_EQ(token.type, TokenType::NUMBER);
         EXPECT_EQ(token.lexeme, str);
-        if (str.find(".") != std::string::npos){ //contains a decimal
-            ASSERT_TRUE(std::holds_alternative<float>(token.literal));
-            EXPECT_EQ(std::get<float>(token.literal), std::stof(str));
-        } else {
-            ASSERT_TRUE(std::holds_alternative<int>(token.literal));
-            EXPECT_EQ(std::get<int>(token.literal), std::stoi(str));
-        }
+        ASSERT_TRUE(std::holds_alternative<double >(token.literal));
+        EXPECT_EQ(std::get<double>(token.literal), std::stof(str));
+
     }
 }
 
@@ -148,12 +144,12 @@ TEST_F(ScannerTest, createLiteralTokens){
     Scanner scanner3("123");
     Token number = scanner3.scanTokens()[0];
     ASSERT_EQ(number.type, TokenType::NUMBER);
-    EXPECT_EQ(std::get<int>(number.literal), 123);
+    EXPECT_EQ(std::get<double >(number.literal), 123);
 
     Scanner scanner4("0.25");
     Token number2 = scanner4.scanTokens()[0];
     ASSERT_EQ(number2.type, TokenType::NUMBER);
-    EXPECT_EQ(std::get<float>(number2.literal), 0.25);
+    EXPECT_EQ(std::get<double>(number2.literal), 0.25);
 }
 
 TEST_F(ScannerTest, lines){

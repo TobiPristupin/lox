@@ -13,13 +13,13 @@ class AstPrinter : public ExprVisitor {
 
 public:
     std::string print(Expr *expr);
+    lox_literal_t visit(const BinaryExpr *binaryExpr) override;
+    lox_literal_t visit(const GroupingExpr *groupingExpr) override;
+    lox_literal_t visit(const UnaryExpr *unaryExpr) override;
+    lox_literal_t visit(const LiteralExpr *literalExpr) override;
 
 private:
     std::stringstream ss;
-    void visit(const BinaryExpr *binaryExpr) override;
-    void visit(const GroupingExpr *groupingExpr) override;
-    void visit(const UnaryExpr *unaryExpr) override;
-    void visit(const LiteralExpr *literalExpr) override;
 };
 
 

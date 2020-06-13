@@ -10,6 +10,7 @@
 #include <optional>
 #include "Token.h"
 #include "Expr.h"
+#include "LoxException.h"
 
 class Parser {
 public:
@@ -34,7 +35,6 @@ private:
     Token advance();
     Token previous();
     bool isAtEnd();
-
 };
 
 
