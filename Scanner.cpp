@@ -3,7 +3,7 @@
 #include <algorithm>
 #include "Scanner.h"
 #include "TokenType.h"
-#include "LoxException.h"
+#include "LoxError.h"
 
 std::map<std::string, TokenType> Scanner::reservedKeywords = {
         {"and", TokenType::AND},
@@ -136,7 +136,7 @@ std::optional<Token> Scanner::scanNextToken() {
             //unexpected character
             std::string errorMessage = "Unexpected character when scanning : ";
             errorMessage.push_back(c);
-            throw ScanningException(errorMessage, line, pos_in_line);
+            throw LoxScanningError(errorMessage, line, pos_in_line);
     }
 }
 
@@ -182,13 +182,13 @@ std::optional<Token> Scanner::scanNumber() {
 
 std::optional<Token> Scanner::scanString() {
     while (!isAtEnd() && peek() != '"') {
-        if (peek() == '\n') throw ScanningException("Unterminated string", line, pos_in_line);
+        if (peek() == '\n') throw LoxScanningError("Unterminated string", line, pos_in_line);
         advance();
     }
 
 
     if (isAtEnd()) {
-        throw ScanningException("Unterminated string", line, pos_in_line);
+        throw LoxScanningError("Unterminated string", line, pos_in_line);
     }
 
     advance(); //advance closing "

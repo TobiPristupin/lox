@@ -3,12 +3,12 @@
 //
 
 #include "FileReader.h"
-#include "LoxException.h"
+#include "LoxError.h"
 
 FileReader::FileReader(const std::string &filename) : filename(filename) {
     fileStream.open(filename);
     if (!fileStream.is_open()){
-        throw LoxException("File " + filename + " not found");
+        throw LoxError("File " + filename + " not found");
     }
 }
 

@@ -2,7 +2,7 @@
 #include "../Runner.h"
 #include "../FileReader.h"
 #include "../Scanner.h"
-#include "../LoxException.h"
+#include "../LoxError.h"
 
 class ScannerTest : public ::testing::Test {
 protected:
@@ -68,7 +68,7 @@ TEST_F(ScannerTest, scanStrings){
     }
     for (std::string str : invalid){
         Scanner scanner(str);
-        EXPECT_THROW(scanner.scanTokens(), ScanningException);
+        EXPECT_THROW(scanner.scanTokens(), LoxScanningError);
     }
 }
 

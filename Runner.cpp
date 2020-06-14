@@ -2,10 +2,12 @@
 #include <iostream>
 #include "Runner.h"
 #include "Scanner.h"
-#include "LoxException.h"
+#include "LoxError.h"
 #include "Parser.h"
 #include "FileReader.h"
 #include "tools/AstPrinter.h"
+#include "Interpreter.h"
+#include "tools/utils.h"
 
 
 void Runner::runScript(const std::string& filename) {
@@ -20,37 +22,33 @@ void Runner::runRepl() {
         std::cout << "< ";
         std::getline(std::cin, line);
         if (line == "quit()") return;
-        runCode(line);
+        try {
+            runCode(line);
+        } catch (const LoxError &exception){
+            std::cerr << exception.what() << "\n";
+        }
     }
 }
 
 void Runner::runCode(const std::string& code) {
     Scanner scanner(code);
     std::vector<Token> tokens = scanner.scanTokens();
-    for (Token t : tokens){
-        std::cout << t.to_string() << "\n";
+    Parser parser(tokens);
+    Expr *expr = parser.parse();
+    Interpreter interpreter;
+    lox_literal_t result = interpreter.interpret(expr);
+    std::cout << literalToString(result) << "\n";
+
+
+    //    for (Token t : tokens){
+    //        std::cout << t.to_string() << "\n";
+    //    }
+
+    bool error = false;
+    if (error) {
+        throw LoxError("Program terminated with an error");
     }
 
-
-//    Parser parser(tokens);
-//    Expr* expr = parser.parse();
-//    AstPrinter printer;
-//    std::cout << printer.print(expr) << "\n";
-
-
-//    Parser parser(tokens);
-//    Expression* expr = parser.parse();
-//    BinaryExpr* binary = dynamic_cast<BinaryExpr*>(expr);
-//    std::cout << binary->op->to_string() << std::endl;
-//
-//
-//    bool error = false;
-//    if (error){
-//        throw LoxException("Program terminated with an error");
-//    }
-
-//    Token t(TokenType::STRING, "hey", "hey", 1);
-//    std::cout << std::holds_alternative<std::string>(t.literal) << "\n";
 }
 
 void Runner::displayLoxUsage(){

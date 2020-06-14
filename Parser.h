@@ -10,7 +10,7 @@
 #include <optional>
 #include "Token.h"
 #include "Expr.h"
-#include "LoxException.h"
+#include "LoxError.h"
 
 class Parser {
 public:

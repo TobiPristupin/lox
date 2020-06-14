@@ -2,6 +2,7 @@
 #define JLOX_INTERPRETER_H
 
 #include "Expr.h"
+#include "LoxError.h"
 
 class Interpreter : public ExprVisitor {
 public:
@@ -13,16 +14,16 @@ public:
 
 private:
     lox_literal_t result;
-    lox_literal_t minus(lox_literal_t &left, lox_literal_t &right);
-    lox_literal_t plus(lox_literal_t &left, lox_literal_t &right);
-    lox_literal_t star(lox_literal_t &left, lox_literal_t &right);
-    lox_literal_t slash(lox_literal_t &left, lox_literal_t &right);
-    bool greater(lox_literal_t &left, lox_literal_t &right);
-    bool less(lox_literal_t &left, lox_literal_t &right);
-    bool equal(lox_literal_t &left, lox_literal_t &right);
+    lox_literal_t minus(lox_literal_t &left, lox_literal_t &right, const BinaryExpr *expr);
+    lox_literal_t plus(lox_literal_t &left, lox_literal_t &right, const BinaryExpr *expr);
+    lox_literal_t star(lox_literal_t &left, lox_literal_t &right, const BinaryExpr *expr);
+    lox_literal_t slash(lox_literal_t &left, lox_literal_t &right, const BinaryExpr *expr);
+    bool greater(lox_literal_t &left, lox_literal_t &right, const BinaryExpr *expr);
+    bool less(lox_literal_t &left, lox_literal_t &right, const BinaryExpr *expr);
+    bool equal(lox_literal_t &left, lox_literal_t &right, const BinaryExpr *expr);
     bool isTruthy(const lox_literal_t &literal);
     template <typename T>
-    void assertOperandsType(lox_literal_t &left, lox_literal_t &right);
+    void assertOperandsType(lox_literal_t &left, lox_literal_t &right, LoxRuntimeError error);
 };
 
 

@@ -1,7 +1,7 @@
 #include <iostream>
 #include "Parser.h"
 #include "TokenType.h"
-#include "LoxException.h"
+#include "LoxError.h"
 #include "Expr.h"
 
 Parser::Parser(const std::vector<Token> &tokens) : tokens(tokens) {}
@@ -87,7 +87,7 @@ Expr *Parser::primary() {
         return new GroupingExpr(expr);
     }
 
-    throw ParsingException("Expected expression", peek().line);
+    throw LoxParsingError("Expected expression", peek().line);
 }
 
 bool Parser::match(TokenType type) {
@@ -130,7 +130,7 @@ bool Parser::isAtEnd() {
 
 void Parser::expect(TokenType type, std::string error_message){
     if (check(type)) advance();
-    else throw ParsingException(error_message, peek().line);
+    else throw LoxParsingError(error_message, peek().line);
 }
 
 

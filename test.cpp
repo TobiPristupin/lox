@@ -2,7 +2,7 @@
 #include <variant>
 
 int main(){
-   std::cout << (nullptr == nullptr) << "\n";
+   std::cout << ("Abc" > "Hello") << "\n";
 
 
 }

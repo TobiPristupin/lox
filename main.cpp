@@ -1,8 +1,8 @@
-#define DEBUG
+//#define DEBUG
 
 #include <iostream>
 #include "Runner.h"
-#include "LoxException.h"
+#include "LoxError.h"
 
 #ifdef DEBUG
 #include "gtest/gtest.h"
@@ -19,13 +19,13 @@ int main(int argc, char *argv[]) {
     } else if (argc == 2) {
         try {
             Runner::runScript(argv[1]);
-        } catch (const LoxException &exception) {
+        } catch (const LoxError &exception) {
             std::cerr << exception.what() << "\n";
         }
     } else {
         try {
             Runner::runRepl();
-        } catch (const LoxException &exception) {
+        } catch (const LoxError &exception) {
             std::cerr << exception.what() << "\n";
         }
     }
