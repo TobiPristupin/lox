@@ -6,8 +6,33 @@
 
 Parser::Parser(const std::vector<Token> &tokens) : tokens(tokens) {}
 
-Expr *Parser::parse() {
-    return expression();
+std::vector<Stmt *> Parser::parse() {
+    std::vector<Stmt*> statements;
+    while (!isAtEnd()){
+        statements.push_back(statement());
+    }
+
+    return statements;
+}
+
+Stmt *Parser::statement() {
+    if (match(TokenType::PRINT)){
+        return printStatement();
+    }
+
+    return exprStatement();
+}
+
+Stmt *Parser::exprStatement() {
+    Expr* expr = expression();
+    expect(TokenType::SEMICOLON, "Expect ';' after value.");
+    return new ExpressionStmt(expr);
+}
+
+Stmt *Parser::printStatement() {
+    Expr* expr = expression();
+    expect(TokenType::SEMICOLON, "Expect ';' after expression.");
+    return new PrintStmt(expr);
 }
 
 Expr *Parser::expression() {

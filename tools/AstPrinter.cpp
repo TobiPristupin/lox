@@ -32,7 +32,7 @@ lox_literal_t AstPrinter::visit(const UnaryExpr *unaryExpr) {
 
 lox_literal_t AstPrinter::visit(const LiteralExpr *literalExpr) {
     lox_literal_t literal = literalExpr->literal;
-    ss << literalToString(literal);
+    ss << utils::literalToString(literal);
     return nullptr;
 }
 

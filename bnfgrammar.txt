@@ -1,4 +1,10 @@
 GRAMMAR ADJUSTED FOR PRECEDENCE AND ASSOCIATIVITY:
+
+program :== statement* EOF ;
+statement :== exprStatement | printStatement ;
+exprStatement :== expression ";" ;
+printStatement :== "print" expression ";" ;
+
 expression :== equality
 equality :== comparison ( ("==" | "!=") comparison )* ;
 comparison :== addition ( (">" | ">=" | "<" | "<=") addition )* ;
@@ -10,6 +16,12 @@ primary :== NUMBER | STRING | "false" | "true" | "nil" | "(" expression ")" ;
 
 
 SIMPLIFIED GRAMMAR:
+
+program :== statement* EOF ;
+statement :== exprStatement | printStatement ;
+exprStatement :== expression ";" ;
+printStatement :== "print" expression ";" ;
+
 expression :== literal | unary | binary | grouping ;
 literal :== NUMBER | STRING | "true" | "false" | "nil" ;
 unary :== ("-" | "!") expression ;

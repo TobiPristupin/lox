@@ -10,6 +10,8 @@
 #include "tools/utils.h"
 
 
+Interpreter Runner::interpreter = Interpreter();
+
 void Runner::runScript(const std::string& filename) {
     FileReader reader(filename);
     runCode(reader.readAll());
@@ -34,21 +36,17 @@ void Runner::runCode(const std::string& code) {
     Scanner scanner(code);
     std::vector<Token> tokens = scanner.scanTokens();
     Parser parser(tokens);
-    Expr *expr = parser.parse();
-    Interpreter interpreter;
-    lox_literal_t result = interpreter.interpret(expr);
-    std::cout << literalToString(result) << "\n";
-
-
-    //    for (Token t : tokens){
-    //        std::cout << t.to_string() << "\n";
-    //    }
+    std::vector<Stmt*> statements = parser.parse();
+    interpreter.interpret(statements);
 
     bool error = false;
     if (error) {
         throw LoxError("Program terminated with an error");
     }
 
+    //    for (Token t : tokens){
+    //        std::cout << t.to_string() << "\n";
+    //    }
 }
 
 void Runner::displayLoxUsage(){

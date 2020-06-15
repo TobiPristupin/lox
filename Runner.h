@@ -1,6 +1,7 @@
 #ifndef JLOX_RUNNER_H
 #define JLOX_RUNNER_H
 #include <string>
+#include "Interpreter.h"
 
 class Runner {
 public:
@@ -10,6 +11,7 @@ public:
 
 private:
     static void runCode(const std::string& code);
+    static Interpreter interpreter;
 };
 
 #endif

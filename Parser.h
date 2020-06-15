@@ -1,7 +1,3 @@
-//
-// Created by pristu on 4/24/20.
-//
-
 #ifndef JLOX_PARSER_H
 #define JLOX_PARSER_H
 
@@ -11,15 +7,19 @@
 #include "Token.h"
 #include "Expr.h"
 #include "LoxError.h"
+#include "Stmt.h"
 
 class Parser {
 public:
     Parser(const std::vector<Token> &tokens);
-    Expr* parse();
+    std::vector<Stmt*> parse();
 
 private:
     std::vector<Token> tokens;
     int current = 0;
+    Stmt* statement();
+    Stmt* exprStatement();
+    Stmt* printStatement();
     Expr* expression();
     Expr* equality();
     Expr* comparison();

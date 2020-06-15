@@ -1,8 +1,24 @@
 #include <stdexcept>
+#include <iostream>
 #include "Token.h"
 #include "Interpreter.h"
 #include "LoxError.h"
 #include "tools/utils.h"
+
+void Interpreter::interpret(std::vector<Stmt*> statements) {
+    for (Stmt* stmt : statements){
+        stmt->accept(*this);
+    }
+
+}
+void Interpreter::visit(ExpressionStmt *expressionStmt) {
+    interpret(expressionStmt->expr);
+}
+
+void Interpreter::visit(PrintStmt *printStmt) {
+    lox_literal_t result = interpret(printStmt->expr);
+    std::cout << utils::literalToString(result) << "\n";
+}
 
 
 lox_literal_t Interpreter::interpret(Expr *expr) {
@@ -17,9 +33,9 @@ lox_literal_t Interpreter::visit(const BinaryExpr *binaryExpr) {
         case TokenType::SLASH: return slash(left, right, binaryExpr);
         //Following cases apply to both strings and doubles
         case TokenType::GREATER: return greater(left, right, binaryExpr);
-        case TokenType::GREATER_EQUAL: return greater(left, right, binaryExpr) || equal(left, right, binaryExpr);
+        case TokenType::GREATER_EQUAL: return greaterEqual(left, right, binaryExpr);
         case TokenType::LESS: return less(left, right, binaryExpr);
-        case TokenType::LESS_EQUAL: return less(left, right, binaryExpr) || equal(left, right, binaryExpr);
+        case TokenType::LESS_EQUAL: return lessEqual(left, right, binaryExpr);
         case TokenType::BANG_EQUAL: return !equal(left, right, binaryExpr);
         case TokenType::EQUAL_EQUAL: return equal(left, right, binaryExpr);
         case TokenType::PLUS: return plus(left, right, binaryExpr);
@@ -40,7 +56,7 @@ lox_literal_t Interpreter::visit(const UnaryExpr *unaryExpr) {
             if (std::holds_alternative<double>(expr)){
                 return -(std::get<double>(expr));
             } else {
-                throw LoxRuntimeError("Cannot apply unary operator '-' to operand of type " + literalType(expr), unaryExpr->op.line);
+                throw LoxRuntimeError("Cannot apply unary operator '-' to operand of type " + utils::literalType(expr), unaryExpr->op.line);
             }
         case TokenType::BANG:
             return !isTruthy(expr);
@@ -55,13 +71,13 @@ lox_literal_t Interpreter::visit(const LiteralExpr *literalExpr) {
 }
 
 lox_literal_t Interpreter::minus(lox_literal_t &left, lox_literal_t &right, const BinaryExpr *expr) {
-    LoxRuntimeError error("Cannot apply operator '-' to operands of type " + literalType(left) + " and " + literalType(right), expr->op.line);
+    LoxRuntimeError error("Cannot apply operator '-' to operands of type " + utils::literalType(left) + " and " + utils::literalType(right), expr->op.line);
     assertOperandsType<double>(left, right, error);
     return std::get<double>(left) - std::get<double>(right);
 }
 
 lox_literal_t Interpreter::plus(lox_literal_t &left, lox_literal_t &right, const BinaryExpr *expr) {
-    LoxRuntimeError error("Cannot apply operator '+' to operands of type " + literalType(left) + " and " + literalType(right), expr->op.line);
+    LoxRuntimeError error("Cannot apply operator '+' to operands of type " + utils::literalType(left) + " and " + utils::literalType(right), expr->op.line);
     if (std::holds_alternative<std::string>(left)){
         assertOperandsType<std::string>(left, right, error);
         return std::get<std::string>(left) + std::get<std::string>(right);
@@ -72,13 +88,13 @@ lox_literal_t Interpreter::plus(lox_literal_t &left, lox_literal_t &right, const
 }
 
 lox_literal_t Interpreter::star(lox_literal_t &left, lox_literal_t &right, const BinaryExpr *expr) {
-    LoxRuntimeError error("Cannot apply operator '*' to operands of type " + literalType(left) + " and " + literalType(right), expr->op.line);
+    LoxRuntimeError error("Cannot apply operator '*' to operands of type " + utils::literalType(left) + " and " + utils::literalType(right), expr->op.line);
     assertOperandsType<double>(left, right, error);
     return std::get<double>(left) * std::get<double>(right);
 }
 
 lox_literal_t Interpreter::slash(lox_literal_t &left, lox_literal_t &right, const BinaryExpr *expr) {
-    LoxRuntimeError error("Cannot apply operator '/' to operands of type " + literalType(left) + " and " + literalType(right), expr->op.line);
+    LoxRuntimeError error("Cannot apply operator '/' to operands of type " + utils::literalType(left) + " and " + utils::literalType(right), expr->op.line);
     assertOperandsType<double>(left, right, error);
     if (std::get<double>(right) == 0){
         throw LoxRuntimeError("Cannot divide by zero", expr->op.line);
@@ -87,7 +103,7 @@ lox_literal_t Interpreter::slash(lox_literal_t &left, lox_literal_t &right, cons
 }
 
 bool Interpreter::greater(lox_literal_t &left, lox_literal_t &right, const BinaryExpr *expr) {
-    LoxRuntimeError error("Cannot apply operator '>' to operands of type " + literalType(left) + " and " + literalType(right), expr->op.line);
+    LoxRuntimeError error("Cannot apply operator '>' to operands of type " + utils::literalType(left) + " and " + utils::literalType(right), expr->op.line);
     if (std::holds_alternative<std::string>(left)){
         assertOperandsType<std::string>(left, right, error);
         return std::get<std::string>(left) > std::get<std::string>(right);
@@ -97,8 +113,19 @@ bool Interpreter::greater(lox_literal_t &left, lox_literal_t &right, const Binar
     return std::get<double>(left) > std::get<double>(right);
 }
 
+bool Interpreter::greaterEqual(lox_literal_t &left, lox_literal_t &right, const BinaryExpr *expr) {
+    LoxRuntimeError error("Cannot apply operator '>=' to operands of type " + utils::literalType(left) + " and " + utils::literalType(right), expr->op.line);
+    if (std::holds_alternative<std::string>(left)){
+        assertOperandsType<std::string>(left, right, error);
+        return std::get<std::string>(left) >= std::get<std::string>(right);
+    }
+
+    assertOperandsType<double>(left, right, error);
+    return std::get<double>(left) >= std::get<double>(right);
+}
+
 bool Interpreter::less(lox_literal_t &left, lox_literal_t &right, const BinaryExpr *expr) {
-    LoxRuntimeError error("Cannot apply operator '<' to operands of type " + literalType(left) + " and " + literalType(right), expr->op.line);
+    LoxRuntimeError error("Cannot apply operator '<' to operands of type " + utils::literalType(left) + " and " + utils::literalType(right), expr->op.line);
     if (std::holds_alternative<std::string>(left)){
         assertOperandsType<std::string>(left, right, error);
         return std::get<std::string>(left) < std::get<std::string>(right);
@@ -106,6 +133,17 @@ bool Interpreter::less(lox_literal_t &left, lox_literal_t &right, const BinaryEx
 
     assertOperandsType<double>(left, right, error);
     return std::get<double>(left) < std::get<double>(right);
+}
+
+bool Interpreter::lessEqual(lox_literal_t &left, lox_literal_t &right, const BinaryExpr *expr) {
+    LoxRuntimeError error("Cannot apply operator '<=' to operands of type " + utils::literalType(left) + " and " + utils::literalType(right), expr->op.line);
+    if (std::holds_alternative<std::string>(left)){
+        assertOperandsType<std::string>(left, right, error);
+        return std::get<std::string>(left) <= std::get<std::string>(right);
+    }
+
+    assertOperandsType<double>(left, right, error);
+    return std::get<double>(left) <= std::get<double>(right);
 }
 
 bool Interpreter::equal(lox_literal_t &left, lox_literal_t &right, const BinaryExpr *expr) {
@@ -133,3 +171,5 @@ void Interpreter::assertOperandsType(lox_literal_t &left, lox_literal_t &right, 
         throw error;
     }
 }
+
+
