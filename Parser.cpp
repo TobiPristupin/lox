@@ -9,10 +9,22 @@ Parser::Parser(const std::vector<Token> &tokens) : tokens(tokens) {}
 std::vector<Stmt *> Parser::parse() {
     std::vector<Stmt*> statements;
     while (!isAtEnd()){
-        statements.push_back(statement());
+        statements.push_back(declaration());
     }
 
     return statements;
+}
+
+Stmt *Parser::declaration() {
+    if (match(TokenType::VAR)){
+        return varDeclaration();
+    }
+
+    return statement();
+}
+
+Stmt *Parser::varDeclaration() {
+    return nullptr;
 }
 
 Stmt *Parser::statement() {
@@ -112,17 +124,17 @@ Expr *Parser::primary() {
         return new GroupingExpr(expr);
     }
 
-    throw LoxParsingError("Expected expression", peek().line);
+    throw error("Expected expression", peek().line);
 }
 
-bool Parser::match(TokenType type) {
+bool Parser::match(const TokenType &type) {
     std::vector<TokenType> vec = {type};
     return match(vec);
 }
 
 //Checks if the current token type matches one from types AND CONSUMES IT
-bool Parser::match(std::vector<TokenType> &types) {
-    for (TokenType &type : types){
+bool Parser::match(const std::vector<TokenType> &types) {
+    for (const TokenType &type : types){
         if (check(type)){
             advance();
             return true;
@@ -131,7 +143,7 @@ bool Parser::match(std::vector<TokenType> &types) {
     return false;
 }
 
-bool Parser::check(TokenType &type) {
+bool Parser::check(const TokenType &type) {
     if (isAtEnd()) return false;
     return peek().type == type;
 }
@@ -153,9 +165,36 @@ bool Parser::isAtEnd() {
     return peek().type == TokenType::END_OF_FILE;
 }
 
-void Parser::expect(TokenType type, std::string error_message){
+void Parser::expect(const TokenType &type, const std::string &error_message){
     if (check(type)) advance();
-    else throw LoxParsingError(error_message, peek().line);
+    else throw error(error_message, peek().line);
 }
 
+LoxParsingError Parser::error(const std::string &message, int line) {
+    return LoxParsingError(message, line);
+}
+
+void Parser::synchronize() { //synchronizes the parser to the next statement when it finds an error
+    while (!isAtEnd()){
+        if (previous().type == TokenType::SEMICOLON){
+            return; //found new statement
+        }
+
+        switch (peek().type) {
+            case CLASS:
+            case FUN:
+            case VAR:
+            case FOR:
+            case IF:
+            case WHILE:
+            case PRINT:
+            case RETURN:
+                return; //found new statement;
+        }
+
+        advance(); //keep advancing until finding a new statement
+
+    }
+
+}
 

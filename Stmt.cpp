@@ -14,3 +14,10 @@ PrintStmt::PrintStmt(Expr *expr) : expr(expr) {}
 void PrintStmt::accept(StmtVisitor &visitor) {
     visitor.visit(this);
 }
+
+
+VarDeclarationStmt::VarDeclarationStmt(Token &identifier, Expr *expr) : identifier(identifier), expr(expr) {}
+
+void VarDeclarationStmt::accept(StmtVisitor &visitor) {
+    visitor.visit(this);
+}

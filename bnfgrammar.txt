@@ -1,6 +1,9 @@
 GRAMMAR ADJUSTED FOR PRECEDENCE AND ASSOCIATIVITY:
 
-program :== statement* EOF ;
+program :== declaration* EOF ;
+
+variableDeclaration :== "var" IDENTIFIER ("=" expression)? ";" ;
+declaration :== variableDeclaration | statement ;
 statement :== exprStatement | printStatement ;
 exprStatement :== expression ";" ;
 printStatement :== "print" expression ";" ;
@@ -11,13 +14,15 @@ comparison :== addition ( (">" | ">=" | "<" | "<=") addition )* ;
 addition :== multiplication ( ("-" | "+") multiplication )* ;
 multiplication :== unary ( ("/" | "*") unary )* ;
 unary :== ("!" | "-") unary | primary ;
-primary :== NUMBER | STRING | "false" | "true" | "nil" | "(" expression ")" ;
+primary :== NUMBER | STRING | IDENTIFIER | "false" | "true" | "nil" | "(" expression ")" ;
 
 
 
 SIMPLIFIED GRAMMAR:
 
-program :== statement* EOF ;
+program :== declaration* EOF ;
+
+declaration :== variableDeclaration | statement ;
 statement :== exprStatement | printStatement ;
 exprStatement :== expression ";" ;
 printStatement :== "print" expression ";" ;

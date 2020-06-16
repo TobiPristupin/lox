@@ -28,3 +28,10 @@ lox_literal_t LiteralExpr::accept(ExprVisitor& visitor) {
     return visitor.visit(this);
 }
 
+
+VariableExpr::VariableExpr(Token &identifier) : identifier(identifier) {}
+
+lox_literal_t VariableExpr::accept(ExprVisitor &visitor) {
+    return visitor.visit(this);
+}
+

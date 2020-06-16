@@ -5,12 +5,15 @@
 
 class ExpressionStmt;
 class PrintStmt;
+class VarDeclarationStmt;
 
 
 class StmtVisitor {
 public:
     virtual void visit(ExpressionStmt *expressionStmt) = 0;
     virtual void visit(PrintStmt *printStmt) = 0;
+    virtual void visit(VarDeclarationStmt *printStmt) = 0;
+
 };
 
 class Stmt {
@@ -32,6 +35,15 @@ public:
     Expr* expr;
 
     PrintStmt(Expr *expr);
+    void accept(StmtVisitor &visitor) override;
+};
+
+class VarDeclarationStmt : public Stmt {
+public:
+    Token identifier;
+    Expr *expr;
+
+    VarDeclarationStmt(Token &identifier, Expr *expr);
     void accept(StmtVisitor &visitor) override;
 };
 

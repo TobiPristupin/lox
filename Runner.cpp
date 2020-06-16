@@ -27,22 +27,22 @@ void Runner::runRepl() {
         try {
             runCode(line);
         } catch (const LoxError &exception){
-            std::cerr << exception.what() << "\n";
+            std::cout << exception.what() << "\n"; //use cout instead of cerr to avoid the two streams not being synchronized
         }
     }
 }
 
 void Runner::runCode(const std::string& code) {
-    Scanner scanner(code);
-    std::vector<Token> tokens = scanner.scanTokens();
-    Parser parser(tokens);
-    std::vector<Stmt*> statements = parser.parse();
-    interpreter.interpret(statements);
-
-    bool error = false;
-    if (error) {
-        throw LoxError("Program terminated with an error");
-    }
+//    Scanner scanner(code);
+//    std::vector<Token> tokens = scanner.scanTokens();
+//    Parser parser(tokens);
+//    std::vector<Stmt*> statements = parser.parse();
+//    interpreter.interpret(statements);
+//
+//    bool error = false;
+//    if (error) {
+//        throw LoxError("Program terminated with an error");
+//    }
 
     //    for (Token t : tokens){
     //        std::cout << t.to_string() << "\n";

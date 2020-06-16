@@ -7,6 +7,7 @@ class BinaryExpr;
 class GroupingExpr;
 class UnaryExpr;
 class LiteralExpr;
+class VariableExpr;
 
 class ExprVisitor {
 public:
@@ -14,6 +15,7 @@ public:
     virtual lox_literal_t visit(const GroupingExpr* groupingExpr) = 0;
     virtual lox_literal_t visit(const UnaryExpr* unaryExpr) = 0;
     virtual lox_literal_t visit(const LiteralExpr* literalExpr) = 0;
+    virtual lox_literal_t visit(const VariableExpr* variableExpr) = 0;
 };
 
 
@@ -55,6 +57,16 @@ public:
     lox_literal_t literal;
 
     LiteralExpr(const lox_literal_t &literal);
+    lox_literal_t accept(ExprVisitor& visitor) override;
+
+};
+
+
+class VariableExpr : public Expr {
+public:
+    Token identifier;
+
+    VariableExpr(Token &identifier);
     lox_literal_t accept(ExprVisitor& visitor) override;
 
 };

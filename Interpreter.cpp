@@ -9,8 +9,12 @@ void Interpreter::interpret(std::vector<Stmt*> statements) {
     for (Stmt* stmt : statements){
         stmt->accept(*this);
     }
-
 }
+
+void Interpreter::visit(VarDeclarationStmt *printStmt) {
+    
+}
+
 void Interpreter::visit(ExpressionStmt *expressionStmt) {
     interpret(expressionStmt->expr);
 }
@@ -68,6 +72,10 @@ lox_literal_t Interpreter::visit(const UnaryExpr *unaryExpr) {
 
 lox_literal_t Interpreter::visit(const LiteralExpr *literalExpr) {
     return literalExpr->literal;
+}
+
+lox_literal_t Interpreter::visit(const VariableExpr *literalExpr) {
+    return 1.0;
 }
 
 lox_literal_t Interpreter::minus(lox_literal_t &left, lox_literal_t &right, const BinaryExpr *expr) {
@@ -171,5 +179,7 @@ void Interpreter::assertOperandsType(lox_literal_t &left, lox_literal_t &right, 
         throw error;
     }
 }
+
+
 
 

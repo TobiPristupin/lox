@@ -17,6 +17,8 @@ public:
 private:
     std::vector<Token> tokens;
     int current = 0;
+    Stmt* declaration();
+    Stmt *varDeclaration();
     Stmt* statement();
     Stmt* exprStatement();
     Stmt* printStatement();
@@ -27,14 +29,19 @@ private:
     Expr* multiplication();
     Expr* unary();
     Expr* primary();
-    bool match(TokenType type);
-    bool match(std::vector<TokenType> &types);
-    bool check(TokenType &type);
-    void expect(TokenType type, std::string error_message);
+
+    bool match(const TokenType &type);
+    bool match(const std::vector<TokenType> &types);
+    bool check(const TokenType &type);
+    void expect(const TokenType &type, const std::string &error_message);
     Token peek();
     Token advance();
     Token previous();
     bool isAtEnd();
+    LoxParsingError error(const std::string &message, int line) noexcept(false);
+    void synchronize();
+
+
 };
 
 
