@@ -5,13 +5,14 @@
 #include "Expr.h"
 #include "LoxError.h"
 #include "Stmt.h"
+#include "Environment.h"
 
 class Interpreter : public ExprVisitor, public StmtVisitor {
 public:
-    void interpret(std::vector<Stmt*> statements);
+    void interpret(const std::vector<Stmt*> &statements);
     void visit(ExpressionStmt *expressionStmt) override;
     void visit(PrintStmt *printStmt) override;
-    void visit(VarDeclarationStmt *printStmt) override;
+    void visit(VarStmt *varStmt) override;
 
     lox_literal_t interpret(Expr *expr);
     lox_literal_t visit(const BinaryExpr *binaryExpr) override;
@@ -19,9 +20,11 @@ public:
     lox_literal_t visit(const UnaryExpr *unaryExpr) override;
     lox_literal_t visit(const LiteralExpr *literalExpr) override;
     lox_literal_t visit(const VariableExpr *literalExpr) override;
+    lox_literal_t visit(const AssignmentExpr *assignmentExpr) override;
 
 
 private:
+    Environment globalEnv = Environment();
     lox_literal_t minus(lox_literal_t &left, lox_literal_t &right, const BinaryExpr *expr);
     lox_literal_t plus(lox_literal_t &left, lox_literal_t &right, const BinaryExpr *expr);
     lox_literal_t star(lox_literal_t &left, lox_literal_t &right, const BinaryExpr *expr);

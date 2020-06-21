@@ -9,22 +9,39 @@ Parser::Parser(const std::vector<Token> &tokens) : tokens(tokens) {}
 std::vector<Stmt *> Parser::parse() {
     std::vector<Stmt*> statements;
     while (!isAtEnd()){
-        statements.push_back(declaration());
+        Stmt* stmt = declaration();
+        if (stmt != nullptr){ //when a parsing error is encountered, declaration will attempt to synchronize and return nullptr
+            statements.push_back(stmt);
+        }
     }
 
     return statements;
 }
 
 Stmt *Parser::declaration() {
-    if (match(TokenType::VAR)){
-        return varDeclaration();
+    try {
+        if (match(TokenType::VAR)){
+            return varStatement();
+        }
+        return statement();
+    } catch (const LoxParsingError &error) {
+        //Report the exception but don't let it bubble up and stop the program. Instead, synchronize the parser and keep parsing.
+        std::cout << error.what() << "\n";
+        synchronize();
     }
 
-    return statement();
+    return nullptr;
 }
 
-Stmt *Parser::varDeclaration() {
-    return nullptr;
+Stmt *Parser::varStatement() {
+    Token identifier = expect(TokenType::IDENTIFIER, "Expected identifier");
+    Expr* initializer = nullptr;
+    if (match(TokenType::EQUAL)){
+        initializer = expression();
+    }
+
+    expect(TokenType::SEMICOLON, "Expect ';' after variable declaration");
+    return new VarStmt(identifier, initializer);
 }
 
 Stmt *Parser::statement() {
@@ -48,7 +65,23 @@ Stmt *Parser::printStatement() {
 }
 
 Expr *Parser::expression() {
-    return equality();
+    return assignment();
+}
+
+Expr *Parser::assignment() {
+    Expr *expr = equality();
+    if (match(EQUAL)){
+        Token op = previous();
+        Expr* value = assignment();
+        VariableExpr* lvalue = dynamic_cast<VariableExpr*>(expr);
+        if (lvalue){
+            return new AssignmentExpr(lvalue->identifier, value);
+        }
+
+        throw error("Invalid assignment target", op.line);
+    }
+
+    return expr;
 }
 
 Expr *Parser::equality() {
@@ -117,6 +150,7 @@ Expr *Parser::primary() {
     if (match(TokenType::TRUE)) return new LiteralExpr(previous().literal);
     if (match(TokenType::FALSE)) return new LiteralExpr(previous().literal);
     if (match(TokenType::NIL)) return new LiteralExpr(previous().literal);
+    if (match(TokenType::IDENTIFIER)) return new VariableExpr(previous());
 
     if (match(TokenType::LEFT_PAREN)){
         Expr *expr = expression();
@@ -165,8 +199,9 @@ bool Parser::isAtEnd() {
     return peek().type == TokenType::END_OF_FILE;
 }
 
-void Parser::expect(const TokenType &type, const std::string &error_message){
-    if (check(type)) advance();
+//checks if the next token is what's expected. Throws an error if it isn't, returns it if it is.
+Token Parser::expect(const TokenType &type, const std::string &error_message){
+    if (check(type)) return advance();
     else throw error(error_message, peek().line);
 }
 

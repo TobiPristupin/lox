@@ -18,11 +18,13 @@ private:
     std::vector<Token> tokens;
     int current = 0;
     Stmt* declaration();
-    Stmt *varDeclaration();
+    Stmt *varStatement();
     Stmt* statement();
     Stmt* exprStatement();
     Stmt* printStatement();
+
     Expr* expression();
+    Expr* assignment();
     Expr* equality();
     Expr* comparison();
     Expr* addition();
@@ -33,7 +35,7 @@ private:
     bool match(const TokenType &type);
     bool match(const std::vector<TokenType> &types);
     bool check(const TokenType &type);
-    void expect(const TokenType &type, const std::string &error_message);
+    Token expect(const TokenType &type, const std::string &error_message);
     Token peek();
     Token advance();
     Token previous();

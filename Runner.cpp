@@ -33,16 +33,16 @@ void Runner::runRepl() {
 }
 
 void Runner::runCode(const std::string& code) {
-//    Scanner scanner(code);
-//    std::vector<Token> tokens = scanner.scanTokens();
-//    Parser parser(tokens);
-//    std::vector<Stmt*> statements = parser.parse();
-//    interpreter.interpret(statements);
-//
-//    bool error = false;
-//    if (error) {
-//        throw LoxError("Program terminated with an error");
-//    }
+    Scanner scanner(code);
+    std::vector<Token> tokens = scanner.scanTokens();
+    Parser parser(tokens);
+    std::vector<Stmt*> statements = parser.parse();
+    interpreter.interpret(statements);
+
+    bool error = false;
+    if (error) {
+        throw LoxError("Program terminated with an error");
+    }
 
     //    for (Token t : tokens){
     //        std::cout << t.to_string() << "\n";

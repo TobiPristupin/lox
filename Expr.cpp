@@ -29,9 +29,15 @@ lox_literal_t LiteralExpr::accept(ExprVisitor& visitor) {
 }
 
 
-VariableExpr::VariableExpr(Token &identifier) : identifier(identifier) {}
+VariableExpr::VariableExpr(const Token &identifier) : identifier(identifier) {}
 
 lox_literal_t VariableExpr::accept(ExprVisitor &visitor) {
+    return visitor.visit(this);
+}
+
+AssignmentExpr::AssignmentExpr(const Token &identifier, Expr *value) : identifier(identifier), value(value) {}
+
+lox_literal_t AssignmentExpr::accept(ExprVisitor &visitor) {
     return visitor.visit(this);
 }
 

@@ -2,7 +2,10 @@
 #include <variant>
 
 int main(){
-   std::cout << ("Abc" > "Hello") << "\n";
+   std::string *str = nullptr;
+   if (str){
+       std::cout << 1 << "\n";
+   }
 
 
 }

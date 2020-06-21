@@ -16,8 +16,8 @@ void PrintStmt::accept(StmtVisitor &visitor) {
 }
 
 
-VarDeclarationStmt::VarDeclarationStmt(Token &identifier, Expr *expr) : identifier(identifier), expr(expr) {}
+VarStmt::VarStmt(Token &identifier, Expr *expr) : identifier(identifier), expr(expr) {}
 
-void VarDeclarationStmt::accept(StmtVisitor &visitor) {
+void VarStmt::accept(StmtVisitor &visitor) {
     visitor.visit(this);
 }

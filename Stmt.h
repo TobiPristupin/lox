@@ -5,14 +5,14 @@
 
 class ExpressionStmt;
 class PrintStmt;
-class VarDeclarationStmt;
+class VarStmt;
 
 
 class StmtVisitor {
 public:
     virtual void visit(ExpressionStmt *expressionStmt) = 0;
     virtual void visit(PrintStmt *printStmt) = 0;
-    virtual void visit(VarDeclarationStmt *printStmt) = 0;
+    virtual void visit(VarStmt *printStmt) = 0;
 
 };
 
@@ -38,12 +38,12 @@ public:
     void accept(StmtVisitor &visitor) override;
 };
 
-class VarDeclarationStmt : public Stmt {
+class VarStmt : public Stmt {
 public:
     Token identifier;
     Expr *expr;
 
-    VarDeclarationStmt(Token &identifier, Expr *expr);
+    VarStmt(Token &identifier, Expr *expr);
     void accept(StmtVisitor &visitor) override;
 };
 

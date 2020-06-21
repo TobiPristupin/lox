@@ -5,14 +5,26 @@
 #include "LoxError.h"
 #include "tools/utils.h"
 
-void Interpreter::interpret(std::vector<Stmt*> statements) {
+
+void Interpreter::interpret(const std::vector<Stmt*> &statements) {
     for (Stmt* stmt : statements){
         stmt->accept(*this);
     }
 }
 
-void Interpreter::visit(VarDeclarationStmt *printStmt) {
-    
+void Interpreter::visit(VarStmt *varStmt) {
+    lox_literal_t value = nullptr;
+    if (varStmt->expr != nullptr){
+        value = interpret(varStmt->expr);
+    }
+
+    globalEnv.define(varStmt->identifier, value);
+}
+
+lox_literal_t Interpreter::visit(const AssignmentExpr *assignmentExpr) {
+    lox_literal_t value = interpret(assignmentExpr->value);
+    globalEnv.assign(assignmentExpr->identifier, value);
+    return value;
 }
 
 void Interpreter::visit(ExpressionStmt *expressionStmt) {
@@ -74,8 +86,8 @@ lox_literal_t Interpreter::visit(const LiteralExpr *literalExpr) {
     return literalExpr->literal;
 }
 
-lox_literal_t Interpreter::visit(const VariableExpr *literalExpr) {
-    return 1.0;
+lox_literal_t Interpreter::visit(const VariableExpr *variableExpr) {
+    return globalEnv.get(variableExpr->identifier);
 }
 
 lox_literal_t Interpreter::minus(lox_literal_t &left, lox_literal_t &right, const BinaryExpr *expr) {
