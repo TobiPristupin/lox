@@ -13,26 +13,15 @@ int main(int argc, char *argv[]) {
     ::testing::InitGoogleTest(&argc, argv);
 #endif
 
-    int exitCode = 0;
+    int exitCode;
 
     if (argc > 2) {
         Runner::displayLoxUsage();
-        return 1;
+        exitCode = 0;
     } else if (argc == 2) {
-        try {
-            Runner::runScript(argv[1]);
-        } catch (const LoxScanningError &exception) {
-            std::cerr << exception.what() << "\n";
-            exitCode = 65;
-        } catch (const LoxParsingError &exception) {
-            std::cerr << exception.what() << "\n";
-            exitCode = 65;
-        } catch (const LoxRuntimeError &exception) {
-            std::cerr << exception.what() << "\n";
-            exitCode = 70;
-        }
+        exitCode = Runner::runScript(argv[1]);
     } else {
-        Runner::runRepl();
+        exitCode = Runner::runRepl();
     }
 
 #ifdef DEBUG

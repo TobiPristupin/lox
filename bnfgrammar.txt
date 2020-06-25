@@ -5,9 +5,10 @@ program :== declaration* EOF ;
 //statements
 declaration :== varStatement | statement ;
 varStatement :== "var" IDENTIFIER ("=" expression)? ";" ;
-statement :== exprStatement | printStatement ;
+statement :== exprStatement | printStatement | block;
 exprStatement :== expression ";" ;
 printStatement :== "print" expression ";" ;
+block = "{" declaration* "}" ;
 
 //expressions
 expression :== assignment
@@ -28,9 +29,10 @@ program :== declaration* EOF ;
 //statements
 declaration :== varStatement | statement ;
 varStatement :== "var" IDENTIFIER ("=" expression)? ";" ;
-statement :== exprStatement | printStatement ;
+statement :== exprStatement | printStatement | block ;
 exprStatement :== expression ";" ;
 printStatement :== "print" expression ";" ;
+block = "{" declaration* "}" ;
 
 //expressions
 assignment :== IDENTIFIER "=" expression ";" ;

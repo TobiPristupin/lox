@@ -21,3 +21,9 @@ VarStmt::VarStmt(Token &identifier, Expr *expr) : identifier(identifier), expr(e
 void VarStmt::accept(StmtVisitor &visitor) {
     visitor.visit(this);
 }
+
+BlockStmt::BlockStmt(const std::vector<Stmt*> &statements) : statements(statements) {}
+
+void BlockStmt::accept(StmtVisitor &visitor) {
+    visitor.visit(this);
+}

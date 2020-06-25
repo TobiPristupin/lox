@@ -1,13 +1,19 @@
 #include "Environment.h"
 #include "LoxError.h"
 
+Environment::Environment(Environment *parent) : parentEnv(parent) {}
+
 lox_literal_t Environment::get(const Token &identifier) {
     std::string key = identifier.lexeme;
-    if (variables.count(key) == 0){
+    if (variables.count(key) == 1){
+        return variables[key];
+    }
+
+    if (parentEnv == nullptr){ //This is the outermost environment
         throw LoxRuntimeError("Undefined variable '" + key + "'", identifier.line);
     }
 
-    return variables[key];
+    return parentEnv->get(identifier);
 }
 
 void Environment::define(const Token &identifier, const lox_literal_t &val) {
@@ -21,10 +27,19 @@ void Environment::define(const Token &identifier, const lox_literal_t &val) {
 
 void Environment::assign(const Token &identifier, const lox_literal_t &val) {
     std::string key = identifier.lexeme;
-    if (variables.count(key) == 0){
+    if (variables.count(key) == 1){
+        variables[key] = val;
+        return;
+    }
+
+    if (parentEnv == nullptr){ //This is the outermost environment
         throw LoxRuntimeError("Undefined variable '" + key + "'", identifier.line);
     }
 
-    variables[key] = val;
+    parentEnv->assign(identifier, val);
+}
+
+Environment *Environment::parent() {
+    return parentEnv;
 }
 

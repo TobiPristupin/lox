@@ -12,41 +12,59 @@
 
 Interpreter Runner::interpreter = Interpreter();
 
-void Runner::runScript(const std::string& filename) {
+int Runner::runScript(const std::string& filename) {
     FileReader reader(filename);
-    runCode(reader.readAll());
+    return runCode(reader.readAll());
 }
 
-void Runner::runRepl() {
+int Runner::runRepl() {
     std::cout << "Interactive Repl mode. Type \"quit()\" or press CTRL-C to exit\n";
     std::string line;
     while (true){
         std::cout << "< ";
         std::getline(std::cin, line);
-        if (line == "quit()") return;
+        if (line == "quit()") return 0;
         try {
             runCode(line);
         } catch (const LoxError &exception){
-            std::cout << exception.what() << "\n"; //use cout instead of cerr to avoid the two streams not being synchronized
+            std::cout << exception.what() << "\n"; //use cout instead of cerr to avoid the two streams not being synchronized when printing the next '< '
         }
     }
 }
 
-void Runner::runCode(const std::string& code) {
+int Runner::runCode(const std::string& code) {
     Scanner scanner(code);
-    std::vector<Token> tokens = scanner.scanTokens();
-    Parser parser(tokens);
-    std::vector<Stmt*> statements = parser.parse();
-    interpreter.interpret(statements);
+    std::vector<Token> tokens;
 
-    bool error = false;
-    if (error) {
-        throw LoxError("Program terminated with an error");
+    try {
+        tokens = scanner.scanTokens();
+    } catch (const LoxScanningError& exception) {
+        std::cerr << exception.what() << "\n";
+        return 65;
     }
 
-    //    for (Token t : tokens){
-    //        std::cout << t.to_string() << "\n";
-    //    }
+    /*Because the parser can keep parsing after multiple errors instead of exiting at the first error, it has its own
+    exception handling functionality baked into it, and the caller only has to worry about success or not.*/
+    Parser parser(tokens);
+    bool successFlag = false;
+    std::vector<Stmt*> statements = parser.parse(successFlag);
+    if (!successFlag){
+        return 65;
+    }
+
+    try {
+        interpreter.interpret(statements);
+    } catch (const LoxRuntimeError &exception) {
+        std::cerr << exception.what() << "\n";
+        return 70;
+    }
+
+    //This can lead to leaks, eventually I will change it to smart pointers
+    for (Stmt* stmt : statements){
+        delete stmt;
+    }
+
+    return 0;
 }
 
 void Runner::displayLoxUsage(){

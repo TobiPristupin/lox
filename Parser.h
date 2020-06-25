@@ -12,16 +12,21 @@
 class Parser {
 public:
     Parser(const std::vector<Token> &tokens);
-    std::vector<Stmt*> parse();
+    std::vector<Stmt*> parse(bool &successFlag);
+
 
 private:
     std::vector<Token> tokens;
     int current = 0;
+    bool hadError = false;
+
     Stmt* declaration();
     Stmt *varStatement();
     Stmt* statement();
     Stmt* exprStatement();
     Stmt* printStatement();
+
+    std::vector<Stmt*> block();
 
     Expr* expression();
     Expr* assignment();
@@ -42,8 +47,6 @@ private:
     bool isAtEnd();
     LoxParsingError error(const std::string &message, int line) noexcept(false);
     void synchronize();
-
-
 };
 
 

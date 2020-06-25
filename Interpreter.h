@@ -2,6 +2,7 @@
 #define JLOX_INTERPRETER_H
 
 #include <vector>
+#include <stack>
 #include "Expr.h"
 #include "LoxError.h"
 #include "Stmt.h"
@@ -9,10 +10,14 @@
 
 class Interpreter : public ExprVisitor, public StmtVisitor {
 public:
+    Interpreter();
+
     void interpret(const std::vector<Stmt*> &statements);
     void visit(ExpressionStmt *expressionStmt) override;
     void visit(PrintStmt *printStmt) override;
     void visit(VarStmt *varStmt) override;
+
+    void visit(BlockStmt *blockStmt) override;
 
     lox_literal_t interpret(Expr *expr);
     lox_literal_t visit(const BinaryExpr *binaryExpr) override;
@@ -24,7 +29,9 @@ public:
 
 
 private:
-    Environment globalEnv = Environment();
+    std::stack<Environment> environments;
+    void execute(Stmt *pStmt);
+    void executeBlock(const std::vector<Stmt *> &stmts, const Environment &newEnv);
     lox_literal_t minus(lox_literal_t &left, lox_literal_t &right, const BinaryExpr *expr);
     lox_literal_t plus(lox_literal_t &left, lox_literal_t &right, const BinaryExpr *expr);
     lox_literal_t star(lox_literal_t &left, lox_literal_t &right, const BinaryExpr *expr);
@@ -37,6 +44,7 @@ private:
     bool isTruthy(const lox_literal_t &literal);
     template <typename T>
     void assertOperandsType(lox_literal_t &left, lox_literal_t &right, LoxRuntimeError error);
+
 };
 
 

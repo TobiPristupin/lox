@@ -6,18 +6,19 @@
 
 Parser::Parser(const std::vector<Token> &tokens) : tokens(tokens) {}
 
-std::vector<Stmt *> Parser::parse() {
+std::vector<Stmt *> Parser::parse(bool &successFlag) {
+    successFlag = true;
     std::vector<Stmt*> statements;
     while (!isAtEnd()){
         Stmt* stmt = declaration();
-        if (stmt != nullptr){ //when a parsing error is encountered, declaration will attempt to synchronize and return nullptr
-            statements.push_back(stmt);
-        }
+        statements.push_back(stmt);
     }
 
+    successFlag = !hadError;
     return statements;
 }
 
+//If a parsing error is encountered, this function will attempt to synchronize the parser and then return nullptr.
 Stmt *Parser::declaration() {
     try {
         if (match(TokenType::VAR)){
@@ -27,6 +28,7 @@ Stmt *Parser::declaration() {
     } catch (const LoxParsingError &error) {
         //Report the exception but don't let it bubble up and stop the program. Instead, synchronize the parser and keep parsing.
         std::cout << error.what() << "\n";
+        hadError = true;
         synchronize();
     }
 
@@ -45,12 +47,24 @@ Stmt *Parser::varStatement() {
 }
 
 Stmt *Parser::statement() {
-    if (match(TokenType::PRINT)){
-        return printStatement();
-    }
+    if (match(TokenType::PRINT)) return printStatement();
+    if (match(TokenType::LEFT_BRACE)) return new BlockStmt(block());
 
     return exprStatement();
 }
+
+std::vector<Stmt*> Parser::block() {
+    std::vector<Stmt*> statements;
+    while (!isAtEnd() && !check(TokenType::RIGHT_BRACE)){
+        Stmt* stmt = declaration();
+        statements.push_back(stmt);
+    }
+
+    expect(TokenType::RIGHT_BRACE, "Expected } after block");
+    return statements;
+}
+
+
 
 Stmt *Parser::exprStatement() {
     Expr* expr = expression();
@@ -158,6 +172,7 @@ Expr *Parser::primary() {
         return new GroupingExpr(expr);
     }
 
+
     throw error("Expected expression", peek().line);
 }
 
@@ -232,4 +247,5 @@ void Parser::synchronize() { //synchronizes the parser to the next statement whe
     }
 
 }
+
 

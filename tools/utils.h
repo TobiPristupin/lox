@@ -4,8 +4,8 @@
 #include "../Token.h"
 
 namespace utils {
-    std::string literalToString(lox_literal_t &literal);
-    std::string literalType(lox_literal_t &literal);
+    std::string literalToString(const lox_literal_t &literal);
+    std::string literalType(const lox_literal_t &literal);
 }
 
 

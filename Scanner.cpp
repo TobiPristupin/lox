@@ -24,9 +24,7 @@ std::map<std::string, TokenType> Scanner::reservedKeywords = {
         {"while", TokenType::WHILE}
 };
 
-Scanner::Scanner(const std::string &source) {
-    this->source = source;
-}
+Scanner::Scanner(const std::string &source) : source(source) {}
 
 std::vector<Token> Scanner::scanTokens() {
     while (!isAtEnd()) {
@@ -36,12 +34,8 @@ std::vector<Token> Scanner::scanTokens() {
     }
 
     Token eof(TokenType::END_OF_FILE, "", line);
-    tokens.emplace_back(eof);
+    tokens.push_back(eof);
     return tokens;
-}
-
-bool Scanner::isAtEnd() {
-    return current >= source.length();
 }
 
 std::optional<Token> Scanner::scanNextToken() {
@@ -240,4 +234,9 @@ void Scanner::nextLine() {
     line++;
     pos_in_line = 1;
 }
+
+bool Scanner::isAtEnd() {
+    return current >= source.length();
+}
+
 

@@ -3,7 +3,7 @@
 
 namespace utils {
 
-    std::string literalToString(lox_literal_t &literal) {
+    std::string literalToString(const lox_literal_t &literal) {
         if (std::holds_alternative<std::string>(literal)){
             return std::get<std::string>(literal);
         } else if (std::holds_alternative<double>(literal)){
@@ -23,7 +23,7 @@ namespace utils {
         return "";
     }
 
-    std::string literalType(lox_literal_t &literal) {
+    std::string literalType(const lox_literal_t &literal) {
         if (std::holds_alternative<std::string>(literal)){
             return "string";
         } else if (std::holds_alternative<double>(literal)){

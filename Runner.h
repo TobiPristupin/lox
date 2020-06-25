@@ -5,12 +5,13 @@
 
 class Runner {
 public:
-    static void runScript(const std::string& filename);
-    static void runRepl();
+    //returns exit code
+    static int runScript(const std::string& filename);
+    static int runRepl();
     static void displayLoxUsage();
 
 private:
-    static void runCode(const std::string& code);
+    static int runCode(const std::string& code);
     static Interpreter interpreter;
 };
 

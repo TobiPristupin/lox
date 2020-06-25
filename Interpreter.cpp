@@ -5,12 +5,20 @@
 #include "LoxError.h"
 #include "tools/utils.h"
 
+Interpreter::Interpreter() {
+    environments.push(Environment());
+}
 
 void Interpreter::interpret(const std::vector<Stmt*> &statements) {
     for (Stmt* stmt : statements){
-        stmt->accept(*this);
+        execute(stmt);
     }
 }
+
+void Interpreter::execute(Stmt *stmt) {
+    stmt->accept(*this);
+}
+
 
 void Interpreter::visit(VarStmt *varStmt) {
     lox_literal_t value = nullptr;
@@ -18,12 +26,12 @@ void Interpreter::visit(VarStmt *varStmt) {
         value = interpret(varStmt->expr);
     }
 
-    globalEnv.define(varStmt->identifier, value);
+    environments.top().define(varStmt->identifier, value);
 }
 
 lox_literal_t Interpreter::visit(const AssignmentExpr *assignmentExpr) {
     lox_literal_t value = interpret(assignmentExpr->value);
-    globalEnv.assign(assignmentExpr->identifier, value);
+    environments.top().assign(assignmentExpr->identifier, value);
     return value;
 }
 
@@ -87,8 +95,22 @@ lox_literal_t Interpreter::visit(const LiteralExpr *literalExpr) {
 }
 
 lox_literal_t Interpreter::visit(const VariableExpr *variableExpr) {
-    return globalEnv.get(variableExpr->identifier);
+    return environments.top().get(variableExpr->identifier);
 }
+
+void Interpreter::visit(BlockStmt *blockStmt) {
+    Environment newEnv(&(this->environments.top()));
+    executeBlock(blockStmt->statements, newEnv);
+}
+
+void Interpreter::executeBlock(const std::vector<Stmt *> &stmts, const Environment &newEnv) {
+    environments.push(newEnv);
+    for (Stmt* stmt : stmts){
+        execute(stmt);
+    }
+    environments.pop();
+}
+
 
 lox_literal_t Interpreter::minus(lox_literal_t &left, lox_literal_t &right, const BinaryExpr *expr) {
     LoxRuntimeError error("Cannot apply operator '-' to operands of type " + utils::literalType(left) + " and " + utils::literalType(right), expr->op.line);
@@ -191,6 +213,13 @@ void Interpreter::assertOperandsType(lox_literal_t &left, lox_literal_t &right, 
         throw error;
     }
 }
+
+
+
+
+
+
+
 
 
 
