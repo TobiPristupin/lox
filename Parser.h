@@ -12,7 +12,7 @@
 class Parser {
 public:
     Parser(const std::vector<Token> &tokens);
-    std::vector<Stmt*> parse(bool &successFlag);
+    std::vector<UniqueStmtPtr> parse(bool &successFlag);
 
 
 private:
@@ -20,22 +20,22 @@ private:
     int current = 0;
     bool hadError = false;
 
-    Stmt* declaration();
-    Stmt *varStatement();
-    Stmt* statement();
-    Stmt* exprStatement();
-    Stmt* printStatement();
+    UniqueStmtPtr declaration();
+    UniqueStmtPtr varStatement();
+    UniqueStmtPtr statement();
+    UniqueStmtPtr exprStatement();
+    UniqueStmtPtr printStatement();
 
-    std::vector<Stmt*> block();
+    std::vector<UniqueStmtPtr> block();
 
-    Expr* expression();
-    Expr* assignment();
-    Expr* equality();
-    Expr* comparison();
-    Expr* addition();
-    Expr* multiplication();
-    Expr* unary();
-    Expr* primary();
+    UniqueExprPtr expression();
+    UniqueExprPtr assignment();
+    UniqueExprPtr equality();
+    UniqueExprPtr comparison();
+    UniqueExprPtr addition();
+    UniqueExprPtr multiplication();
+    UniqueExprPtr unary();
+    UniqueExprPtr primary();
 
     bool match(const TokenType &type);
     bool match(const std::vector<TokenType> &types);

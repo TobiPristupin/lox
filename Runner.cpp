@@ -47,7 +47,8 @@ int Runner::runCode(const std::string& code) {
     exception handling functionality baked into it, and the caller only has to worry about success or not.*/
     Parser parser(tokens);
     bool successFlag = false;
-    std::vector<Stmt*> statements = parser.parse(successFlag);
+    std::vector<UniqueStmtPtr> statements = parser.parse(successFlag);
+
     if (!successFlag){
         return 65;
     }
@@ -57,11 +58,6 @@ int Runner::runCode(const std::string& code) {
     } catch (const LoxRuntimeError &exception) {
         std::cerr << exception.what() << "\n";
         return 70;
-    }
-
-    //This can lead to leaks, eventually I will change it to smart pointers
-    for (Stmt* stmt : statements){
-        delete stmt;
     }
 
     return 0;

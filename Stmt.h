@@ -4,11 +4,13 @@
 #include <vector>
 #include "Expr.h"
 
+class Stmt;
 class ExpressionStmt;
 class PrintStmt;
 class VarStmt;
 class BlockStmt;
 
+using UniqueStmtPtr = std::unique_ptr<Stmt>;
 
 class StmtVisitor {
 public:
@@ -27,34 +29,34 @@ public:
 
 class ExpressionStmt : public Stmt {
 public:
-    Expr* expr;
+    UniqueExprPtr expr;
 
-    ExpressionStmt(Expr *expr);
+    ExpressionStmt(UniqueExprPtr expr);
     void accept(StmtVisitor &visitor) override;
 };
 
 class PrintStmt : public Stmt {
 public:
-    Expr* expr;
+    UniqueExprPtr expr;
 
-    PrintStmt(Expr *expr);
+    PrintStmt(UniqueExprPtr expr);
     void accept(StmtVisitor &visitor) override;
 };
 
 class VarStmt : public Stmt {
 public:
     Token identifier;
-    Expr *expr;
+    UniqueExprPtr expr;
 
-    VarStmt(Token &identifier, Expr *expr);
+    VarStmt(const Token &identifier, UniqueExprPtr expr);
     void accept(StmtVisitor &visitor) override;
 };
 
 class BlockStmt : public Stmt {
 public:
-    std::vector<Stmt*> statements;
+    std::vector<UniqueStmtPtr> statements;
 
-    BlockStmt(const std::vector<Stmt*> &statements);
+    BlockStmt(std::vector<UniqueStmtPtr> statements);
     void accept(StmtVisitor &visitor) override;
 };
 

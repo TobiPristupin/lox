@@ -30,3 +30,5 @@ int main(int argc, char *argv[]) {
     return exitCode;
 #endif
 }
+
+//TODO: Change every cerr into cout because the streams are not synchronized

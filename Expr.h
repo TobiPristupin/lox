@@ -1,14 +1,19 @@
 #ifndef JLOX_EXPR_H
 #define JLOX_EXPR_H
 
+#include <memory>
 #include "Token.h"
 
+
+class Expr;
 class BinaryExpr;
 class GroupingExpr;
 class UnaryExpr;
 class LiteralExpr;
 class VariableExpr;
 class AssignmentExpr;
+
+using UniqueExprPtr = std::unique_ptr<Expr>;
 
 class ExprVisitor {
 public:
@@ -29,28 +34,28 @@ public:
 
 class BinaryExpr : public Expr {
 public:
-    Expr* left;
-    Expr* right;
+    UniqueExprPtr left;
+    UniqueExprPtr right;
     Token op;
 
-    BinaryExpr (Expr* left, Expr* right, Token op);
+    BinaryExpr (UniqueExprPtr left, UniqueExprPtr right, const Token &op);
     lox_literal_t accept(ExprVisitor& visitor) override;
 };
 
 class GroupingExpr : public Expr {
 public:
-    Expr* expr;
+    UniqueExprPtr expr;
 
-    GroupingExpr(Expr *expr);
+    GroupingExpr(UniqueExprPtr expr);
     lox_literal_t accept(ExprVisitor& visitor) override;
 };
 
 class UnaryExpr : public Expr {
 public:
     Token op;
-    Expr* expr;
+    UniqueExprPtr expr;
 
-    UnaryExpr(Token op, Expr *expr);
+    UnaryExpr(const Token &op, UniqueExprPtr expr);
     lox_literal_t accept(ExprVisitor& visitor) override;
 };
 
@@ -76,9 +81,9 @@ public:
 class AssignmentExpr : public Expr {
 public:
     Token identifier;
-    Expr* value;
+    UniqueExprPtr value;
 
-    AssignmentExpr(const Token &identifier, Expr *value);
+    AssignmentExpr(const Token &identifier, UniqueExprPtr value);
     lox_literal_t accept(ExprVisitor &visitor) override;
 };
 

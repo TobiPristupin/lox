@@ -6,12 +6,12 @@
 
 Parser::Parser(const std::vector<Token> &tokens) : tokens(tokens) {}
 
-std::vector<Stmt *> Parser::parse(bool &successFlag) {
+std::vector<UniqueStmtPtr> Parser::parse(bool &successFlag) {
     successFlag = true;
-    std::vector<Stmt*> statements;
+    std::vector<UniqueStmtPtr> statements;
     while (!isAtEnd()){
-        Stmt* stmt = declaration();
-        statements.push_back(stmt);
+        UniqueStmtPtr stmt = declaration();
+        statements.push_back(std::move(stmt));
     }
 
     successFlag = !hadError;
@@ -19,7 +19,7 @@ std::vector<Stmt *> Parser::parse(bool &successFlag) {
 }
 
 //If a parsing error is encountered, this function will attempt to synchronize the parser and then return nullptr.
-Stmt *Parser::declaration() {
+UniqueStmtPtr Parser::declaration() {
     try {
         if (match(TokenType::VAR)){
             return varStatement();
@@ -35,61 +35,62 @@ Stmt *Parser::declaration() {
     return nullptr;
 }
 
-Stmt *Parser::varStatement() {
+UniqueStmtPtr Parser::varStatement() {
     Token identifier = expect(TokenType::IDENTIFIER, "Expected identifier");
-    Expr* initializer = nullptr;
+    UniqueExprPtr initializer = nullptr;
     if (match(TokenType::EQUAL)){
         initializer = expression();
     }
 
     expect(TokenType::SEMICOLON, "Expect ';' after variable declaration");
-    return new VarStmt(identifier, initializer);
+    return std::make_unique<VarStmt>(identifier, std::move(initializer));
 }
 
-Stmt *Parser::statement() {
+UniqueStmtPtr Parser::statement() {
     if (match(TokenType::PRINT)) return printStatement();
-    if (match(TokenType::LEFT_BRACE)) return new BlockStmt(block());
+    if (match(TokenType::LEFT_BRACE)) return std::make_unique<BlockStmt>(block());
 
     return exprStatement();
 }
 
-std::vector<Stmt*> Parser::block() {
-    std::vector<Stmt*> statements;
+std::vector<UniqueStmtPtr> Parser::block() {
+    std::vector<UniqueStmtPtr> statements;
     while (!isAtEnd() && !check(TokenType::RIGHT_BRACE)){
-        Stmt* stmt = declaration();
-        statements.push_back(stmt);
+        UniqueStmtPtr stmt = declaration();
+        statements.push_back(std::move(stmt));
     }
 
     expect(TokenType::RIGHT_BRACE, "Expected } after block");
     return statements;
 }
 
-
-
-Stmt *Parser::exprStatement() {
-    Expr* expr = expression();
+UniqueStmtPtr Parser::exprStatement() {
+    UniqueExprPtr expr = expression();
     expect(TokenType::SEMICOLON, "Expect ';' after value.");
-    return new ExpressionStmt(expr);
+    return std::make_unique<ExpressionStmt>(std::move(expr));
 }
 
-Stmt *Parser::printStatement() {
-    Expr* expr = expression();
+UniqueStmtPtr Parser::printStatement() {
+    UniqueExprPtr expr = expression();
     expect(TokenType::SEMICOLON, "Expect ';' after expression.");
-    return new PrintStmt(expr);
+    return std::make_unique<PrintStmt>(std::move(expr));
 }
 
-Expr *Parser::expression() {
+UniqueExprPtr Parser::expression() {
     return assignment();
 }
 
-Expr *Parser::assignment() {
-    Expr *expr = equality();
+UniqueExprPtr Parser::assignment() {
+    UniqueExprPtr expr = equality();
     if (match(EQUAL)){
         Token op = previous();
-        Expr* value = assignment();
-        VariableExpr* lvalue = dynamic_cast<VariableExpr*>(expr);
+        UniqueExprPtr rvalue = assignment();
+        VariableExpr* lvalue = dynamic_cast<VariableExpr*>(expr.get());
+
         if (lvalue){
-            return new AssignmentExpr(lvalue->identifier, value);
+            Token identifier = lvalue->identifier;
+            delete lvalue;
+            return std::make_unique<AssignmentExpr>(identifier, std::move(rvalue));
         }
 
         throw error("Invalid assignment target", op.line);
@@ -98,78 +99,78 @@ Expr *Parser::assignment() {
     return expr;
 }
 
-Expr *Parser::equality() {
-    Expr *expr = comparison();
+UniqueExprPtr Parser::equality() {
+    UniqueExprPtr expr = comparison();
     std::vector<TokenType> equalityTokens = {TokenType ::EQUAL_EQUAL, TokenType::BANG_EQUAL};
     while (match(equalityTokens)){
         Token op = previous();
-        Expr* right = comparison();
-        expr = new BinaryExpr(expr, right, op);
+        UniqueExprPtr right = comparison();
+        expr = std::make_unique<BinaryExpr>(std::move(expr), std::move(right), op);
     }
 
     return expr;
 }
 
-Expr *Parser::comparison() {
-    Expr *expr = addition();
+UniqueExprPtr Parser::comparison() {
+    UniqueExprPtr expr = addition();
     std::vector<TokenType> comparisonTokens = {TokenType::GREATER, TokenType::GREATER_EQUAL, TokenType::LESS, TokenType::LESS_EQUAL};
     while (match(comparisonTokens)){
         Token op = previous();
-        Expr* right = addition();
-        expr = new BinaryExpr(expr, right, op);
+        UniqueExprPtr right = addition();
+        expr = std::make_unique<BinaryExpr>(std::move(expr), std::move(right), op);
     }
 
     return expr;
 }
 
-Expr *Parser::addition() {
-    Expr *expr = multiplication();
+UniqueExprPtr Parser::addition() {
+    UniqueExprPtr expr = multiplication();
     std::vector<TokenType> additionTokens = {TokenType::MINUS, TokenType::PLUS};
     while (match(additionTokens)){
         Token op = previous();
-        Expr* right = multiplication();
-        expr = new BinaryExpr(expr, right, op);
+        UniqueExprPtr right = multiplication();
+        expr = std::make_unique<BinaryExpr>(std::move(expr), std::move(right), op);
     }
 
     return expr;
 
 }
 
-Expr *Parser::multiplication() {
-    Expr *expr = unary();
+UniqueExprPtr Parser::multiplication() {
+    UniqueExprPtr expr = unary();
     std::vector<TokenType> multiplicationTokens = {TokenType::SLASH, TokenType::STAR};
     while (match(multiplicationTokens)){
         Token op = previous();
-        Expr* right = unary();
-        expr = new BinaryExpr(expr, right, op);
+        UniqueExprPtr right = unary();
+        expr = std::make_unique<BinaryExpr>(std::move(expr), std::move(right), op);
     }
 
     return expr;
 }
 
-Expr *Parser::unary() {
+UniqueExprPtr Parser::unary() {
     std::vector<TokenType> unaryTokens = {TokenType::MINUS, TokenType::BANG};
     if (match(unaryTokens)){
         Token op = previous();
-        Expr* right = unary();
-        return new UnaryExpr(op, right);
+        UniqueExprPtr right = unary();
+        return std::make_unique<UnaryExpr>(op, std::move(right));
     }
 
     return primary();
 }
 
-Expr *Parser::primary() {
-    if (match(TokenType::NUMBER)) return new LiteralExpr(previous().literal);
-    if (match(TokenType::STRING)) return new LiteralExpr(previous().literal);
-    if (match(TokenType::TRUE)) return new LiteralExpr(previous().literal);
-    if (match(TokenType::FALSE)) return new LiteralExpr(previous().literal);
-    if (match(TokenType::NIL)) return new LiteralExpr(previous().literal);
-    if (match(TokenType::IDENTIFIER)) return new VariableExpr(previous());
+UniqueExprPtr Parser::primary() {
+    if (match(TokenType::NUMBER)) return std::make_unique<LiteralExpr>(previous().literal);
+    if (match(TokenType::STRING)) return std::make_unique<LiteralExpr>(previous().literal);
+    if (match(TokenType::TRUE)) return std::make_unique<LiteralExpr>(previous().literal);
+    if (match(TokenType::FALSE)) return std::make_unique<LiteralExpr>(previous().literal);
+    if (match(TokenType::NIL)) return std::make_unique<LiteralExpr>(previous().literal);
+    if (match(TokenType::IDENTIFIER)) return std::make_unique<VariableExpr>(previous());
 
     if (match(TokenType::LEFT_PAREN)){
-        Expr *expr = expression();
+        UniqueExprPtr expr = expression();
         expect(TokenType::RIGHT_PAREN, "Expect ')' after expression");
-        return new GroupingExpr(expr);
+        return std::make_unique<GroupingExpr>(std::move(expr));
     }
 
 

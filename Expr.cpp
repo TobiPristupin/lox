@@ -3,20 +3,20 @@
 
 Expr::~Expr() = default;
 
-BinaryExpr::BinaryExpr(Expr *left, Expr *right, Token op) : left(left), right(right), op(op) {}
+BinaryExpr::BinaryExpr(UniqueExprPtr left, UniqueExprPtr right, const Token &op) : left(std::move(left)), right(std::move(right)), op(op) {}
 
 lox_literal_t BinaryExpr::accept(ExprVisitor& visitor) {
     return visitor.visit(this);
 }
 
-GroupingExpr::GroupingExpr(Expr *expr) : expr(expr) {}
+GroupingExpr::GroupingExpr(UniqueExprPtr expr) : expr(std::move(expr)) {}
 
 lox_literal_t GroupingExpr::accept(ExprVisitor& visitor) {
     return visitor.visit(this);
 }
 
 
-UnaryExpr::UnaryExpr(Token op, Expr *expr) : op(op), expr(expr) {}
+UnaryExpr::UnaryExpr(const Token &op, UniqueExprPtr expr) : op(op), expr(std::move(expr)) {}
 
 lox_literal_t UnaryExpr::accept(ExprVisitor& visitor) {
     return visitor.visit(this);
@@ -35,7 +35,7 @@ lox_literal_t VariableExpr::accept(ExprVisitor &visitor) {
     return visitor.visit(this);
 }
 
-AssignmentExpr::AssignmentExpr(const Token &identifier, Expr *value) : identifier(identifier), value(value) {}
+AssignmentExpr::AssignmentExpr(const Token &identifier, UniqueExprPtr value) : identifier(identifier), value(std::move(value)) {}
 
 lox_literal_t AssignmentExpr::accept(ExprVisitor &visitor) {
     return visitor.visit(this);

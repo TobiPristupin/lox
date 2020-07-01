@@ -5,48 +5,54 @@
 #include "LoxError.h"
 #include "tools/utils.h"
 
+//TODO: Abstract the environments stack behavior into an environment manager class
+
+
 Interpreter::Interpreter() {
     environments.push(Environment());
 }
 
-void Interpreter::interpret(const std::vector<Stmt*> &statements) {
-    for (Stmt* stmt : statements){
-        execute(stmt);
+
+/*This function unpacks every UniqueStmtPtr into a raw pointer and then executes it. This is because the Interpreter does not
+ * own the dynamically allocated statement objects, it only operates on them, so it should use raw pointers instead of a
+ * smart pointer to signal that it does not own and has no influence over the lifetime of the objects.
+ * */
+void Interpreter::interpret(const std::vector<UniqueStmtPtr> &statements) {
+    for (auto const &stmt : statements){
+        execute(stmt.get());
     }
 }
 
-void Interpreter::execute(Stmt *stmt) {
-    stmt->accept(*this);
+lox_literal_t Interpreter::interpret(Expr *expr) {
+    return expr->accept(*this);
 }
 
+void Interpreter::execute(Stmt* stmt) {
+    stmt->accept(*this);
+}
 
 void Interpreter::visit(VarStmt *varStmt) {
     lox_literal_t value = nullptr;
     if (varStmt->expr != nullptr){
-        value = interpret(varStmt->expr);
+        value = interpret(varStmt->expr.get());
     }
 
     environments.top().define(varStmt->identifier, value);
 }
 
 lox_literal_t Interpreter::visit(const AssignmentExpr *assignmentExpr) {
-    lox_literal_t value = interpret(assignmentExpr->value);
+    lox_literal_t value = interpret(assignmentExpr->value.get());
     environments.top().assign(assignmentExpr->identifier, value);
     return value;
 }
 
 void Interpreter::visit(ExpressionStmt *expressionStmt) {
-    interpret(expressionStmt->expr);
+    interpret(expressionStmt->expr.get());
 }
 
 void Interpreter::visit(PrintStmt *printStmt) {
-    lox_literal_t result = interpret(printStmt->expr);
+    lox_literal_t result = interpret(printStmt->expr.get());
     std::cout << utils::literalToString(result) << "\n";
-}
-
-
-lox_literal_t Interpreter::interpret(Expr *expr) {
-    return expr->accept(*this);
 }
 
 lox_literal_t Interpreter::visit(const BinaryExpr *binaryExpr) {
@@ -70,11 +76,11 @@ lox_literal_t Interpreter::visit(const BinaryExpr *binaryExpr) {
 }
 
 lox_literal_t Interpreter::visit(const GroupingExpr *groupingExpr) {
-    return interpret(groupingExpr->expr);
+    return interpret(groupingExpr->expr.get());
 }
 
 lox_literal_t Interpreter::visit(const UnaryExpr *unaryExpr) {
-    lox_literal_t expr = interpret(unaryExpr->expr);
+    lox_literal_t expr = interpret(unaryExpr->expr.get());
     switch (unaryExpr->op.type){
         case TokenType::MINUS:
             if (std::holds_alternative<double>(expr)){
@@ -103,10 +109,10 @@ void Interpreter::visit(BlockStmt *blockStmt) {
     executeBlock(blockStmt->statements, newEnv);
 }
 
-void Interpreter::executeBlock(const std::vector<Stmt *> &stmts, const Environment &newEnv) {
+void Interpreter::executeBlock(const std::vector<UniqueStmtPtr> &stmts, const Environment &newEnv) {
     environments.push(newEnv);
-    for (Stmt* stmt : stmts){
-        execute(stmt);
+    for (auto const &stmt : stmts){
+        execute(stmt.get());
     }
     environments.pop();
 }
