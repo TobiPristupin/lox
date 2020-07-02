@@ -12,7 +12,7 @@ class Interpreter : public ExprVisitor, public StmtVisitor {
 public:
     Interpreter();
 
-    void interpret(const std::vector<UniqueStmtPtr> &statements);
+    void interpret(const std::vector<UniqueStmtPtr> &statements, bool replMode = false);
 
     void visit(ExpressionStmt *expressionStmt) override;
     void visit(PrintStmt *printStmt) override;
@@ -30,21 +30,22 @@ public:
 private:
     std::stack<Environment> environments;
 
+    void interpretReplMode(Stmt* stmt);
     lox_literal_t interpret(Expr* expr);
     void execute(Stmt* pStmt);
     void executeBlock(const std::vector<UniqueStmtPtr> &stmts, const Environment &newEnv);
-    lox_literal_t minus(lox_literal_t &left, lox_literal_t &right, const BinaryExpr *expr);
-    lox_literal_t plus(lox_literal_t &left, lox_literal_t &right, const BinaryExpr *expr);
-    lox_literal_t star(lox_literal_t &left, lox_literal_t &right, const BinaryExpr *expr);
-    lox_literal_t slash(lox_literal_t &left, lox_literal_t &right, const BinaryExpr *expr);
-    bool greater(lox_literal_t &left, lox_literal_t &right, const BinaryExpr *expr);
-    bool greaterEqual(lox_literal_t &left, lox_literal_t &right, const BinaryExpr *expr);
-    bool less(lox_literal_t &left, lox_literal_t &right, const BinaryExpr *expr);
-    bool lessEqual(lox_literal_t &left, lox_literal_t &right, const BinaryExpr *expr);
-    bool equal(lox_literal_t &left, lox_literal_t &right, const BinaryExpr *expr);
+    lox_literal_t minus(const lox_literal_t &left, const lox_literal_t &right, const BinaryExpr *expr);
+    lox_literal_t plus(const lox_literal_t &left, const lox_literal_t &right, const BinaryExpr *expr);
+    lox_literal_t star(const lox_literal_t &left, const lox_literal_t &right, const BinaryExpr *expr);
+    lox_literal_t slash(const lox_literal_t &left, const lox_literal_t &right, const BinaryExpr *expr);
+    bool greater(const lox_literal_t &left, const lox_literal_t &right, const BinaryExpr *expr);
+    bool greaterEqual(const lox_literal_t &left, const lox_literal_t &right, const BinaryExpr *expr);
+    bool less(const lox_literal_t &left, const lox_literal_t &right, const BinaryExpr *expr);
+    bool lessEqual(const lox_literal_t &left, const lox_literal_t &right, const BinaryExpr *expr);
+    bool equal(const lox_literal_t &left, const lox_literal_t &right, const BinaryExpr *expr);
     bool isTruthy(const lox_literal_t &literal);
     template <typename T>
-    void assertOperandsType(lox_literal_t &left, lox_literal_t &right, LoxRuntimeError error);
+    void assertOperandsType(const lox_literal_t &left, const lox_literal_t &right, const LoxRuntimeError &error);
 
 };
 

@@ -11,7 +11,7 @@ public:
     static void displayLoxUsage();
 
 private:
-    static int runCode(const std::string& code);
+    static int runCode(const std::string& code, bool replMode = false);
     static Interpreter interpreter;
 };
 

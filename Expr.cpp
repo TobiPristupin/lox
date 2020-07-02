@@ -1,3 +1,4 @@
+#include <iostream>
 #include "Expr.h"
 
 
@@ -34,6 +35,7 @@ VariableExpr::VariableExpr(const Token &identifier) : identifier(identifier) {}
 lox_literal_t VariableExpr::accept(ExprVisitor &visitor) {
     return visitor.visit(this);
 }
+
 
 AssignmentExpr::AssignmentExpr(const Token &identifier, UniqueExprPtr value) : identifier(identifier), value(std::move(value)) {}
 

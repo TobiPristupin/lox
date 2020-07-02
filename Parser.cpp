@@ -89,7 +89,6 @@ UniqueExprPtr Parser::assignment() {
 
         if (lvalue){
             Token identifier = lvalue->identifier;
-            delete lvalue;
             return std::make_unique<AssignmentExpr>(identifier, std::move(rvalue));
         }
 

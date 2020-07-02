@@ -1,8 +1,7 @@
-print 122;
-var a = 2;
-print a + 10;
+var a = 1;
 {
-var b = 3;
-print b;
+  var a = a + 2;
+  print a;
 }
 
+print a;

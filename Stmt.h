@@ -24,7 +24,7 @@ public:
 class Stmt {
 public:
     virtual ~Stmt() = 0;
-    virtual void accept(StmtVisitor& visitor) = 0;
+    virtual void accept(StmtVisitor& visitor)= 0;
 };
 
 class ExpressionStmt : public Stmt {

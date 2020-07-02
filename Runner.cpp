@@ -25,14 +25,14 @@ int Runner::runRepl() {
         std::getline(std::cin, line);
         if (line == "quit()") return 0;
         try {
-            runCode(line);
+            runCode(line, true);
         } catch (const LoxError &exception){
             std::cout << exception.what() << "\n"; //use cout instead of cerr to avoid the two streams not being synchronized when printing the next '< '
         }
     }
 }
 
-int Runner::runCode(const std::string& code) {
+int Runner::runCode(const std::string& code, bool replMode) {
     Scanner scanner(code);
     std::vector<Token> tokens;
 
@@ -54,7 +54,7 @@ int Runner::runCode(const std::string& code) {
     }
 
     try {
-        interpreter.interpret(statements);
+        interpreter.interpret(statements, replMode);
     } catch (const LoxRuntimeError &exception) {
         std::cerr << exception.what() << "\n";
         return 70;
