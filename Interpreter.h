@@ -20,6 +20,8 @@ public:
     void visit(BlockStmt *blockStmt) override;
     void visit(IfStmt *ifStmt) override;
 
+    void visit(WhileStmt *whileStmt) override;
+
     lox_literal_t visit(const BinaryExpr *binaryExpr) override;
     lox_literal_t visit(const GroupingExpr *GroupingExpr) override;
     lox_literal_t visit(const UnaryExpr *unaryExpr) override;
@@ -28,6 +30,7 @@ public:
     lox_literal_t visit(const AssignmentExpr *assignmentExpr) override;
     lox_literal_t visit(const OrExpr *orExpr) override;
     lox_literal_t visit(const AndExpr *andExpr) override;
+
 
 
 private:

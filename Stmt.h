@@ -10,6 +10,7 @@ class PrintStmt;
 class VarStmt;
 class BlockStmt;
 class IfStmt;
+class WhileStmt;
 
 using UniqueStmtPtr = std::unique_ptr<Stmt>;
 
@@ -20,6 +21,7 @@ public:
     virtual void visit(VarStmt *varStmt) = 0;
     virtual void visit(BlockStmt *blockStmt) = 0;
     virtual void visit(IfStmt *ifStmt) = 0;
+    virtual void visit(WhileStmt *whileStmt) = 0;
 
 };
 
@@ -80,6 +82,14 @@ public:
     void accept(StmtVisitor &visitor) override;
 };
 
+class WhileStmt : public Stmt {
+public:
+    UniqueExprPtr condition;
+    UniqueStmtPtr body;
+
+    WhileStmt(UniqueExprPtr condition, UniqueStmtPtr body);
+    void accept(StmtVisitor &visitor) override;
+};
 
 
 

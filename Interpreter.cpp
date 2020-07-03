@@ -100,6 +100,15 @@ void Interpreter::visit(IfStmt *ifStmt) {
     }
 }
 
+
+void Interpreter::visit(WhileStmt *whileStmt) {
+    lox_literal_t condition = interpret(whileStmt->condition.get());
+    while (isTruthy(condition)){
+        execute(whileStmt->body.get());
+        condition = interpret(whileStmt->condition.get());
+    }
+}
+
 void Interpreter::visit(BlockStmt *blockStmt) {
     Environment newEnv(&(this->environments.top()));
     executeBlock(blockStmt->statements, newEnv);

@@ -5,10 +5,11 @@ program :== declaration* EOF ;
 //statements
 declaration :== varStatement | statement ;
 varStatement :== "var" IDENTIFIER ("=" expression)? ";" ;
-statement :== exprStatement | ifStatement | printStatement | block;
+statement :== exprStatement | ifStatement | printStatement | whileStmt | block;
 exprStatement :== expression ";" ;
 printStatement :== "print" expression ";" ;
 ifStatement :== "if" "(" expression ")" statement ("elif" "(" expression ")" statement)* ("else" statement)? ;
+whileStmt :== "while" "(" expression ")" statement ;
 block = "{" declaration* "}" ;
 
 //expressions
@@ -32,9 +33,10 @@ program :== declaration* EOF ;
 //statements
 declaration :== varStatement | statement ;
 varStatement :== "var" IDENTIFIER ("=" expression)? ";" ;
-statement :== exprStatement | printStatement | ifStatement | block ;
+statement :== exprStatement | printStatement | ifStatement | whileStmt | block ;
 exprStatement :== expression ";" ;
 printStatement :== "print" expression ";" ;
+whileStmt :== "while" "(" expression ")" statement ;
 ifStatement :== "if" "(" expression ")" statement ("elif" "(" expression ")" statement)* ("else" statement)? ;
 block = "{" declaration* "}" ;
 

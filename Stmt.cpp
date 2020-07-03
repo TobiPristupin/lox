@@ -29,11 +29,17 @@ void BlockStmt::accept(StmtVisitor &visitor) {
 }
 
 
-
 IfBranch::IfBranch(UniqueExprPtr condition, UniqueStmtPtr statement) : condition(std::move(condition)), statement(std::move(statement)) {}
 
 IfStmt::IfStmt(IfBranch mainBranch, std::vector<IfBranch> elifBranches, UniqueStmtPtr elseBranch) : mainBranch(std::move(mainBranch)), elifBranches(std::move(elifBranches)), elseBranch(std::move(elseBranch)){}
 
 void IfStmt::accept(StmtVisitor &visitor) {
+    visitor.visit(this);
+}
+
+
+WhileStmt::WhileStmt(UniqueExprPtr condition, UniqueStmtPtr body) : condition(std::move(condition)), body(std::move(body)) {}
+
+void WhileStmt::accept(StmtVisitor &visitor) {
     visitor.visit(this);
 }

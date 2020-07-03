@@ -50,6 +50,7 @@ UniqueStmtPtr Parser::statement() {
     if (match(TokenType::PRINT)) return printStatement();
     if (match(TokenType::LEFT_BRACE)) return std::make_unique<BlockStmt>(block());
     if (match(TokenType::IF)) return ifStatement();
+    if (match(TokenType::WHILE)) return whileStatement();
 
     return exprStatement();
 }
@@ -102,6 +103,15 @@ UniqueStmtPtr Parser::ifStatement() {
     }
 
     return std::make_unique<IfStmt>(std::move(mainBranch), std::move(elifBranches), std::move(elseStmt));
+}
+
+
+UniqueStmtPtr Parser::whileStatement() {
+    expect(TokenType::LEFT_PAREN, "Expect '(' after while");
+    UniqueExprPtr condition = expression();
+    expect(TokenType::RIGHT_PAREN, "Expect ')' after while condition");
+    UniqueStmtPtr body = statement();
+    return std::make_unique<WhileStmt>(std::move(condition), std::move(body));
 }
 
 UniqueExprPtr Parser::expression() {
@@ -295,5 +305,4 @@ void Parser::synchronize() { //synchronizes the parser to the next statement whe
     }
 
 }
-
 
