@@ -27,3 +27,13 @@ BlockStmt::BlockStmt(std::vector<UniqueStmtPtr> statements) : statements(std::mo
 void BlockStmt::accept(StmtVisitor &visitor) {
     visitor.visit(this);
 }
+
+
+
+IfBranch::IfBranch(UniqueExprPtr condition, UniqueStmtPtr statement) : condition(std::move(condition)), statement(std::move(statement)) {}
+
+IfStmt::IfStmt(IfBranch mainBranch, std::vector<IfBranch> elifBranches, UniqueStmtPtr elseBranch) : mainBranch(std::move(mainBranch)), elifBranches(std::move(elifBranches)), elseBranch(std::move(elseBranch)){}
+
+void IfStmt::accept(StmtVisitor &visitor) {
+    visitor.visit(this);
+}

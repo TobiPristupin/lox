@@ -54,6 +54,8 @@ std::string tokenTypeToString(TokenType type) {
             return "CLASS";
         case TokenType::ELSE:
             return "ELSE";
+        case TokenType::ELIF:
+            return "ELIF";
         case TokenType::FALSE:
             return "FALSE";
         case TokenType::FUN:

@@ -9,6 +9,7 @@ class ExpressionStmt;
 class PrintStmt;
 class VarStmt;
 class BlockStmt;
+class IfStmt;
 
 using UniqueStmtPtr = std::unique_ptr<Stmt>;
 
@@ -18,6 +19,7 @@ public:
     virtual void visit(PrintStmt *printStmt) = 0;
     virtual void visit(VarStmt *varStmt) = 0;
     virtual void visit(BlockStmt *blockStmt) = 0;
+    virtual void visit(IfStmt *ifStmt) = 0;
 
 };
 
@@ -59,6 +61,26 @@ public:
     BlockStmt(std::vector<UniqueStmtPtr> statements);
     void accept(StmtVisitor &visitor) override;
 };
+
+class IfBranch {
+public:
+    UniqueExprPtr condition;
+    UniqueStmtPtr statement;
+
+    IfBranch(UniqueExprPtr condition, UniqueStmtPtr statement);
+};
+
+class IfStmt : public Stmt {
+public:
+    IfBranch mainBranch;
+    std::vector<IfBranch> elifBranches;
+    UniqueStmtPtr elseBranch;
+
+    IfStmt(IfBranch mainBranch, std::vector<IfBranch> elifBranches, UniqueStmtPtr elseBranch);
+    void accept(StmtVisitor &visitor) override;
+};
+
+
 
 
 #endif //JLOX_STMT_H

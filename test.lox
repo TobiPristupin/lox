@@ -1,7 +1,7 @@
-var a = 1;
-{
-  var a = a + 2;
-  print a;
+if (10 > 9){
+print 1;
+} elif (false) {
+print 2;
+} elif (false){
+print 3;
 }
-
-print a;

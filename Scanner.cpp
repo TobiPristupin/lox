@@ -9,6 +9,7 @@ std::map<std::string, TokenType> Scanner::reservedKeywords = {
         {"and", TokenType::AND},
         {"class", TokenType::CLASS},
         {"else", TokenType::ELSE},
+        {"elif", TokenType::ELIF},
         {"false", TokenType::FALSE},
         {"fun", TokenType::FUN},
         {"for", TokenType::FOR},

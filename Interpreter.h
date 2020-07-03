@@ -18,6 +18,7 @@ public:
     void visit(PrintStmt *printStmt) override;
     void visit(VarStmt *varStmt) override;
     void visit(BlockStmt *blockStmt) override;
+    void visit(IfStmt *ifStmt) override;
 
     lox_literal_t visit(const BinaryExpr *binaryExpr) override;
     lox_literal_t visit(const GroupingExpr *GroupingExpr) override;
@@ -34,6 +35,7 @@ private:
     lox_literal_t interpret(Expr* expr);
     void execute(Stmt* pStmt);
     void executeBlock(const std::vector<UniqueStmtPtr> &stmts, const Environment &newEnv);
+
     lox_literal_t minus(const lox_literal_t &left, const lox_literal_t &right, const BinaryExpr *expr);
     lox_literal_t plus(const lox_literal_t &left, const lox_literal_t &right, const BinaryExpr *expr);
     lox_literal_t star(const lox_literal_t &left, const lox_literal_t &right, const BinaryExpr *expr);

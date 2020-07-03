@@ -49,6 +49,7 @@ lox_literal_t Interpreter::interpret(Expr *expr) {
     return expr->accept(*this);
 }
 
+
 void Interpreter::execute(Stmt* stmt) {
     stmt->accept(*this);
 }
@@ -75,6 +76,26 @@ void Interpreter::visit(ExpressionStmt *expressionStmt) {
 void Interpreter::visit(PrintStmt *printStmt) {
     lox_literal_t result = interpret(printStmt->expr.get());
     std::cout << utils::literalToString(result) << "\n";
+}
+
+void Interpreter::visit(IfStmt *ifStmt) {
+    lox_literal_t condition = interpret(ifStmt->mainBranch.condition.get());
+    if (isTruthy(condition)){
+        execute(ifStmt->mainBranch.statement.get());
+        return;
+    }
+
+    for (const IfBranch &branch : ifStmt->elifBranches){
+        lox_literal_t elifCondition = interpret(branch.condition.get());
+        if (isTruthy(elifCondition)){
+            execute(branch.statement.get());
+            return;
+        }
+    }
+
+    if (ifStmt->elseBranch.get() != nullptr){
+        execute(ifStmt->elseBranch.get());
+    }
 }
 
 lox_literal_t Interpreter::visit(const BinaryExpr *binaryExpr) {

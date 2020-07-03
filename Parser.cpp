@@ -49,6 +49,7 @@ UniqueStmtPtr Parser::varStatement() {
 UniqueStmtPtr Parser::statement() {
     if (match(TokenType::PRINT)) return printStatement();
     if (match(TokenType::LEFT_BRACE)) return std::make_unique<BlockStmt>(block());
+    if (match(TokenType::IF)) return ifStatement();
 
     return exprStatement();
 }
@@ -74,6 +75,33 @@ UniqueStmtPtr Parser::printStatement() {
     UniqueExprPtr expr = expression();
     expect(TokenType::SEMICOLON, "Expect ';' after expression.");
     return std::make_unique<PrintStmt>(std::move(expr));
+}
+
+UniqueStmtPtr Parser::ifStatement() {
+    expect(TokenType::LEFT_PAREN, "Expect '(' after if");
+    UniqueExprPtr condition = expression();
+    expect(TokenType::RIGHT_PAREN, "Expect ')' after if condition");
+    UniqueStmtPtr thenStmt = statement();
+    IfBranch mainBranch(std::move(condition), std::move(thenStmt));
+
+
+    std::vector<IfBranch> elifBranches;
+    while (match(TokenType::ELIF)){
+        expect(TokenType::LEFT_PAREN, "Expect '(' after elif");
+        UniqueExprPtr elifCondition = expression();
+        expect(TokenType::RIGHT_PAREN, "Expect ')' after elif condition");
+        UniqueStmtPtr elifStmt = statement();
+        IfBranch elifBranch(std::move(elifCondition), std::move(elifStmt));
+        elifBranches.push_back(std::move(elifBranch));
+    }
+
+
+    UniqueStmtPtr elseStmt = nullptr;
+    if (match(TokenType::ELSE)){
+        elseStmt = statement();
+    }
+
+    return std::make_unique<IfStmt>(std::move(mainBranch), std::move(elifBranches), std::move(elseStmt));
 }
 
 UniqueExprPtr Parser::expression() {

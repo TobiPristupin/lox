@@ -5,9 +5,10 @@ program :== declaration* EOF ;
 //statements
 declaration :== varStatement | statement ;
 varStatement :== "var" IDENTIFIER ("=" expression)? ";" ;
-statement :== exprStatement | printStatement | block;
+statement :== exprStatement | ifStatement | printStatement | block;
 exprStatement :== expression ";" ;
 printStatement :== "print" expression ";" ;
+ifStatement :== "if" "(" expression ")" statement ("elif" "(" expression ")" statement)* ("else" statement)? ;
 block = "{" declaration* "}" ;
 
 //expressions
@@ -29,9 +30,10 @@ program :== declaration* EOF ;
 //statements
 declaration :== varStatement | statement ;
 varStatement :== "var" IDENTIFIER ("=" expression)? ";" ;
-statement :== exprStatement | printStatement | block ;
+statement :== exprStatement | printStatement | ifStatement | block ;
 exprStatement :== expression ";" ;
 printStatement :== "print" expression ";" ;
+ifStatement :== "if" "(" expression ")" statement ("elif" "(" expression ")" statement)* ("else" statement)? ;
 block = "{" declaration* "}" ;
 
 //expressions
@@ -44,3 +46,7 @@ binary :== expression operator expression
 operator:== "==" | "!=" | "<" | "<=" | ">" | ">=" | "+"  | "-"  | "*" | "/" ;
 
 
+
+
+//Extra features added
+* elif statements

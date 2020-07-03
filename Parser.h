@@ -25,6 +25,7 @@ private:
     UniqueStmtPtr statement();
     UniqueStmtPtr exprStatement();
     UniqueStmtPtr printStatement();
+    UniqueStmtPtr ifStatement();
 
     std::vector<UniqueStmtPtr> block();
 
