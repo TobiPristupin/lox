@@ -26,6 +26,8 @@ public:
     lox_literal_t visit(const LiteralExpr *literalExpr) override;
     lox_literal_t visit(const VariableExpr *literalExpr) override;
     lox_literal_t visit(const AssignmentExpr *assignmentExpr) override;
+    lox_literal_t visit(const OrExpr *orExpr) override;
+    lox_literal_t visit(const AndExpr *andExpr) override;
 
 
 private:

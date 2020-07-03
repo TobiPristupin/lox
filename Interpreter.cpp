@@ -54,6 +54,8 @@ void Interpreter::execute(Stmt* stmt) {
     stmt->accept(*this);
 }
 
+//STATEMENTS
+
 void Interpreter::visit(VarStmt *varStmt) {
     lox_literal_t value = nullptr;
     if (varStmt->expr != nullptr){
@@ -97,6 +99,13 @@ void Interpreter::visit(IfStmt *ifStmt) {
         execute(ifStmt->elseBranch.get());
     }
 }
+
+void Interpreter::visit(BlockStmt *blockStmt) {
+    Environment newEnv(&(this->environments.top()));
+    executeBlock(blockStmt->statements, newEnv);
+}
+
+//EXPRESSIONS
 
 lox_literal_t Interpreter::visit(const BinaryExpr *binaryExpr) {
     lox_literal_t left = binaryExpr->left->accept(*this), right = binaryExpr->right->accept(*this);
@@ -147,10 +156,22 @@ lox_literal_t Interpreter::visit(const VariableExpr *variableExpr) {
     return environments.top().get(variableExpr->identifier);
 }
 
-void Interpreter::visit(BlockStmt *blockStmt) {
-    Environment newEnv(&(this->environments.top()));
-    executeBlock(blockStmt->statements, newEnv);
+lox_literal_t Interpreter::visit(const OrExpr *orExpr) {
+    if (isTruthy(interpret(orExpr->left.get()))) {
+        return true;
+    }
+
+    return isTruthy(interpret(orExpr->right.get()));
 }
+
+lox_literal_t Interpreter::visit(const AndExpr *andExpr) {
+    if (!isTruthy(interpret(andExpr->left.get()))){
+        return false;
+    }
+
+    return isTruthy(interpret(andExpr->right.get()));
+}
+
 
 void Interpreter::executeBlock(const std::vector<UniqueStmtPtr> &stmts, const Environment &newEnv) {
     environments.push(newEnv);
@@ -262,11 +283,6 @@ void Interpreter::assertOperandsType(const lox_literal_t &left, const lox_litera
         throw error;
     }
 }
-
-
-
-
-
 
 
 

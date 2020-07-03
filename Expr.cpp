@@ -43,3 +43,15 @@ lox_literal_t AssignmentExpr::accept(ExprVisitor &visitor) {
     return visitor.visit(this);
 }
 
+OrExpr::OrExpr(UniqueExprPtr left, UniqueExprPtr right) : left(std::move(left)), right(std::move(right)) {}
+
+lox_literal_t OrExpr::accept(ExprVisitor &visitor) {
+    return visitor.visit(this);
+}
+
+AndExpr::AndExpr(UniqueExprPtr left, UniqueExprPtr right) : left(std::move(left)), right(std::move(right)) {}
+
+lox_literal_t AndExpr::accept(ExprVisitor &visitor) {
+    return visitor.visit(this);
+}
+

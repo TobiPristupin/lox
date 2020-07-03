@@ -12,6 +12,8 @@ class UnaryExpr;
 class LiteralExpr;
 class VariableExpr;
 class AssignmentExpr;
+class OrExpr;
+class AndExpr;
 
 using UniqueExprPtr = std::unique_ptr<Expr>;
 
@@ -23,6 +25,8 @@ public:
     virtual lox_literal_t visit(const LiteralExpr* literalExpr) = 0;
     virtual lox_literal_t visit(const VariableExpr* variableExpr) = 0;
     virtual lox_literal_t visit(const AssignmentExpr* assignmentExpr) = 0;
+    virtual lox_literal_t visit(const OrExpr* orExpr) = 0;
+    virtual lox_literal_t visit(const AndExpr* andExpr) = 0;
 };
 
 
@@ -84,6 +88,22 @@ public:
     UniqueExprPtr value;
 
     AssignmentExpr(const Token &identifier, UniqueExprPtr value);
+    lox_literal_t accept(ExprVisitor &visitor) override;
+};
+
+class OrExpr : public Expr {
+public:
+    UniqueExprPtr left, right;
+
+    OrExpr(UniqueExprPtr left, UniqueExprPtr right);
+    lox_literal_t accept(ExprVisitor &visitor) override;
+};
+
+class AndExpr : public Expr {
+public:
+    UniqueExprPtr left, right;
+
+    AndExpr(UniqueExprPtr left, UniqueExprPtr right);
     lox_literal_t accept(ExprVisitor &visitor) override;
 };
 

@@ -109,7 +109,7 @@ UniqueExprPtr Parser::expression() {
 }
 
 UniqueExprPtr Parser::assignment() {
-    UniqueExprPtr expr = equality();
+    UniqueExprPtr expr = logicOr();
     if (match(EQUAL)){
         Token op = previous();
         UniqueExprPtr rvalue = assignment();
@@ -121,6 +121,26 @@ UniqueExprPtr Parser::assignment() {
         }
 
         throw error("Invalid assignment target", op.line);
+    }
+
+    return expr;
+}
+
+UniqueExprPtr Parser::logicOr() {
+    UniqueExprPtr expr = logicAnd();
+    while (match(TokenType::OR)){
+        UniqueExprPtr right = logicAnd();
+        expr = std::make_unique<OrExpr>(std::move(expr), std::move(right));
+    }
+
+    return expr;
+}
+
+UniqueExprPtr Parser::logicAnd() {
+    UniqueExprPtr expr = equality();
+    while (match(TokenType::AND)){
+        UniqueExprPtr right = equality();
+        expr = std::make_unique<AndExpr>(std::move(expr), std::move(right));
     }
 
     return expr;

@@ -13,7 +13,9 @@ block = "{" declaration* "}" ;
 
 //expressions
 expression :== assignment
-assignment :== (IDENTIFIER "=" equality ";") | equality;
+assignment :== (IDENTIFIER "=" equality ";") | logic_or;
+logic_or :== logic_and ("or" logic_and)* ;
+logic_and :== equality ("and" equality)* ;
 equality :== comparison ( ("==" | "!=") comparison )* ;
 comparison :== addition ( (">" | ">=" | "<" | "<=") addition )* ;
 addition :== multiplication ( ("-" | "+") multiplication )* ;
@@ -23,7 +25,7 @@ primary :== NUMBER | STRING | IDENTIFIER | "false" | "true" | "nil" | "(" expres
 
 
 
-SIMPLIFIED GRAMMAR:
+SIMPLIFIED GRAMMAR WITH NO PRECEDENCE OR ASSOCIATIVITY:
 
 program :== declaration* EOF ;
 
@@ -43,6 +45,8 @@ literal :== NUMBER | STRING | "true" | "false" | "nil" ;
 unary :== ("-" | "!") expression ;
 grouping :== "(" expression ")" ;
 binary :== expression operator expression
+logic_or :== expression "or" expression
+logic_and :== expression "and" expression
 operator:== "==" | "!=" | "<" | "<=" | ">" | ">=" | "+"  | "-"  | "*" | "/" ;
 
 

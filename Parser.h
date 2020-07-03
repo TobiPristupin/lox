@@ -31,6 +31,8 @@ private:
 
     UniqueExprPtr expression();
     UniqueExprPtr assignment();
+    UniqueExprPtr logicOr();
+    UniqueExprPtr logicAnd();
     UniqueExprPtr equality();
     UniqueExprPtr comparison();
     UniqueExprPtr addition();
