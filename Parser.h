@@ -27,6 +27,8 @@ private:
     UniqueStmtPtr printStatement();
     UniqueStmtPtr ifStatement();
     UniqueStmtPtr whileStatement();
+    UniqueStmtPtr forStatement();
+
 
     std::vector<UniqueStmtPtr> block();
 

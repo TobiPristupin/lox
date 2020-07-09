@@ -51,6 +51,7 @@ UniqueStmtPtr Parser::statement() {
     if (match(TokenType::LEFT_BRACE)) return std::make_unique<BlockStmt>(block());
     if (match(TokenType::IF)) return ifStatement();
     if (match(TokenType::WHILE)) return whileStatement();
+    if (match(TokenType::FOR)) return forStatement();
 
     return exprStatement();
 }
@@ -112,6 +113,58 @@ UniqueStmtPtr Parser::whileStatement() {
     expect(TokenType::RIGHT_PAREN, "Expect ')' after while condition");
     UniqueStmtPtr body = statement();
     return std::make_unique<WhileStmt>(std::move(condition), std::move(body));
+}
+
+UniqueStmtPtr Parser::forStatement() {
+    expect(TokenType::LEFT_PAREN, "Expect '(' after for");
+    UniqueStmtPtr initializer = nullptr;
+    if (match(TokenType::VAR)){
+        initializer = varStatement();
+    } else if (match(TokenType::SEMICOLON)){
+        initializer = nullptr;
+    } else {
+        initializer = exprStatement();
+    }
+
+    UniqueExprPtr condition = nullptr;
+    if (!check(TokenType::SEMICOLON)){
+        condition = expression();
+    }
+    expect(TokenType::SEMICOLON, "Expect ';' after condition");
+
+    UniqueExprPtr increment = nullptr;
+    if (!check(TokenType::RIGHT_PAREN)){
+        increment = expression();
+    }
+
+    expect(TokenType::RIGHT_PAREN, "Expect ')' after for");
+
+    UniqueStmtPtr body = statement();
+    //Desugaring for loop into a while loop
+    //If we have an increment then we can add it at the end of the for loop
+    if (increment){
+        UniqueStmtPtr incrementStmt = std::make_unique<ExpressionStmt>(std::move(increment));
+        std::vector<UniqueStmtPtr> stmts;
+        stmts.push_back(std::move(body));
+        stmts.push_back(std::move(incrementStmt));
+        body = std::make_unique<BlockStmt>(std::move(stmts));
+    }
+
+    //no condition in a for loop is equal to a while(true) loop
+    if (condition == nullptr){
+        condition = std::make_unique<LiteralExpr>(true);
+    }
+    body = std::make_unique<WhileStmt>(std::move(condition), std::move(body));
+
+
+    if (initializer){
+        std::vector<UniqueStmtPtr> stmts;
+        stmts.push_back(std::move(initializer));
+        stmts.push_back(std::move(body));
+        body = std::make_unique<BlockStmt>(std::move(stmts));
+    }
+
+    return body;
 }
 
 UniqueExprPtr Parser::expression() {

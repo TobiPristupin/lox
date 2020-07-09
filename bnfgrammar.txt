@@ -3,13 +3,14 @@ GRAMMAR ADJUSTED FOR PRECEDENCE AND ASSOCIATIVITY:
 program :== declaration* EOF ;
 
 //statements
-declaration :== varStatement | statement ;
-varStatement :== "var" IDENTIFIER ("=" expression)? ";" ;
-statement :== exprStatement | ifStatement | printStatement | whileStmt | block;
+declaration :== varDecl | statement ;
+varDecl :== "var" IDENTIFIER ("=" expression)? ";" ;
+statement :== exprStatement | ifStatement | printStatement | whileStmt | forStmt | block;
 exprStatement :== expression ";" ;
 printStatement :== "print" expression ";" ;
 ifStatement :== "if" "(" expression ")" statement ("elif" "(" expression ")" statement)* ("else" statement)? ;
 whileStmt :== "while" "(" expression ")" statement ;
+forStmt :== "for" "(" (varDecl | exprStatement | ";") expression? ";" expression? ")" statement;
 block = "{" declaration* "}" ;
 
 //expressions
@@ -25,34 +26,5 @@ unary :== ("!" | "-") unary | primary ;
 primary :== NUMBER | STRING | IDENTIFIER | "false" | "true" | "nil" | "(" expression ")" ;
 
 
-
-SIMPLIFIED GRAMMAR WITH NO PRECEDENCE OR ASSOCIATIVITY:
-
-program :== declaration* EOF ;
-
-//statements
-declaration :== varStatement | statement ;
-varStatement :== "var" IDENTIFIER ("=" expression)? ";" ;
-statement :== exprStatement | printStatement | ifStatement | whileStmt | block ;
-exprStatement :== expression ";" ;
-printStatement :== "print" expression ";" ;
-whileStmt :== "while" "(" expression ")" statement ;
-ifStatement :== "if" "(" expression ")" statement ("elif" "(" expression ")" statement)* ("else" statement)? ;
-block = "{" declaration* "}" ;
-
-//expressions
-assignment :== IDENTIFIER "=" expression ";" ;
-expression :== literal | unary | binary | grouping ;
-literal :== NUMBER | STRING | "true" | "false" | "nil" ;
-unary :== ("-" | "!") expression ;
-grouping :== "(" expression ")" ;
-binary :== expression operator expression
-logic_or :== expression "or" expression
-logic_and :== expression "and" expression
-operator:== "==" | "!=" | "<" | "<=" | ">" | ">=" | "+"  | "-"  | "*" | "/" ;
-
-
-
-
-//Extra features added
-* elif statements
+//EXTRA FEATURES ADDED
+* elif

@@ -32,3 +32,4 @@ int main(int argc, char *argv[]) {
 }
 
 //TODO: Change every cerr into cout because the streams are not synchronized
+//TODO: Add support for ++ and -- operator
