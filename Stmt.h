@@ -11,6 +11,7 @@ class VarStmt;
 class BlockStmt;
 class IfStmt;
 class WhileStmt;
+class ForStmt;
 class BreakStmt;
 class ContinueStmt;
 
@@ -26,6 +27,7 @@ public:
     virtual void visit(WhileStmt *whileStmt) = 0;
     virtual void visit(BreakStmt *breakStmt) = 0;
     virtual void visit(ContinueStmt *continueStmt) = 0;
+    virtual void visit(ForStmt *forStmt) = 0;
 
 };
 
@@ -92,6 +94,15 @@ public:
     UniqueStmtPtr body;
 
     WhileStmt(UniqueExprPtr condition, UniqueStmtPtr body);
+    void accept(StmtVisitor &visitor) override;
+};
+
+class ForStmt : public Stmt {
+public:
+    UniqueStmtPtr initializer, body, increment;
+    UniqueExprPtr condition;
+
+    ForStmt(UniqueStmtPtr initializer, UniqueExprPtr condition, UniqueStmtPtr increment, UniqueStmtPtr body);
     void accept(StmtVisitor &visitor) override;
 };
 

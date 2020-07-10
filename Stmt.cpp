@@ -44,6 +44,14 @@ void WhileStmt::accept(StmtVisitor &visitor) {
     visitor.visit(this);
 }
 
+
+ForStmt::ForStmt(UniqueStmtPtr initializer, UniqueExprPtr condition, UniqueStmtPtr increment, UniqueStmtPtr body)
+: initializer(std::move(initializer)), condition(std::move(condition)), increment(std::move(increment)), body(std::move(body)) {}
+
+void ForStmt::accept(StmtVisitor &visitor) {
+    visitor.visit(this);
+}
+
 void BreakStmt::accept(StmtVisitor &visitor) {
     visitor.visit(this);
 }
@@ -51,3 +59,4 @@ void BreakStmt::accept(StmtVisitor &visitor) {
 void ContinueStmt::accept(StmtVisitor &visitor) {
     visitor.visit(this);
 }
+

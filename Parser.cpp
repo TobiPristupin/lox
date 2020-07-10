@@ -138,39 +138,14 @@ UniqueStmtPtr Parser::forStatement() {
     }
     expect(TokenType::SEMICOLON, "Expect ';' after condition");
 
-    UniqueExprPtr increment = nullptr;
+    UniqueStmtPtr increment = nullptr;
     if (!check(TokenType::RIGHT_PAREN)){
-        increment = expression();
+        increment = std::make_unique<ExpressionStmt>(expression());
     }
 
     expect(TokenType::RIGHT_PAREN, "Expect ')' after for");
-
     UniqueStmtPtr body = statement();
-    //Desugaring for loop into a while loop
-    //If we have an increment then we can add it at the end of the while loop
-    if (increment){
-        UniqueStmtPtr incrementStmt = std::make_unique<ExpressionStmt>(std::move(increment));
-        std::vector<UniqueStmtPtr> stmts;
-        stmts.push_back(std::move(body));
-        stmts.push_back(std::move(incrementStmt));
-        body = std::make_unique<BlockStmt>(std::move(stmts));
-    }
-
-    //no condition in a for loop is equal to a while(true) loop
-    if (condition == nullptr){
-        condition = std::make_unique<LiteralExpr>(true);
-    }
-    body = std::make_unique<WhileStmt>(std::move(condition), std::move(body));
-
-
-    if (initializer){
-        std::vector<UniqueStmtPtr> stmts;
-        stmts.push_back(std::move(initializer));
-        stmts.push_back(std::move(body));
-        body = std::make_unique<BlockStmt>(std::move(stmts));
-    }
-
-    return body;
+    return std::make_unique<ForStmt>(std::move(initializer), std::move(condition), std::move(increment), std::move(body));
 }
 
 UniqueStmtPtr Parser::breakStatement() {

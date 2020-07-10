@@ -117,6 +117,28 @@ void Interpreter::visit(WhileStmt *whileStmt) {
     }
 }
 
+void Interpreter::visit(ForStmt *forStmt) {
+    Environment newEnv(&(this->environments.top()));
+    environments.push(newEnv);
+    //TODO: Could I do this with RAII?
+    auto finalAction = gsl::finally([this] {this->environments.pop();}); //Make sure that the new environment is popped even if exceptions are thrown
+
+    if (forStmt->initializer.get() != nullptr) {execute(forStmt->initializer.get());}
+    bool noCondition = forStmt->condition.get() == nullptr;
+
+    while (noCondition || isTruthy(interpret(forStmt->condition.get()))){
+        try {
+            execute(forStmt->body.get());
+        } catch (const BreakException &exception) {
+            return;
+        } catch (const ContinueException &exception) {
+            //empty
+        }
+
+        if (forStmt->increment.get() != nullptr) { execute(forStmt->increment.get()); }
+    }
+}
+
 void Interpreter::visit(BlockStmt *blockStmt) {
     Environment newEnv(&(this->environments.top()));
     executeBlock(blockStmt->statements, newEnv);

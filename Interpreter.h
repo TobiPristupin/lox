@@ -21,7 +21,7 @@ public:
     void visit(IfStmt *ifStmt) override;
     void visit(BreakStmt *breakStmt) override;
     void visit(WhileStmt *whileStmt) override;
-
+    void visit(ForStmt *forStmt) override;
     void visit(ContinueStmt *continueStmt) override;
 
     lox_literal_t visit(const BinaryExpr *binaryExpr) override;
