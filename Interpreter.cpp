@@ -1,6 +1,7 @@
 #include <stdexcept>
 #include <iostream>
 #include <cassert>
+#include <gsl/gsl_util>
 #include "Token.h"
 #include "Interpreter.h"
 #include "LoxError.h"
@@ -100,11 +101,18 @@ void Interpreter::visit(IfStmt *ifStmt) {
     }
 }
 
-
 void Interpreter::visit(WhileStmt *whileStmt) {
     lox_literal_t condition = interpret(whileStmt->condition.get());
     while (isTruthy(condition)){
-        execute(whileStmt->body.get());
+        try {
+            execute(whileStmt->body.get());
+        //We use special exceptions to unwind the stack when a break/continue statement is encountered.
+        } catch (const BreakException &exception) {
+            return;
+        } catch (const ContinueException &exception) {
+            //empty
+        }
+
         condition = interpret(whileStmt->condition.get());
     }
 }
@@ -112,6 +120,14 @@ void Interpreter::visit(WhileStmt *whileStmt) {
 void Interpreter::visit(BlockStmt *blockStmt) {
     Environment newEnv(&(this->environments.top()));
     executeBlock(blockStmt->statements, newEnv);
+}
+
+void Interpreter::visit(BreakStmt *breakStmt) {
+    throw BreakException();
+}
+
+void Interpreter::visit(ContinueStmt *continueStmt) {
+    throw ContinueException();
 }
 
 //EXPRESSIONS
@@ -184,10 +200,11 @@ lox_literal_t Interpreter::visit(const AndExpr *andExpr) {
 
 void Interpreter::executeBlock(const std::vector<UniqueStmtPtr> &stmts, const Environment &newEnv) {
     environments.push(newEnv);
+    auto finalAction = gsl::finally([this] {this->environments.pop();}); //Make sure that the new environment is popped even if exceptions are thrown
+                                                                            //TODO: Could I do this with RAII?
     for (auto const &stmt : stmts){
         execute(stmt.get());
     }
-    environments.pop();
 }
 
 
@@ -292,6 +309,8 @@ void Interpreter::assertOperandsType(const lox_literal_t &left, const lox_litera
         throw error;
     }
 }
+
+
 
 
 

@@ -11,6 +11,8 @@ class VarStmt;
 class BlockStmt;
 class IfStmt;
 class WhileStmt;
+class BreakStmt;
+class ContinueStmt;
 
 using UniqueStmtPtr = std::unique_ptr<Stmt>;
 
@@ -22,6 +24,8 @@ public:
     virtual void visit(BlockStmt *blockStmt) = 0;
     virtual void visit(IfStmt *ifStmt) = 0;
     virtual void visit(WhileStmt *whileStmt) = 0;
+    virtual void visit(BreakStmt *breakStmt) = 0;
+    virtual void visit(ContinueStmt *continueStmt) = 0;
 
 };
 
@@ -90,6 +94,20 @@ public:
     WhileStmt(UniqueExprPtr condition, UniqueStmtPtr body);
     void accept(StmtVisitor &visitor) override;
 };
+
+class BreakStmt : public Stmt {
+public:
+    void accept(StmtVisitor &visitor) override;
+};
+
+class BreakException {};
+
+class ContinueStmt : public Stmt {
+public:
+    void accept(StmtVisitor &visitor) override;
+};
+
+class ContinueException {};
 
 
 

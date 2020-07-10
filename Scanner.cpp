@@ -22,7 +22,9 @@ std::map<std::string, TokenType> Scanner::reservedKeywords = {
         {"this", TokenType::THIS},
         {"true", TokenType::TRUE},
         {"var", TokenType::VAR},
-        {"while", TokenType::WHILE}
+        {"while", TokenType::WHILE},
+        {"break", TokenType::BREAK},
+        {"continue", TokenType::CONTINUE}
 };
 
 Scanner::Scanner(const std::string &source) : source(source) {}

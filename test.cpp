@@ -2,7 +2,6 @@
 #include <variant>
 #include <vector>
 #include <memory>
-#include "Expr.h"
 
 class Res {
 public:
@@ -41,9 +40,11 @@ void tt(const std::vector<std::unique_ptr<Res>> &vec){
 }
 
 int main(){
-    std::vector<std::unique_ptr<Res>> vec;
-    std::unique_ptr<Res> res = std::make_unique<Res>();
-    vec.push_back(std::move(res));
-    tt(vec);
+    int i = 0;
+    while (i < 10){
+        if (i == 5) continue;
+        std::cout << i << "\n";
+        i++;
+    }
 }
 

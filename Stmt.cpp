@@ -43,3 +43,11 @@ WhileStmt::WhileStmt(UniqueExprPtr condition, UniqueStmtPtr body) : condition(st
 void WhileStmt::accept(StmtVisitor &visitor) {
     visitor.visit(this);
 }
+
+void BreakStmt::accept(StmtVisitor &visitor) {
+    visitor.visit(this);
+}
+
+void ContinueStmt::accept(StmtVisitor &visitor) {
+    visitor.visit(this);
+}

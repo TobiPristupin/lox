@@ -1,8 +1,7 @@
-for (var i = 0;i < 10; i = i + 1){
-print i;
-}
+for (var i = 0; i < 10; i = i + 1){
+    if (i == 5){
+        continue;
+    }
+    print i;
 
-var i = 10;
-for (;; i = i + 2){
-print i;
 }

@@ -3,6 +3,7 @@
 #include "TokenType.h"
 #include "LoxError.h"
 #include "Expr.h"
+#include "gsl/gsl"
 
 Parser::Parser(const std::vector<Token> &tokens) : tokens(tokens) {}
 
@@ -52,6 +53,8 @@ UniqueStmtPtr Parser::statement() {
     if (match(TokenType::IF)) return ifStatement();
     if (match(TokenType::WHILE)) return whileStatement();
     if (match(TokenType::FOR)) return forStatement();
+    if (match(TokenType::BREAK)) return breakStatement();
+    if (match(TokenType::CONTINUE)) return continueStatement();
 
     return exprStatement();
 }
@@ -106,8 +109,9 @@ UniqueStmtPtr Parser::ifStatement() {
     return std::make_unique<IfStmt>(std::move(mainBranch), std::move(elifBranches), std::move(elseStmt));
 }
 
-
 UniqueStmtPtr Parser::whileStatement() {
+    loopNestingLevel++;
+    auto finalAction = gsl::finally([this] {this->loopNestingLevel--;}); //Make sure that loopNestingLevel is decreased even if exceptions are thrown
     expect(TokenType::LEFT_PAREN, "Expect '(' after while");
     UniqueExprPtr condition = expression();
     expect(TokenType::RIGHT_PAREN, "Expect ')' after while condition");
@@ -116,6 +120,8 @@ UniqueStmtPtr Parser::whileStatement() {
 }
 
 UniqueStmtPtr Parser::forStatement() {
+    loopNestingLevel++;
+    auto finalAction = gsl::finally([this] {this->loopNestingLevel--;}); //Make sure that loopNestingLevel is decreased even if exceptions are thrown
     expect(TokenType::LEFT_PAREN, "Expect '(' after for");
     UniqueStmtPtr initializer = nullptr;
     if (match(TokenType::VAR)){
@@ -141,7 +147,7 @@ UniqueStmtPtr Parser::forStatement() {
 
     UniqueStmtPtr body = statement();
     //Desugaring for loop into a while loop
-    //If we have an increment then we can add it at the end of the for loop
+    //If we have an increment then we can add it at the end of the while loop
     if (increment){
         UniqueStmtPtr incrementStmt = std::make_unique<ExpressionStmt>(std::move(increment));
         std::vector<UniqueStmtPtr> stmts;
@@ -166,6 +172,23 @@ UniqueStmtPtr Parser::forStatement() {
 
     return body;
 }
+
+UniqueStmtPtr Parser::breakStatement() {
+    expect(TokenType::SEMICOLON, "Expect ';' after break");
+    if (loopNestingLevel == 0){
+        throw error("break statement must be inside of a loop", previous().line);
+    }
+    return std::make_unique<BreakStmt>();
+}
+
+UniqueStmtPtr Parser::continueStatement() {
+    expect(TokenType::SEMICOLON, "Expect ';' after continue");
+    if (loopNestingLevel == 0){
+        throw error("continue statement must be inside of a loop", previous().line);
+    }
+    return std::make_unique<ContinueStmt>();
+}
+
 
 UniqueExprPtr Parser::expression() {
     return assignment();
@@ -358,4 +381,7 @@ void Parser::synchronize() { //synchronizes the parser to the next statement whe
     }
 
 }
+
+
+
 

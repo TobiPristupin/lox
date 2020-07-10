@@ -58,6 +58,10 @@ std::string tokenTypeToString(TokenType type) {
             return "ELIF";
         case TokenType::FALSE:
             return "FALSE";
+        case TokenType::BREAK:
+            return "BREAK";
+        case TokenType::CONTINUE:
+            return "CONTINUE";
         case TokenType::FUN:
             return "FUN";
         case TokenType::FOR:
