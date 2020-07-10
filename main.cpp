@@ -33,5 +33,6 @@ int main(int argc, char *argv[]) {
 
 //TODO: Change every cerr into cout because the streams are not synchronized
 //TODO: Add support for ++ and -- operator
-//TODO: Add printing newlines
-//TODO: Add string concatenation
+//TODO: Add int to str conversion
+//TODO: Add support for concatenating int and str?
+//TODO: Make print into a function with the option to add a newline or not

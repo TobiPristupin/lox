@@ -40,11 +40,5 @@ void tt(const std::vector<std::unique_ptr<Res>> &vec){
 }
 
 int main(){
-    int i = 0;
-    while (i < 10){
-        if (i == 5) continue;
-        std::cout << i << "\n";
-        i++;
-    }
 }
 

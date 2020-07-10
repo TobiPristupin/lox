@@ -77,6 +77,10 @@ UniqueStmtPtr Parser::exprStatement() {
 }
 
 UniqueStmtPtr Parser::printStatement() {
+    if (match(TokenType::SEMICOLON)){
+        return std::make_unique<PrintStmt>(nullptr);
+    }
+
     UniqueExprPtr expr = expression();
     expect(TokenType::SEMICOLON, "Expect ';' after expression.");
     return std::make_unique<PrintStmt>(std::move(expr));

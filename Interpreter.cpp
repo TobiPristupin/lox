@@ -77,8 +77,20 @@ void Interpreter::visit(ExpressionStmt *expressionStmt) {
 }
 
 void Interpreter::visit(PrintStmt *printStmt) {
+    if (printStmt->expr.get() == nullptr){
+        std::cout << "\n";
+        return;
+    }
+
     lox_literal_t result = interpret(printStmt->expr.get());
-    std::cout << utils::literalToString(result) << "\n";
+    std::string s = utils::literalToString(result);
+    if (s == "\\n"){
+        std::cout << "\n";
+    } else if (s == "\\t"){
+        std::cout << "\t";
+    } else {
+        std::cout << s << "\n";
+    }
 }
 
 void Interpreter::visit(IfStmt *ifStmt) {
