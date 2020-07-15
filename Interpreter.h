@@ -16,7 +16,7 @@ public:
 
     void visit(ExpressionStmt *expressionStmt) override;
     void visit(PrintStmt *printStmt) override;
-    void visit(VarStmt *varStmt) override;
+    void visit(VarDeclarationStmt *varDeclarationStmt) override;
     void visit(BlockStmt *blockStmt) override;
     void visit(IfStmt *ifStmt) override;
     void visit(BreakStmt *breakStmt) override;
@@ -24,38 +24,24 @@ public:
     void visit(ForStmt *forStmt) override;
     void visit(ContinueStmt *continueStmt) override;
 
-    lox_literal_t visit(const BinaryExpr *binaryExpr) override;
-    lox_literal_t visit(const GroupingExpr *GroupingExpr) override;
-    lox_literal_t visit(const UnaryExpr *unaryExpr) override;
-    lox_literal_t visit(const LiteralExpr *literalExpr) override;
-    lox_literal_t visit(const VariableExpr *literalExpr) override;
-    lox_literal_t visit(const AssignmentExpr *assignmentExpr) override;
-    lox_literal_t visit(const OrExpr *orExpr) override;
-    lox_literal_t visit(const AndExpr *andExpr) override;
-
+    LoxObject visit(const BinaryExpr *binaryExpr) override;
+    LoxObject visit(const GroupingExpr *GroupingExpr) override;
+    LoxObject visit(const UnaryExpr *unaryExpr) override;
+    LoxObject visit(const LiteralExpr *literalExpr) override;
+    LoxObject visit(const VariableExpr *literalExpr) override;
+    LoxObject visit(const AssignmentExpr *assignmentExpr) override;
+    LoxObject visit(const OrExpr *orExpr) override;
+    LoxObject visit(const AndExpr *andExpr) override;
+    LoxObject visit(const FunctionCallExpr *functionCallExpr) override;
 
 
 private:
     std::stack<Environment> environments;
 
     void interpretReplMode(Stmt* stmt);
-    lox_literal_t interpret(Expr* expr);
+    LoxObject interpret(Expr* expr);
     void execute(Stmt* pStmt);
     void executeBlock(const std::vector<UniqueStmtPtr> &stmts, const Environment &newEnv);
-
-    lox_literal_t minus(const lox_literal_t &left, const lox_literal_t &right, const BinaryExpr *expr);
-    lox_literal_t plus(const lox_literal_t &left, const lox_literal_t &right, const BinaryExpr *expr);
-    lox_literal_t star(const lox_literal_t &left, const lox_literal_t &right, const BinaryExpr *expr);
-    lox_literal_t slash(const lox_literal_t &left, const lox_literal_t &right, const BinaryExpr *expr);
-    bool greater(const lox_literal_t &left, const lox_literal_t &right, const BinaryExpr *expr);
-    bool greaterEqual(const lox_literal_t &left, const lox_literal_t &right, const BinaryExpr *expr);
-    bool less(const lox_literal_t &left, const lox_literal_t &right, const BinaryExpr *expr);
-    bool lessEqual(const lox_literal_t &left, const lox_literal_t &right, const BinaryExpr *expr);
-    bool equal(const lox_literal_t &left, const lox_literal_t &right, const BinaryExpr *expr);
-    bool isTruthy(const lox_literal_t &literal);
-    template <typename T>
-    void assertOperandsType(const lox_literal_t &left, const lox_literal_t &right, const LoxRuntimeError &error);
-
 };
 
 

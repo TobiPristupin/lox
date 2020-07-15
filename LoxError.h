@@ -28,8 +28,9 @@ public:
 
 class LoxRuntimeError : public LoxError {
 public:
-    LoxRuntimeError(const std::string &message, int line);
+    LoxRuntimeError(const std::string &message, int line=-1);
     const char* what() const noexcept override;
 };
+
 
 #endif //JLOX_LOXERROR_H

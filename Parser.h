@@ -31,6 +31,8 @@ private:
     UniqueStmtPtr ifStatement();
     UniqueStmtPtr whileStatement();
     UniqueStmtPtr forStatement();
+    UniqueStmtPtr breakStatement();
+    UniqueStmtPtr continueStatement();
 
 
     std::vector<UniqueStmtPtr> block();
@@ -44,6 +46,8 @@ private:
     UniqueExprPtr addition();
     UniqueExprPtr multiplication();
     UniqueExprPtr unary();
+    UniqueExprPtr functionCall();
+    UniqueExprPtr finishCall(UniqueExprPtr expr);
     UniqueExprPtr primary();
 
     bool match(const TokenType &type);
@@ -58,9 +62,6 @@ private:
     void synchronize();
 
 
-    UniqueStmtPtr breakStatement();
-
-    UniqueStmtPtr continueStatement();
 };
 
 

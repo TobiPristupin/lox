@@ -22,9 +22,14 @@ equality :== comparison ( ("==" | "!=") comparison )* ;
 comparison :== addition ( (">" | ">=" | "<" | "<=") addition )* ;
 addition :== multiplication ( ("-" | "+") multiplication )* ;
 multiplication :== unary ( ("/" | "*") unary )* ;
-unary :== ("!" | "-") unary | primary ;
+unary :== ("!" | "-") unary | call ;
+call :== primary ("(" arguments ")")* ;
+arguments :== expression ( "," expression)* ;
 primary :== NUMBER | STRING | IDENTIFIER | "false" | "true" | "nil" | "(" expression ")" ;
 
 
 //EXTRA FEATURES ADDED
 * elif
+* break and continue
+* print supports "\n" and "\t", empty print prints a newline
+#14(6+1)61 68yeee79y

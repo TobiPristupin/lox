@@ -5,7 +5,6 @@
 #include "Token.h"
 #include "Interpreter.h"
 #include "LoxError.h"
-#include "tools/utils.h"
 
 //TODO: Abstract the environments stack behavior into an environment manager class
 
@@ -34,19 +33,19 @@ void Interpreter::interpret(const std::vector<UniqueStmtPtr> &statements, bool r
 void Interpreter::interpretReplMode(Stmt *stmt) {
     auto* exprStmt = dynamic_cast<ExpressionStmt*>(stmt);
     if (exprStmt){ //If we are dealing with an expression statement such as "1+2" evaluate the expression and output it.
-        lox_literal_t result = interpret(exprStmt->expr.get());
-        if (std::holds_alternative<nullptr_t>(result)){
+        LoxObject result = interpret(exprStmt->expr.get());
+        if (result.isNil()){ //don't output anything if the statement had no output
             return;
         }
 
-        std::cout << utils::literalToString(result) << "\n";
+        std::cout << result << "\n";
     } else {
         execute(stmt);
     }
 }
 
 
-lox_literal_t Interpreter::interpret(Expr *expr) {
+LoxObject Interpreter::interpret(Expr *expr) {
     return expr->accept(*this);
 }
 
@@ -57,17 +56,17 @@ void Interpreter::execute(Stmt* stmt) {
 
 //STATEMENTS
 
-void Interpreter::visit(VarStmt *varStmt) {
-    lox_literal_t value = nullptr;
-    if (varStmt->expr != nullptr){
-        value = interpret(varStmt->expr.get());
+void Interpreter::visit(VarDeclarationStmt *varDeclarationStmt) {
+    if (varDeclarationStmt->expr != nullptr){
+        LoxObject initializer = interpret(varDeclarationStmt->expr.get());
+        environments.top().define(varDeclarationStmt->identifier, initializer);
+    } else {
+        environments.top().define(varDeclarationStmt->identifier, LoxObject());
     }
-
-    environments.top().define(varStmt->identifier, value);
 }
 
-lox_literal_t Interpreter::visit(const AssignmentExpr *assignmentExpr) {
-    lox_literal_t value = interpret(assignmentExpr->value.get());
+LoxObject Interpreter::visit(const AssignmentExpr *assignmentExpr) {
+    LoxObject value = interpret(assignmentExpr->value.get());
     environments.top().assign(assignmentExpr->identifier, value);
     return value;
 }
@@ -82,27 +81,20 @@ void Interpreter::visit(PrintStmt *printStmt) {
         return;
     }
 
-    lox_literal_t result = interpret(printStmt->expr.get());
-    std::string s = utils::literalToString(result);
-    if (s == "\\n"){
-        std::cout << "\n";
-    } else if (s == "\\t"){
-        std::cout << "\t";
-    } else {
-        std::cout << s << "\n";
-    }
+    LoxObject result = interpret(printStmt->expr.get());
+    std::cout << result << "\n";
 }
 
 void Interpreter::visit(IfStmt *ifStmt) {
-    lox_literal_t condition = interpret(ifStmt->mainBranch.condition.get());
-    if (isTruthy(condition)){
+    LoxObject condition = interpret(ifStmt->mainBranch.condition.get());
+    if (condition.truthy()){
         execute(ifStmt->mainBranch.statement.get());
         return;
     }
 
     for (const IfBranch &branch : ifStmt->elifBranches){
-        lox_literal_t elifCondition = interpret(branch.condition.get());
-        if (isTruthy(elifCondition)){
+        LoxObject elifCondition = interpret(branch.condition.get());
+        if (elifCondition.truthy()){
             execute(branch.statement.get());
             return;
         }
@@ -114,8 +106,8 @@ void Interpreter::visit(IfStmt *ifStmt) {
 }
 
 void Interpreter::visit(WhileStmt *whileStmt) {
-    lox_literal_t condition = interpret(whileStmt->condition.get());
-    while (isTruthy(condition)){
+    LoxObject condition = interpret(whileStmt->condition.get());
+    while (condition.truthy()){
         try {
             execute(whileStmt->body.get());
         //We use special exceptions to unwind the stack when a break/continue statement is encountered.
@@ -138,7 +130,7 @@ void Interpreter::visit(ForStmt *forStmt) {
     if (forStmt->initializer.get() != nullptr) {execute(forStmt->initializer.get());}
     bool noCondition = forStmt->condition.get() == nullptr;
 
-    while (noCondition || isTruthy(interpret(forStmt->condition.get()))){
+    while (noCondition || interpret(forStmt->condition.get()).truthy()){
         try {
             execute(forStmt->body.get());
         } catch (const BreakException &exception) {
@@ -166,71 +158,87 @@ void Interpreter::visit(ContinueStmt *continueStmt) {
 
 //EXPRESSIONS
 
-lox_literal_t Interpreter::visit(const BinaryExpr *binaryExpr) {
-    lox_literal_t left = binaryExpr->left->accept(*this), right = binaryExpr->right->accept(*this);
-    switch (binaryExpr->op.type){
-        case TokenType::MINUS: return minus(left, right, binaryExpr);
-        case TokenType::STAR: return star(left, right, binaryExpr);
-        case TokenType::SLASH: return slash(left, right, binaryExpr);
-        //Following cases apply to both strings and doubles
-        case TokenType::GREATER: return greater(left, right, binaryExpr);
-        case TokenType::GREATER_EQUAL: return greaterEqual(left, right, binaryExpr);
-        case TokenType::LESS: return less(left, right, binaryExpr);
-        case TokenType::LESS_EQUAL: return lessEqual(left, right, binaryExpr);
-        case TokenType::BANG_EQUAL: return !equal(left, right, binaryExpr);
-        case TokenType::EQUAL_EQUAL: return equal(left, right, binaryExpr);
-        case TokenType::PLUS: return plus(left, right, binaryExpr);
+LoxObject Interpreter::visit(const BinaryExpr *binaryExpr) {
+    LoxObject left = binaryExpr->left->accept(*this), right = binaryExpr->right->accept(*this);
+    try {
+        switch (binaryExpr->op.type){
+            case TokenType::PLUS: return left + right;
+            case TokenType::MINUS: return left - right;
+            case TokenType::STAR: return left * right;
+            case TokenType::SLASH: return left / right;
+            case TokenType::GREATER: return LoxObject(left > right);
+            case TokenType::GREATER_EQUAL: return LoxObject(left >= right);
+            case TokenType::LESS: return LoxObject(left < right);
+            case TokenType::LESS_EQUAL: return LoxObject(left <= right);
+            case TokenType::BANG_EQUAL: return LoxObject(left != right);
+            case TokenType::EQUAL_EQUAL: return LoxObject(left == right);
+        }
+    } catch (const std::runtime_error &error) {
+        //Binary operations in LoxObject might throw exceptions, but LoxObject has no knowledge of the current line,
+        //so we catch the exception here, create a new one with the same message and with the current line, and throw it again.
+        throw LoxRuntimeError(error.what(), binaryExpr->op.line);;
     }
 
-    //unreachable
-    return nullptr;
+
+    //unreachable but just in case
+    throw std::runtime_error("Invalid binary operand");
 }
 
-lox_literal_t Interpreter::visit(const GroupingExpr *groupingExpr) {
+LoxObject Interpreter::visit(const GroupingExpr *groupingExpr) {
     return interpret(groupingExpr->expr.get());
 }
 
-lox_literal_t Interpreter::visit(const UnaryExpr *unaryExpr) {
-    lox_literal_t expr = interpret(unaryExpr->expr.get());
-    switch (unaryExpr->op.type){
-        case TokenType::MINUS:
-            if (std::holds_alternative<double>(expr)){
-                return -(std::get<double>(expr));
-            } else {
-                throw LoxRuntimeError("Cannot apply unary operator '-' to operand of type " + utils::literalType(expr), unaryExpr->op.line);
-            }
-        case TokenType::BANG:
-            return !isTruthy(expr);
+LoxObject Interpreter::visit(const UnaryExpr *unaryExpr) {
+    LoxObject expr = interpret(unaryExpr->expr.get());
+    try {
+        switch (unaryExpr->op.type){
+            case TokenType::MINUS:
+                return -expr;
+            case TokenType::BANG:
+                return !expr;
+        }
+    } catch (const std::runtime_error &error) {
+        //Binary operations in LoxObject might throw exceptions, but LoxObject has no knowledge of the current line,
+        //so we catch the exception here, create a new one with the same message and with the current line, and throw it again.
+        throw LoxRuntimeError(error.what(), unaryExpr->op.line);
     }
 
+
     //unreachable
-    return nullptr;
+    throw std::runtime_error("Invalid unary operand");
 }
 
-lox_literal_t Interpreter::visit(const LiteralExpr *literalExpr) {
+LoxObject Interpreter::visit(const LiteralExpr *literalExpr) {
     return literalExpr->literal;
 }
 
-lox_literal_t Interpreter::visit(const VariableExpr *variableExpr) {
+LoxObject Interpreter::visit(const VariableExpr *variableExpr) {
     return environments.top().get(variableExpr->identifier);
 }
 
-lox_literal_t Interpreter::visit(const OrExpr *orExpr) {
-    if (isTruthy(interpret(orExpr->left.get()))) {
-        return true;
+LoxObject Interpreter::visit(const OrExpr *orExpr) {
+    LoxObject lhs = interpret(orExpr->left.get());
+    if (lhs.truthy()){
+        return LoxObject(true);
     }
 
-    return isTruthy(interpret(orExpr->right.get()));
+    LoxObject rhs = interpret(orExpr->right.get());
+    return LoxObject(rhs.truthy());
 }
 
-lox_literal_t Interpreter::visit(const AndExpr *andExpr) {
-    if (!isTruthy(interpret(andExpr->left.get()))){
-        return false;
+LoxObject Interpreter::visit(const AndExpr *andExpr) {
+    LoxObject lhs = interpret(andExpr->left.get());
+    if (!lhs.truthy()){
+        return LoxObject(false);
     }
-
-    return isTruthy(interpret(andExpr->right.get()));
+    LoxObject rhs = interpret(andExpr->right.get());
+    return LoxObject(rhs.truthy());
 }
 
+LoxObject Interpreter::visit(const FunctionCallExpr *functionCallExpr) {
+    //TODO
+    return LoxObject(0.0);
+}
 
 void Interpreter::executeBlock(const std::vector<UniqueStmtPtr> &stmts, const Environment &newEnv) {
     environments.push(newEnv);
@@ -240,114 +248,3 @@ void Interpreter::executeBlock(const std::vector<UniqueStmtPtr> &stmts, const En
         execute(stmt.get());
     }
 }
-
-
-lox_literal_t Interpreter::minus(const lox_literal_t &left, const lox_literal_t &right, const BinaryExpr *expr) {
-    LoxRuntimeError error("Cannot apply operator '-' to operands of type " + utils::literalType(left) + " and " + utils::literalType(right), expr->op.line);
-    assertOperandsType<double>(left, right, error);
-    return std::get<double>(left) - std::get<double>(right);
-}
-
-lox_literal_t Interpreter::plus(const lox_literal_t &left, const lox_literal_t &right, const BinaryExpr *expr) {
-    LoxRuntimeError error("Cannot apply operator '+' to operands of type " + utils::literalType(left) + " and " + utils::literalType(right), expr->op.line);
-    if (std::holds_alternative<std::string>(left)){
-        assertOperandsType<std::string>(left, right, error);
-        return std::get<std::string>(left) + std::get<std::string>(right);
-    }
-
-    assertOperandsType<double>(left, right, error);
-    return std::get<double>(left) + std::get<double>(right);
-}
-
-lox_literal_t Interpreter::star(const lox_literal_t &left, const lox_literal_t &right, const BinaryExpr *expr) {
-    LoxRuntimeError error("Cannot apply operator '*' to operands of type " + utils::literalType(left) + " and " + utils::literalType(right), expr->op.line);
-    assertOperandsType<double>(left, right, error);
-    return std::get<double>(left) * std::get<double>(right);
-}
-
-lox_literal_t Interpreter::slash(const lox_literal_t &left, const lox_literal_t &right, const BinaryExpr *expr) {
-    LoxRuntimeError error("Cannot apply operator '/' to operands of type " + utils::literalType(left) + " and " + utils::literalType(right), expr->op.line);
-    assertOperandsType<double>(left, right, error);
-    if (std::get<double>(right) == 0){
-        throw LoxRuntimeError("Cannot divide by zero", expr->op.line);
-    }
-    return std::get<double>(left) / std::get<double>(right);
-}
-
-bool Interpreter::greater(const lox_literal_t &left, const lox_literal_t &right, const BinaryExpr *expr) {
-    LoxRuntimeError error("Cannot apply operator '>' to operands of type " + utils::literalType(left) + " and " + utils::literalType(right), expr->op.line);
-    if (std::holds_alternative<std::string>(left)){
-        assertOperandsType<std::string>(left, right, error);
-        return std::get<std::string>(left) > std::get<std::string>(right);
-    }
-
-    assertOperandsType<double>(left, right, error);
-    return std::get<double>(left) > std::get<double>(right);
-}
-
-bool Interpreter::greaterEqual(const lox_literal_t &left, const lox_literal_t &right, const BinaryExpr *expr) {
-    LoxRuntimeError error("Cannot apply operator '>=' to operands of type " + utils::literalType(left) + " and " + utils::literalType(right), expr->op.line);
-    if (std::holds_alternative<std::string>(left)){
-        assertOperandsType<std::string>(left, right, error);
-        return std::get<std::string>(left) >= std::get<std::string>(right);
-    }
-
-    assertOperandsType<double>(left, right, error);
-    return std::get<double>(left) >= std::get<double>(right);
-}
-
-bool Interpreter::less(const lox_literal_t &left, const lox_literal_t &right, const BinaryExpr *expr) {
-    LoxRuntimeError error("Cannot apply operator '<' to operands of type " + utils::literalType(left) + " and " + utils::literalType(right), expr->op.line);
-    if (std::holds_alternative<std::string>(left)){
-        assertOperandsType<std::string>(left, right, error);
-        return std::get<std::string>(left) < std::get<std::string>(right);
-    }
-
-    assertOperandsType<double>(left, right, error);
-    return std::get<double>(left) < std::get<double>(right);
-}
-
-bool Interpreter::lessEqual(const lox_literal_t &left, const lox_literal_t &right, const BinaryExpr *expr) {
-    LoxRuntimeError error("Cannot apply operator '<=' to operands of type " + utils::literalType(left) + " and " + utils::literalType(right), expr->op.line);
-    if (std::holds_alternative<std::string>(left)){
-        assertOperandsType<std::string>(left, right, error);
-        return std::get<std::string>(left) <= std::get<std::string>(right);
-    }
-
-    assertOperandsType<double>(left, right, error);
-    return std::get<double>(left) <= std::get<double>(right);
-}
-
-bool Interpreter::equal(const lox_literal_t &left, const lox_literal_t &right, const BinaryExpr *expr) {
-    if (left.index() != right.index()){ //different types are never equal
-        return false;
-    }
-
-    return left == right;
-}
-
-
-bool Interpreter::isTruthy(const lox_literal_t &literal){ //In lox every literal is considered true except NIL and false
-    if (std::holds_alternative<bool>(literal)){
-        return std::get<bool>(literal);
-    } else if (std::holds_alternative<nullptr_t>(literal)){
-        return false;
-    }
-
-    return true;
-}
-
-template<typename T>
-void Interpreter::assertOperandsType(const lox_literal_t &left, const lox_literal_t &right, const LoxRuntimeError &error) { //Asserts that the type of left and right is T
-    if (!(std::holds_alternative<T>(left) && std::holds_alternative<T>(right))){
-        throw error;
-    }
-}
-
-
-
-
-
-
-
-

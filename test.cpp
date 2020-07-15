@@ -12,11 +12,13 @@ public:
     ~Res(){
         std::cout << "Resource deleted\n";
     }
+
+    Res operator-() const {
+        throw std::runtime_error("hewyre");
+    }
 };
 
-void func(std::unique_ptr<Res> ptr){
-    std::cout << ptr.get() << "\n";
-}
+
 
 std::unique_ptr<Res> ret(){
     std::unique_ptr<Res> ptr = std::make_unique<Res>();
@@ -35,10 +37,17 @@ void f(std::unique_ptr<Res> uniquePtr){
     std::cout << uniquePtr.get() << "\n";
 }
 
-void tt(const std::vector<std::unique_ptr<Res>> &vec){
-
+std::unique_ptr<Res> func(std::unique_ptr<Res> res){
+    return res;
 }
 
 int main(){
+    try {
+        Res res;
+        -res;
+    } catch (const std::runtime_error &error) {
+        std::cout << "brpp\n";
+    }
+
 }
 

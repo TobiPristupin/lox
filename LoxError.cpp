@@ -39,7 +39,11 @@ const char *LoxParsingError::what() const noexcept {
 }
 
 LoxRuntimeError::LoxRuntimeError(const std::string &message, int line) : LoxError(message, line) {
-    this->message = "[Line " + std::to_string(line) + "] " +  "Runtime Error: " + message;
+    if (line != -1){
+        this->message = "[Line " + std::to_string(line) + "] " +  "Runtime Error: " + message;
+    } else {
+        this->message = "Runtime Error: " + message;
+    }
 }
 
 const char *LoxRuntimeError::what() const noexcept {

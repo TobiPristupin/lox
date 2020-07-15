@@ -5,9 +5,7 @@
 #include "LoxError.h"
 #include "Parser.h"
 #include "FileReader.h"
-#include "tools/AstPrinter.h"
 #include "Interpreter.h"
-#include "tools/utils.h"
 
 
 Interpreter Runner::interpreter = Interpreter();
@@ -39,7 +37,7 @@ int Runner::runCode(const std::string& code, bool replMode) {
     try {
         tokens = scanner.scanTokens();
     } catch (const LoxScanningError& exception) {
-        std::cerr << exception.what() << "\n";
+        std::cout << exception.what() << "\n";
         return 65;
     }
 
@@ -56,7 +54,7 @@ int Runner::runCode(const std::string& code, bool replMode) {
     try {
         interpreter.interpret(statements, replMode);
     } catch (const LoxRuntimeError &exception) {
-        std::cerr << exception.what() << "\n";
+        std::cout << exception.what() << "\n";
         return 70;
     }
 

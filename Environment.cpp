@@ -1,9 +1,10 @@
 #include "Environment.h"
 #include "LoxError.h"
+#include "LoxObject.h"
 
 Environment::Environment(Environment *parent) : parentEnv(parent) {}
 
-lox_literal_t Environment::get(const Token &identifier) {
+LoxObject Environment::get(const Token &identifier) {
     std::string key = identifier.lexeme;
     if (variables.count(key) == 1){
         return variables[key];
@@ -16,7 +17,7 @@ lox_literal_t Environment::get(const Token &identifier) {
     return parentEnv->get(identifier);
 }
 
-void Environment::define(const Token &identifier, const lox_literal_t &val) {
+void Environment::define(const Token &identifier, const LoxObject &val) {
     std::string key = identifier.lexeme;
     if (variables.count(key) == 1){
         throw LoxRuntimeError("Cannot redefine a variable. Variable '" + key + "' has already been defined", identifier.line);
@@ -25,7 +26,7 @@ void Environment::define(const Token &identifier, const lox_literal_t &val) {
     variables[key] = val;
 }
 
-void Environment::assign(const Token &identifier, const lox_literal_t &val) {
+void Environment::assign(const Token &identifier, const LoxObject &val) {
     std::string key = identifier.lexeme;
     if (variables.count(key) == 1){
         variables[key] = val;

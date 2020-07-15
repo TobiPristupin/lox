@@ -36,3 +36,5 @@ int main(int argc, char *argv[]) {
 //TODO: Add int to str conversion
 //TODO: Add support for concatenating int and str?
 //TODO: Make print into a function with the option to add a newline or not
+
+//check for /t and /n

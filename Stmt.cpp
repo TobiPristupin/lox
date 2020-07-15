@@ -16,9 +16,9 @@ void PrintStmt::accept(StmtVisitor &visitor) {
 }
 
 
-VarStmt::VarStmt(const Token &identifier, UniqueExprPtr expr) : identifier(identifier), expr(std::move(expr)) {}
+VarDeclarationStmt::VarDeclarationStmt(const Token &identifier, UniqueExprPtr expr) : identifier(identifier), expr(std::move(expr)) {}
 
-void VarStmt::accept(StmtVisitor &visitor) {
+void VarDeclarationStmt::accept(StmtVisitor &visitor) {
     visitor.visit(this);
 }
 

@@ -2,7 +2,9 @@
 #define JLOX_EXPR_H
 
 #include <memory>
+#include <vector>
 #include "Token.h"
+#include "LoxObject.h"
 
 
 class Expr;
@@ -14,26 +16,28 @@ class VariableExpr;
 class AssignmentExpr;
 class OrExpr;
 class AndExpr;
+class FunctionCallExpr;
 
 using UniqueExprPtr = std::unique_ptr<Expr>;
 
 class ExprVisitor {
 public:
-    virtual lox_literal_t visit(const BinaryExpr* binaryExpr) = 0;
-    virtual lox_literal_t visit(const GroupingExpr* groupingExpr) = 0;
-    virtual lox_literal_t visit(const UnaryExpr* unaryExpr) = 0;
-    virtual lox_literal_t visit(const LiteralExpr* literalExpr) = 0;
-    virtual lox_literal_t visit(const VariableExpr* variableExpr) = 0;
-    virtual lox_literal_t visit(const AssignmentExpr* assignmentExpr) = 0;
-    virtual lox_literal_t visit(const OrExpr* orExpr) = 0;
-    virtual lox_literal_t visit(const AndExpr* andExpr) = 0;
+    virtual LoxObject visit(const BinaryExpr* binaryExpr) = 0;
+    virtual LoxObject visit(const GroupingExpr* groupingExpr) = 0;
+    virtual LoxObject visit(const UnaryExpr* unaryExpr) = 0;
+    virtual LoxObject visit(const LiteralExpr* literalExpr) = 0;
+    virtual LoxObject visit(const VariableExpr* variableExpr) = 0;
+    virtual LoxObject visit(const AssignmentExpr* assignmentExpr) = 0;
+    virtual LoxObject visit(const OrExpr* orExpr) = 0;
+    virtual LoxObject visit(const AndExpr* andExpr) = 0;
+    virtual LoxObject visit(const FunctionCallExpr* functionCallExpr) = 0;
 };
 
 
 class Expr {
 public:
     virtual ~Expr() = 0;
-    virtual lox_literal_t accept(ExprVisitor& visitor) = 0;
+    virtual LoxObject accept(ExprVisitor& visitor) = 0;
 };
 
 class BinaryExpr : public Expr {
@@ -43,7 +47,7 @@ public:
     Token op;
 
     BinaryExpr (UniqueExprPtr left, UniqueExprPtr right, const Token &op);
-    lox_literal_t accept(ExprVisitor& visitor) override;
+    LoxObject accept(ExprVisitor& visitor) override;
 };
 
 class GroupingExpr : public Expr {
@@ -51,7 +55,7 @@ public:
     UniqueExprPtr expr;
 
     GroupingExpr(UniqueExprPtr expr);
-    lox_literal_t accept(ExprVisitor& visitor) override;
+    LoxObject accept(ExprVisitor& visitor) override;
 };
 
 class UnaryExpr : public Expr {
@@ -60,15 +64,15 @@ public:
     UniqueExprPtr expr;
 
     UnaryExpr(const Token &op, UniqueExprPtr expr);
-    lox_literal_t accept(ExprVisitor& visitor) override;
+    LoxObject accept(ExprVisitor& visitor) override;
 };
 
 class LiteralExpr : public Expr {
 public:
-    lox_literal_t literal;
+    LoxObject literal;
 
-    LiteralExpr(const lox_literal_t &literal);
-    lox_literal_t accept(ExprVisitor& visitor) override;
+    LiteralExpr(const LoxObject &literal);
+    LoxObject accept(ExprVisitor& visitor) override;
 
 };
 
@@ -78,7 +82,7 @@ public:
     Token identifier;
 
     VariableExpr(const Token &identifier);
-    lox_literal_t accept(ExprVisitor& visitor) override;
+    LoxObject accept(ExprVisitor& visitor) override;
 
 };
 
@@ -88,7 +92,7 @@ public:
     UniqueExprPtr value;
 
     AssignmentExpr(const Token &identifier, UniqueExprPtr value);
-    lox_literal_t accept(ExprVisitor &visitor) override;
+    LoxObject accept(ExprVisitor &visitor) override;
 };
 
 class OrExpr : public Expr {
@@ -96,7 +100,7 @@ public:
     UniqueExprPtr left, right;
 
     OrExpr(UniqueExprPtr left, UniqueExprPtr right);
-    lox_literal_t accept(ExprVisitor &visitor) override;
+    LoxObject accept(ExprVisitor &visitor) override;
 };
 
 class AndExpr : public Expr {
@@ -104,7 +108,17 @@ public:
     UniqueExprPtr left, right;
 
     AndExpr(UniqueExprPtr left, UniqueExprPtr right);
-    lox_literal_t accept(ExprVisitor &visitor) override;
+    LoxObject accept(ExprVisitor &visitor) override;
+};
+
+class FunctionCallExpr : public Expr {
+public:
+    UniqueExprPtr callee;
+    Token closingParen;
+    std::vector<UniqueExprPtr> arguments;
+
+    FunctionCallExpr(UniqueExprPtr callee, const Token &closingParen, std::vector<UniqueExprPtr> arguments);
+    LoxObject accept(ExprVisitor &visitor) override;
 };
 
 

@@ -44,7 +44,7 @@ UniqueStmtPtr Parser::varStatement() {
     }
 
     expect(TokenType::SEMICOLON, "Expect ';' after variable declaration");
-    return std::make_unique<VarStmt>(identifier, std::move(initializer));
+    return std::make_unique<VarDeclarationStmt>(identifier, std::move(initializer));
 }
 
 UniqueStmtPtr Parser::statement() {
@@ -268,16 +268,46 @@ UniqueExprPtr Parser::unary() {
         return std::make_unique<UnaryExpr>(op, std::move(right));
     }
 
-    return primary();
+    return functionCall();
+}
+
+UniqueExprPtr Parser::functionCall() {
+    UniqueExprPtr expr = primary();
+    while (true){
+        if (match(TokenType::LEFT_PAREN)){
+            expr = finishCall(std::move(expr));
+        } else {
+            break;
+        }
+    }
+
+    return expr;
+}
+
+UniqueExprPtr Parser::finishCall(UniqueExprPtr expr) {
+    std::vector<UniqueExprPtr> arguments;
+    do {
+        if (arguments.size() >= 255){
+            //Report the error but don't throw it bc throwing it will cause the parser to synchronize.
+            std::cout << error("Cannot have more than 255 arguments", peek().line).what() << "\n";
+        }
+
+        UniqueExprPtr parameter = expression();
+        arguments.push_back(std::move(parameter));
+    } while (match(TokenType::COMMA));
+
+    Token closingParen = expect(TokenType::RIGHT_PAREN, "Expect closing parenthesis after function argument list");
+    return std::make_unique<FunctionCallExpr>(std::move(expr), closingParen, std::move(arguments));
 }
 
 UniqueExprPtr Parser::primary() {
-    if (match(TokenType::NUMBER)) return std::make_unique<LiteralExpr>(previous().literal);
-    if (match(TokenType::STRING)) return std::make_unique<LiteralExpr>(previous().literal);
-    if (match(TokenType::TRUE)) return std::make_unique<LiteralExpr>(previous().literal);
-    if (match(TokenType::FALSE)) return std::make_unique<LiteralExpr>(previous().literal);
-    if (match(TokenType::NIL)) return std::make_unique<LiteralExpr>(previous().literal);
+    if (match(TokenType::NUMBER)) return std::make_unique<LiteralExpr>(LoxObject(previous()));
+    if (match(TokenType::STRING)) return std::make_unique<LiteralExpr>(LoxObject(previous()));
+    if (match(TokenType::TRUE)) return std::make_unique<LiteralExpr>(LoxObject(previous()));
+    if (match(TokenType::FALSE)) return std::make_unique<LiteralExpr>(LoxObject(previous()));
+    if (match(TokenType::NIL)) return std::make_unique<LiteralExpr>(LoxObject(previous()));
     if (match(TokenType::IDENTIFIER)) return std::make_unique<VariableExpr>(previous());
+
 
     if (match(TokenType::LEFT_PAREN)){
         UniqueExprPtr expr = expression();
@@ -360,6 +390,7 @@ void Parser::synchronize() { //synchronizes the parser to the next statement whe
     }
 
 }
+
 
 
 

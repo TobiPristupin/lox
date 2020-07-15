@@ -7,7 +7,7 @@
 class Stmt;
 class ExpressionStmt;
 class PrintStmt;
-class VarStmt;
+class VarDeclarationStmt;
 class BlockStmt;
 class IfStmt;
 class WhileStmt;
@@ -21,7 +21,7 @@ class StmtVisitor {
 public:
     virtual void visit(ExpressionStmt *expressionStmt) = 0;
     virtual void visit(PrintStmt *printStmt) = 0;
-    virtual void visit(VarStmt *varStmt) = 0;
+    virtual void visit(VarDeclarationStmt *varStmt) = 0;
     virtual void visit(BlockStmt *blockStmt) = 0;
     virtual void visit(IfStmt *ifStmt) = 0;
     virtual void visit(WhileStmt *whileStmt) = 0;
@@ -53,12 +53,12 @@ public:
     void accept(StmtVisitor &visitor) override;
 };
 
-class VarStmt : public Stmt {
+class VarDeclarationStmt : public Stmt {
 public:
     Token identifier;
-    UniqueExprPtr expr;
+    UniqueExprPtr expr; //may be nullptr when declaring a variable without initializing
 
-    VarStmt(const Token &identifier, UniqueExprPtr expr);
+    VarDeclarationStmt(const Token &identifier, UniqueExprPtr expr);
     void accept(StmtVisitor &visitor) override;
 };
 

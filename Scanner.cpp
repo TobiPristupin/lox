@@ -145,9 +145,9 @@ std::optional<Token> Scanner::scanIdentifier() {
     std::string identifier = source.substr(start, (current - start));
     if (reservedKeywords.count(identifier) > 0){
         if (identifier == "false"){
-            return createToken(TokenType::FALSE, false);
+            return createToken(TokenType::FALSE);
         } else if (identifier == "true"){
-            return createToken(TokenType::TRUE, true);
+            return createToken(TokenType::TRUE);
         }
 
         return createToken(reservedKeywords[identifier]);
@@ -171,10 +171,10 @@ std::optional<Token> Scanner::scanNumber() {
     int decimal = std::count(number.begin(), number.end(), '.');
 
     if (decimal == 1){
-        return createToken(NUMBER, std::stof(number));
+        return createToken(NUMBER);
     }
 
-    return createToken(NUMBER, std::stof(number));
+    return createToken(NUMBER);
 }
 
 std::optional<Token> Scanner::scanString() {
@@ -189,8 +189,7 @@ std::optional<Token> Scanner::scanString() {
     }
 
     advance(); //advance closing "
-    std::string s = source.substr(start + 1, (current - start - 1 - 1));//+1 and -1 to remove the quotes from each end
-    return createToken(STRING, s);
+    return createStringToken();
 }
 
 bool Scanner::validForIdentifier(char c) {
@@ -217,18 +216,6 @@ bool Scanner::isWhitespace(char c) {
     return c == ' ' || c == '\n' || c == '\t' || c == '\r';
 }
 
-Token Scanner::createToken(TokenType type, const std::string &literal) {
-    return Token(type, source.substr(start, (current - start)), literal, line);
-}
-
-Token Scanner::createToken(TokenType type, double literal) {
-    return Token(type, source.substr(start, (current - start)), literal, line);
-}
-
-Token Scanner::createToken(TokenType type, bool literal) {
-    return Token(type, source.substr(start, (current - start)), literal, line);
-}
-
 Token Scanner::createToken(TokenType type) {
     return Token(type, source.substr(start, (current - start)), line);
 }
@@ -241,5 +228,12 @@ void Scanner::nextLine() {
 bool Scanner::isAtEnd() {
     return current >= source.length();
 }
+
+Token Scanner::createStringToken() {
+    return Token(TokenType::STRING, source.substr(start + 1, (current - start - 1 - 1)), line);
+    //The +1 and -1 is to remove the quotes
+}
+
+
 
 

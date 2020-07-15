@@ -21,16 +21,15 @@ private:
     void advance();
     bool currentCharMatches(char expected);
     char peek();
-    Token createToken(TokenType type, const std::string &literal);
-    Token createToken(TokenType type, double literal);
-    Token createToken(TokenType type, bool literal);
     Token createToken(TokenType type);
+    Token createStringToken();
     static bool validForIdentifier(char c);
     std::optional<Token> scanString();
     std::optional<Token> scanNumber();
     std::optional<Token> scanIdentifier();
     static bool isWhitespace(char c);
     void nextLine();
+
 };
 
 
