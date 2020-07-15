@@ -1,7 +1,9 @@
 #include <stdexcept>
 #include <cmath>
+#include <algorithm>
 #include "LoxObject.h"
 #include "LoxError.h"
+#include "tools/Utils.h"
 
 LoxObject::LoxObject(double number) : type(LoxType::NUMBER), number(number) {}
 
@@ -189,13 +191,10 @@ LoxObject LoxObject::operator!() const {
 
 std::ostream &operator<<(std::ostream &os, const LoxObject &object) {
     if (object.isString()){
-        if (object.getString() == "\\n"){
-            //
-        } else if (object.getString() == "\\t"){
-            os << std::string("\t");
-        } else {
-            os << object.getString(); //<< "\n";
-        }
+        std::string s = object.getString();
+        utils::replaceAll(s, "\\n", "\n");
+        utils::replaceAll(s, "\\t", "\t");
+        os << s;
     } else if (object.isBoolean()){
         os << (object.getBoolean() ? std::string("true") : std::string("false"));
     } else if (object.isNumber()){
@@ -227,3 +226,5 @@ std::string loxTypeToString(LoxType type) {
             return "callable";
     }
 }
+
+

@@ -42,12 +42,9 @@ std::unique_ptr<Res> func(std::unique_ptr<Res> res){
 }
 
 int main(){
-    try {
-        Res res;
-        -res;
-    } catch (const std::runtime_error &error) {
-        std::cout << "brpp\n";
-    }
+    std::string s = "hello\nhello";
+    std::string b = s.substr(0, s.length());
+    std::cout << b << "\n";
 
 }
 
