@@ -286,15 +286,17 @@ UniqueExprPtr Parser::functionCall() {
 
 UniqueExprPtr Parser::finishCall(UniqueExprPtr expr) {
     std::vector<UniqueExprPtr> arguments;
-    do {
-        if (arguments.size() >= 255){
-            //Report the error but don't throw it bc throwing it will cause the parser to synchronize.
-            std::cout << error("Cannot have more than 255 arguments", peek().line).what() << "\n";
-        }
+    if (!check(TokenType::RIGHT_PAREN)){
+        do {
+            if (arguments.size() >= 255){
+                //Report the error but don't throw it bc throwing it will cause the parser to synchronize.
+                std::cout << error("Cannot have more than 255 arguments", peek().line).what() << "\n";
+            }
 
-        UniqueExprPtr parameter = expression();
-        arguments.push_back(std::move(parameter));
-    } while (match(TokenType::COMMA));
+            UniqueExprPtr parameter = expression();
+            arguments.push_back(std::move(parameter));
+        } while (match(TokenType::COMMA));
+    }
 
     Token closingParen = expect(TokenType::RIGHT_PAREN, "Expect closing parenthesis after function argument list");
     return std::make_unique<FunctionCallExpr>(std::move(expr), closingParen, std::move(arguments));

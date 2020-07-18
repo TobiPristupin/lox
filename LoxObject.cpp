@@ -2,8 +2,8 @@
 #include <cmath>
 #include <algorithm>
 #include "LoxObject.h"
-#include "LoxError.h"
 #include "tools/Utils.h"
+#include "LoxCallable.h"
 
 LoxObject::LoxObject(double number) : type(LoxType::NUMBER), number(number) {}
 
@@ -14,6 +14,8 @@ LoxObject::LoxObject(const char *string) : LoxObject(std::string(string)) {}
 LoxObject::LoxObject(bool boolean) : type(LoxType::BOOL), boolean(boolean) {}
 
 LoxObject::LoxObject() : type(LoxType::NIL) {}
+
+LoxObject::LoxObject(SharedCallablePtr callable) : type(LoxType::CALLABLE), callable(std::move(callable)) {}
 
 LoxObject::LoxObject(const Token &token) {
     switch (token.type) {
@@ -58,6 +60,10 @@ bool LoxObject::isNil() const {
     return type == LoxType::NIL;
 }
 
+bool LoxObject::isCallable() const {
+    return type == LoxType::CALLABLE;
+}
+
 double LoxObject::getNumber() const {
     if (!isNumber()){
         throw std::runtime_error("LoxObject does not contain a number");
@@ -77,6 +83,13 @@ std::string LoxObject::getString() const {
         throw std::runtime_error("LoxObject does not contain a string");
     }
     return str;
+}
+
+LoxCallable *LoxObject::getCallable() const {
+    if (!isCallable()){
+        throw std::runtime_error("LoxObject does not contain a callable");
+    }
+    return callable.get();
 }
 
 bool LoxObject::truthy() const {//In lox every literal is considered true except for nil and false
@@ -199,12 +212,14 @@ std::ostream &operator<<(std::ostream &os, const LoxObject &object) {
         os << (object.getBoolean() ? std::string("true") : std::string("false"));
     } else if (object.isNumber()){
         if (std::abs(floor(object.getNumber())) == std::abs(object.getNumber())){ //If it has no decimal part
-            os << std::to_string((int) object.getNumber());
+            os << std::to_string((long long) object.getNumber());
         } else {
             os << std::to_string(object.getNumber());
         }
     } else if (object.isNil()){
         os << std::string("nil");
+    } else if (object.isCallable()) {
+        os << object.getCallable()->to_string();
     } else {
         throw std::runtime_error("Object has no string representation");
     }

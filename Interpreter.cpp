@@ -2,15 +2,21 @@
 #include <iostream>
 #include <cassert>
 #include <gsl/gsl_util>
-#include "Token.h"
+#include <sstream>
 #include "Interpreter.h"
+#include "Token.h"
 #include "LoxError.h"
+#include "LoxCallable.h"
+#include "standardlib/StandardFunctions.h"
 
 //TODO: Abstract the environments stack behavior into an environment manager class
 
 
 Interpreter::Interpreter() {
     environments.push(Environment());
+    globalEnv = environments.top();
+    LoxObject function(std::make_shared<standardFunctions::Clock>());
+//    environments.top().define("range", functionRange);
 }
 
 
@@ -209,7 +215,7 @@ LoxObject Interpreter::visit(const UnaryExpr *unaryExpr) {
 }
 
 LoxObject Interpreter::visit(const LiteralExpr *literalExpr) {
-    return literalExpr->literal;
+    return literalExpr->literal; //FIX THIS
 }
 
 LoxObject Interpreter::visit(const VariableExpr *variableExpr) {
@@ -236,8 +242,24 @@ LoxObject Interpreter::visit(const AndExpr *andExpr) {
 }
 
 LoxObject Interpreter::visit(const FunctionCallExpr *functionCallExpr) {
-    //TODO
-    return LoxObject(0.0);
+    LoxObject callee = interpret(functionCallExpr->callee.get());
+
+    std::vector<LoxObject> arguments;
+    for (const UniqueExprPtr &arg : functionCallExpr->arguments){
+        arguments.push_back(interpret(arg.get()));
+    }
+
+    if (!callee.isCallable()){
+        throw LoxRuntimeError("Expression is not callable", functionCallExpr->closingParen.line);
+    }
+    LoxCallable* function = callee.getCallable();
+    if (arguments.size() != function->arity()){
+        std::stringstream ss;
+        ss << "Function " << function->name() << " expected " << function->arity() << " arguments but instead got " << arguments.size();
+        throw LoxRuntimeError(ss.str(), functionCallExpr->closingParen.line);
+    }
+
+    return function->call(*this, arguments);
 }
 
 void Interpreter::executeBlock(const std::vector<UniqueStmtPtr> &stmts, const Environment &newEnv) {

@@ -2,7 +2,6 @@
 
 #include <iostream>
 #include "Runner.h"
-#include "LoxError.h"
 
 #ifdef DEBUG
 #include "gtest/gtest.h"
@@ -31,10 +30,9 @@ int main(int argc, char *argv[]) {
 #endif
 }
 
-//TODO: Change every cerr into cout because the streams are not synchronized
 //TODO: Add support for ++ and -- operator
 //TODO: Add int to str conversion
 //TODO: Add support for concatenating int and str?
-//TODO: Make print into a function with the option to add a newline or not
+//TODO: Add a console printing library for colors?
 
-//check for /t and /n
+

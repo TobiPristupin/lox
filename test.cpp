@@ -41,10 +41,9 @@ std::unique_ptr<Res> func(std::unique_ptr<Res> res){
     return res;
 }
 
+#include <chrono>
 int main(){
-    std::string s = "hello\nhello";
-    std::string b = s.substr(0, s.length());
-    std::cout << b << "\n";
-
+    using namespace std::chrono;
+    std::cout << duration_cast<seconds>(system_clock::now().time_since_epoch()).count() << "\n";
 }
 

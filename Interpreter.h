@@ -37,6 +37,7 @@ public:
 
 private:
     std::stack<Environment> environments;
+    Environment globalEnv;
 
     void interpretReplMode(Stmt* stmt);
     LoxObject interpret(Expr* expr);

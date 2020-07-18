@@ -3,6 +3,7 @@
 
 
 #include <unordered_map>
+#include <string>
 #include "Token.h"
 #include "LoxObject.h"
 
@@ -12,6 +13,7 @@ public:
 
     Environment(Environment* parent = nullptr);
     void define(const Token &identifier, const LoxObject &val);
+    void define(const std::string &key, const LoxObject &val);
     LoxObject get(const Token &identifier);
     void assign(const Token &identifier, const LoxObject &val);
     Environment* parent();
