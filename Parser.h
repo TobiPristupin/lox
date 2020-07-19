@@ -8,11 +8,15 @@
 #include "LoxError.h"
 #include "Stmt.h"
 
+
 class Parser {
 public:
     Parser(const std::vector<Token> &tokens);
     std::vector<UniqueStmtPtr> parse(bool &successFlag);
 
+    enum class FunctionType {
+        FUNCTION, METHOD
+    };
 
 private:
     std::vector<Token> tokens;
@@ -24,7 +28,8 @@ private:
     int loopNestingLevel = 0;
 
     UniqueStmtPtr declaration();
-    UniqueStmtPtr varStatement();
+    UniqueStmtPtr varDeclStatement();
+    UniqueStmtPtr functionDeclStatement(FunctionType type);
     UniqueStmtPtr statement();
     UniqueStmtPtr exprStatement();
     UniqueStmtPtr printStatement();
@@ -60,8 +65,6 @@ private:
     bool isAtEnd();
     LoxParsingError error(const std::string &message, int line) noexcept(false);
     void synchronize();
-
-
 };
 
 

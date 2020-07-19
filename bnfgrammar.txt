@@ -3,7 +3,10 @@ GRAMMAR ADJUSTED FOR PRECEDENCE AND ASSOCIATIVITY:
 program :== declaration* EOF ;
 
 //statements
-declaration :== varDecl | statement ;
+declaration :== varDecl | funDecl | statement ;
+funDecl :== "fun" function ;
+function :== IDENTIFIER "(" parameters? ")" block ;
+parameters :== IDENTIFIER ("," IDENTIFIER)* ;
 varDecl :== "var" IDENTIFIER ("=" expression)? ";" ;
 statement :== exprStatement | ifStatement | printStatement | whileStmt | forStmt | block;
 exprStatement :== expression ";" ;
@@ -23,7 +26,7 @@ comparison :== addition ( (">" | ">=" | "<" | "<=") addition )* ;
 addition :== multiplication ( ("-" | "+") multiplication )* ;
 multiplication :== unary ( ("/" | "*") unary )* ;
 unary :== ("!" | "-") unary | call ;
-call :== primary ("(" arguments ")")* ;
+call :== primary ( "(" arguments ")" )* ;
 arguments :== expression ( "," expression)* ;
 primary :== NUMBER | STRING | IDENTIFIER | "false" | "true" | "nil" | "(" expression ")" ;
 

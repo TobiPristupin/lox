@@ -60,3 +60,9 @@ void ContinueStmt::accept(StmtVisitor &visitor) {
     visitor.visit(this);
 }
 
+
+FunctionDeclStmt::FunctionDeclStmt(const Token &name, const std::vector<Token> &params, std::vector<UniqueStmtPtr> body) : name(name), params(params), body(std::move(body)) {}
+
+void FunctionDeclStmt::accept(StmtVisitor &visitor) {
+    visitor.visit(this);
+}

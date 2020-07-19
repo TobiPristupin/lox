@@ -22,9 +22,8 @@ std::vector<UniqueStmtPtr> Parser::parse(bool &successFlag) {
 //If a parsing error is encountered, this function will attempt to synchronize the parser and then return nullptr.
 UniqueStmtPtr Parser::declaration() {
     try {
-        if (match(TokenType::VAR)){
-            return varStatement();
-        }
+        if (match(TokenType::VAR)) return varDeclStatement();
+        if (match(TokenType::FUN)) return functionDeclStatement(FunctionType::FUNCTION);
         return statement();
     } catch (const LoxParsingError &error) {
         //Report the exception but don't let it bubble up and stop the program. Instead, synchronize the parser and keep parsing.
@@ -36,7 +35,7 @@ UniqueStmtPtr Parser::declaration() {
     return nullptr;
 }
 
-UniqueStmtPtr Parser::varStatement() {
+UniqueStmtPtr Parser::varDeclStatement() {
     Token identifier = expect(TokenType::IDENTIFIER, "Expected identifier");
     UniqueExprPtr initializer = nullptr;
     if (match(TokenType::EQUAL)){
@@ -45,6 +44,31 @@ UniqueStmtPtr Parser::varStatement() {
 
     expect(TokenType::SEMICOLON, "Expect ';' after variable declaration");
     return std::make_unique<VarDeclarationStmt>(identifier, std::move(initializer));
+}
+
+UniqueStmtPtr Parser::functionDeclStatement(FunctionType type) {
+    std::string type_str = type == FunctionType::FUNCTION ? "function" : "method";
+    Token name = expect(TokenType::IDENTIFIER, "Expected " + type_str + " name");
+    expect(TokenType::LEFT_PAREN, "Expected '(' after " + type_str + " name");
+
+    std::vector<Token> parameters;
+    if (!check(TokenType::RIGHT_PAREN)){
+        do {
+            if (parameters.size() >= 255){
+                //Report the error but don't throw it bc throwing it will cause the parser to synchronize and we want to keep parsing
+                std::cout << error(type_str + " cannot have more than 255 parameters", peek().line).what() << "\n";
+                hadError = true;
+            }
+            Token param = expect(TokenType::IDENTIFIER, "Expected parameters name");
+            parameters.push_back(param);
+        } while (match(TokenType::COMMA));
+    }
+
+    expect(TokenType::RIGHT_PAREN, "Expected ')' after parameter list");
+    expect(TokenType::LEFT_BRACE, "Expected '{' before " + type_str + " body");
+
+    std::vector<UniqueStmtPtr> body = block();
+    return std::make_unique<FunctionDeclStmt>(name, parameters, std::move(body));
 }
 
 UniqueStmtPtr Parser::statement() {
@@ -129,7 +153,7 @@ UniqueStmtPtr Parser::forStatement() {
     expect(TokenType::LEFT_PAREN, "Expect '(' after for");
     UniqueStmtPtr initializer = nullptr;
     if (match(TokenType::VAR)){
-        initializer = varStatement();
+        initializer = varDeclStatement();
     } else if (match(TokenType::SEMICOLON)){
         initializer = nullptr;
     } else {
@@ -289,8 +313,9 @@ UniqueExprPtr Parser::finishCall(UniqueExprPtr expr) {
     if (!check(TokenType::RIGHT_PAREN)){
         do {
             if (arguments.size() >= 255){
-                //Report the error but don't throw it bc throwing it will cause the parser to synchronize.
+                //Report the error but don't throw it bc throwing it will cause the parser to synchronize and we want to keep parsing
                 std::cout << error("Cannot have more than 255 arguments", peek().line).what() << "\n";
+                hadError = true;
             }
 
             UniqueExprPtr parameter = expression();

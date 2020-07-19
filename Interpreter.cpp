@@ -8,15 +8,16 @@
 #include "LoxError.h"
 #include "LoxCallable.h"
 #include "standardlib/StandardFunctions.h"
+#include "LoxFunctionWrapper.h"
 
 //TODO: Abstract the environments stack behavior into an environment manager class
 
 
 Interpreter::Interpreter() {
     environments.push(Environment());
-    globalEnv = environments.top();
+    globalEnv = &environments.top();
     LoxObject function(std::make_shared<standardFunctions::Clock>());
-//    environments.top().define("range", functionRange);
+    globalEnv->define("clock", function);
 }
 
 
@@ -160,6 +161,12 @@ void Interpreter::visit(BreakStmt *breakStmt) {
 
 void Interpreter::visit(ContinueStmt *continueStmt) {
     throw ContinueException();
+}
+
+void Interpreter::visit(FunctionDeclStmt *functionStmt) {
+    SharedCallablePtr function = std::make_shared<LoxFunctionWrapper>(functionStmt);
+    LoxObject functionObject(function);
+    environments.top().define(functionStmt->name, functionObject);
 }
 
 //EXPRESSIONS

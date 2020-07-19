@@ -14,6 +14,7 @@ class WhileStmt;
 class ForStmt;
 class BreakStmt;
 class ContinueStmt;
+class FunctionDeclStmt;
 
 using UniqueStmtPtr = std::unique_ptr<Stmt>;
 
@@ -28,6 +29,7 @@ public:
     virtual void visit(BreakStmt *breakStmt) = 0;
     virtual void visit(ContinueStmt *continueStmt) = 0;
     virtual void visit(ForStmt *forStmt) = 0;
+    virtual void visit(FunctionDeclStmt *functionStmt) = 0;
 
 };
 
@@ -120,6 +122,16 @@ public:
 };
 
 class ContinueException {};
+
+class FunctionDeclStmt : public Stmt {
+public:
+    Token name;
+    std::vector<Token> params;
+    std::vector<UniqueStmtPtr> body;
+
+    FunctionDeclStmt(const Token &name, const std::vector<Token> &params, std::vector<UniqueStmtPtr> body);
+    void accept(StmtVisitor &visitor) override;
+};
 
 
 

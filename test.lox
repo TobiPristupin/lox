@@ -1,0 +1,5 @@
+fun add(a, b){
+    if (true) print 2;
+}
+
+print add(1, 2);

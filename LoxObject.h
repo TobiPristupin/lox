@@ -12,6 +12,8 @@ std::string loxTypeToString(LoxType type);
 
 class LoxCallable;
 
+/*A shared ptr is used because there may be scenarios where a Callable object such as a function has to be owned
+by more than one LoxObject.*/
 using SharedCallablePtr = std::shared_ptr<LoxCallable>;
 
 class LoxObject {

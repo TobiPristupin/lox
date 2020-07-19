@@ -5,7 +5,9 @@
 
 class Res {
 public:
-    Res(){
+
+    Res* parent;
+    explicit Res(Res* parent = nullptr) : parent(parent) {
         std::cout << "Resource acquired\n";
     }
 
@@ -13,9 +15,6 @@ public:
         std::cout << "Resource deleted\n";
     }
 
-    Res operator-() const {
-        throw std::runtime_error("hewyre");
-    }
 };
 
 
@@ -43,7 +42,6 @@ std::unique_ptr<Res> func(std::unique_ptr<Res> res){
 
 #include <chrono>
 int main(){
-    using namespace std::chrono;
-    std::cout << duration_cast<seconds>(system_clock::now().time_since_epoch()).count() << "\n";
+    std::shared_ptr<Res> ptr1 = std::make_shared<Res>();
 }
 

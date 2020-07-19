@@ -23,6 +23,8 @@ public:
     void visit(WhileStmt *whileStmt) override;
     void visit(ForStmt *forStmt) override;
     void visit(ContinueStmt *continueStmt) override;
+    void visit(FunctionDeclStmt *functionStmt) override;
+
 
     LoxObject visit(const BinaryExpr *binaryExpr) override;
     LoxObject visit(const GroupingExpr *GroupingExpr) override;
@@ -37,7 +39,7 @@ public:
 
 private:
     std::stack<Environment> environments;
-    Environment globalEnv;
+    Environment *globalEnv;
 
     void interpretReplMode(Stmt* stmt);
     LoxObject interpret(Expr* expr);
