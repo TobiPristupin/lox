@@ -1,6 +1,3 @@
-//
-// Created by pristu on 5/21/20.
-//
 
 #include "FileReader.h"
 #include "LoxError.h"

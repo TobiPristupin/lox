@@ -1,7 +1,3 @@
-//
-// Created by pristu on 5/21/20.
-//
-
 #ifndef JLOX_FILEREADER_H
 #define JLOX_FILEREADER_H
 

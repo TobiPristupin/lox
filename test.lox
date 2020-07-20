@@ -1,12 +1,11 @@
-var a = 10;
-
-if (a == 10){
-var b = 20;
-{
-var c = 40;
-print c;
-}
-print c;
+fun print1(x){
+    for (var i = 0; i < x; i = i + 1){
+        print i;
+        if (i == 50){
+            sleep(3000);
+        }
+    }
 }
 
-print b;
+print1(100);
+

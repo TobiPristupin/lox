@@ -10,6 +10,9 @@
 
 class Interpreter : public ExprVisitor, public StmtVisitor {
 public:
+    Environment::SharedPtr globalEnv;
+    Environment::SharedPtr environment;
+
     Interpreter();
 
     void interpret(const std::vector<UniqueStmtPtr> &statements, bool replMode = false);
@@ -35,11 +38,6 @@ public:
     LoxObject visit(const OrExpr *orExpr) override;
     LoxObject visit(const AndExpr *andExpr) override;
     LoxObject visit(const FunctionCallExpr *functionCallExpr) override;
-
-
-private:
-    Environment::SharedPtr globalEnv;
-    Environment::SharedPtr environment;
 
     void interpretReplMode(Stmt* stmt);
     LoxObject interpret(Expr* expr);

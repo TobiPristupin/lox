@@ -133,7 +133,7 @@ void Interpreter::visit(ForStmt *forStmt) {
 //    //TODO: Could I do this with RAII?
 //    auto finalAction = gsl::finally([this, previous_env] {this->environment = previous_env;}); //Make sure that the new environment is popped even if exceptions are thrown
 
-    Environment::SharedPtr newEnv = std::make_shared<Environment>();
+    Environment::SharedPtr newEnv = std::make_shared<Environment>(environment);
     ScopedEnvironment scoped(environment, newEnv);
 
     if (forStmt->initializer.get() != nullptr) {execute(forStmt->initializer.get());}
