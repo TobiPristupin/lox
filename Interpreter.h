@@ -38,13 +38,14 @@ public:
 
 
 private:
-    std::stack<Environment> environments;
-    Environment *globalEnv;
+    Environment::SharedPtr globalEnv;
+    Environment::SharedPtr environment;
 
     void interpretReplMode(Stmt* stmt);
     LoxObject interpret(Expr* expr);
     void execute(Stmt* pStmt);
-    void executeBlock(const std::vector<UniqueStmtPtr> &stmts, const Environment &newEnv);
+    void executeBlock(const std::vector<UniqueStmtPtr> &stmts, Environment::SharedPtr newEnv);
+    void loadBuiltinFunctions();
 };
 
 

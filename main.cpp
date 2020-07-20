@@ -33,6 +33,8 @@ int main(int argc, char *argv[]) {
 //TODO: Add support for ++ and -- operator
 //TODO: Add int to str conversion
 //TODO: Add support for concatenating int and str?
+//TODO: Add an optional warning log level as a cmd flag that reports warnings such as variable shadowing
 //TODO: Add a console printing library for colors?
+
 
 

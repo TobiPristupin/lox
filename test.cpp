@@ -1,4 +1,5 @@
 #include "iostream"
+#include <utility>
 #include <variant>
 #include <vector>
 #include <memory>
@@ -40,8 +41,21 @@ std::unique_ptr<Res> func(std::unique_ptr<Res> res){
     return res;
 }
 
+class Takes {
+    std::shared_ptr<Res> ptr;
+
+public:
+    Takes(std::shared_ptr<Res> ptr) : ptr(std::move(ptr)) {}
+};
+
 #include <chrono>
 int main(){
-    std::shared_ptr<Res> ptr1 = std::make_shared<Res>();
+    int a = 2;
+    int &ref = a;
+    int b = ref;
+    b = 10;
+    std::cout << ref << "\n";
+
+
 }
 

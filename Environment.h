@@ -4,23 +4,39 @@
 
 #include <unordered_map>
 #include <string>
+#include <memory>
+#include <utility>
 #include "Token.h"
 #include "LoxObject.h"
 
 class Environment {
 public:
 
-
-    Environment(Environment* parent = nullptr);
+    using SharedPtr = std::shared_ptr<Environment>;
+    explicit Environment(Environment::SharedPtr parent = nullptr);
     void define(const Token &identifier, const LoxObject &val);
     void define(const std::string &key, const LoxObject &val);
     LoxObject get(const Token &identifier);
     void assign(const Token &identifier, const LoxObject &val);
-    Environment* parent();
+    Environment::SharedPtr parent();
 
 private:
-    Environment* parentEnv;
+    Environment::SharedPtr parentEnv;
     std::unordered_map<std::string, LoxObject> variables;
+};
+
+//This class uses a little bit of magic with references to set the environment of the caller to
+//a new environment and then restore it to the previous environment when it goes out of scope.
+class ScopedEnvironment {
+public:
+    ScopedEnvironment(Environment::SharedPtr &currentEnv, Environment::SharedPtr newEnv);
+    ~ScopedEnvironment();
+
+private:
+    //This is the reference to the interpreters environment
+    Environment::SharedPtr &mainReference;
+    Environment::SharedPtr copyOfPreviousEnv;
+
 };
 
 

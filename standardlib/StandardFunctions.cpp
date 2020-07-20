@@ -1,7 +1,7 @@
+#include "StandardFunctions.h"
 #include <chrono>
 #include <iostream>
-#include "StandardFunctions.h"
-
+#include <thread>
 
 
 LoxObject standardFunctions::Clock::call(Interpreter &interpreter, const std::vector<LoxObject> &arguments) {
@@ -20,5 +20,24 @@ std::string standardFunctions::Clock::to_string() {
 
 std::string standardFunctions::Clock::name() {
     return "clock";
+}
+
+//TODO: there should be some type checking here.
+LoxObject standardFunctions::Sleep::call(Interpreter &interpreter, const std::vector<LoxObject> &arguments) {
+    int time = (int) arguments[0].getNumber();
+    std::this_thread::sleep_for(std::chrono::milliseconds(time));
+    return LoxObject();
+}
+
+int standardFunctions::Sleep::arity() {
+    return 1;
+}
+
+std::string standardFunctions::Sleep::to_string() {
+    return "<native function " + name() + ">";
+}
+
+std::string standardFunctions::Sleep::name() {
+    return "sleep";
 }
 

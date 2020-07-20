@@ -4,7 +4,7 @@
 #include "Token.h"
 
 
-Environment::Environment(Environment *parent) : parentEnv(parent) {}
+Environment::Environment(Environment::SharedPtr parent) : parentEnv(std::move(parent)) {}
 
 LoxObject Environment::get(const Token &identifier) {
     std::string key = identifier.lexeme;
@@ -50,7 +50,17 @@ void Environment::assign(const Token &identifier, const LoxObject &val) {
     parentEnv->assign(identifier, val);
 }
 
-Environment *Environment::parent() {
+Environment::SharedPtr Environment::parent() {
     return parentEnv;
 }
+
+
+ScopedEnvironment::ScopedEnvironment(Environment::SharedPtr &currentEnv, Environment::SharedPtr newEnv) : mainReference(currentEnv), copyOfPreviousEnv(currentEnv) {
+    mainReference = std::move(newEnv);
+}
+
+ScopedEnvironment::~ScopedEnvironment(){
+    mainReference = copyOfPreviousEnv;
+}
+
 

@@ -1,7 +1,6 @@
 #include <stdexcept>
 #include <iostream>
 #include <cassert>
-#include <gsl/gsl_util>
 #include <sstream>
 #include "Interpreter.h"
 #include "Token.h"
@@ -10,14 +9,13 @@
 #include "standardlib/StandardFunctions.h"
 #include "LoxFunctionWrapper.h"
 
-//TODO: Abstract the environments stack behavior into an environment manager class
+//TODO: Add support for loading standard function in a more clean way
 
 
 Interpreter::Interpreter() {
-    environments.push(Environment());
-    globalEnv = &environments.top();
-    LoxObject function(std::make_shared<standardFunctions::Clock>());
-    globalEnv->define("clock", function);
+    environment = std::make_shared<Environment>();
+    globalEnv = environment;
+    loadBuiltinFunctions();
 }
 
 
@@ -66,15 +64,15 @@ void Interpreter::execute(Stmt* stmt) {
 void Interpreter::visit(VarDeclarationStmt *varDeclarationStmt) {
     if (varDeclarationStmt->expr != nullptr){
         LoxObject initializer = interpret(varDeclarationStmt->expr.get());
-        environments.top().define(varDeclarationStmt->identifier, initializer);
+        environment->define(varDeclarationStmt->identifier, initializer);
     } else {
-        environments.top().define(varDeclarationStmt->identifier, LoxObject());
+        environment->define(varDeclarationStmt->identifier, LoxObject());
     }
 }
 
 LoxObject Interpreter::visit(const AssignmentExpr *assignmentExpr) {
     LoxObject value = interpret(assignmentExpr->value.get());
-    environments.top().assign(assignmentExpr->identifier, value);
+    environment->assign(assignmentExpr->identifier, value);
     return value;
 }
 
@@ -129,10 +127,14 @@ void Interpreter::visit(WhileStmt *whileStmt) {
 }
 
 void Interpreter::visit(ForStmt *forStmt) {
-    Environment newEnv(&(this->environments.top()));
-    environments.push(newEnv);
-    //TODO: Could I do this with RAII?
-    auto finalAction = gsl::finally([this] {this->environments.pop();}); //Make sure that the new environment is popped even if exceptions are thrown
+//    Environment::SharedPtr previous_env = environment;
+//    environment = std::make_shared<Environment>(environment);
+
+//    //TODO: Could I do this with RAII?
+//    auto finalAction = gsl::finally([this, previous_env] {this->environment = previous_env;}); //Make sure that the new environment is popped even if exceptions are thrown
+
+    Environment::SharedPtr newEnv = std::make_shared<Environment>();
+    ScopedEnvironment scoped(environment, newEnv);
 
     if (forStmt->initializer.get() != nullptr) {execute(forStmt->initializer.get());}
     bool noCondition = forStmt->condition.get() == nullptr;
@@ -151,7 +153,7 @@ void Interpreter::visit(ForStmt *forStmt) {
 }
 
 void Interpreter::visit(BlockStmt *blockStmt) {
-    Environment newEnv(&(this->environments.top()));
+    Environment::SharedPtr newEnv = std::make_shared<Environment>(environment);
     executeBlock(blockStmt->statements, newEnv);
 }
 
@@ -166,7 +168,7 @@ void Interpreter::visit(ContinueStmt *continueStmt) {
 void Interpreter::visit(FunctionDeclStmt *functionStmt) {
     SharedCallablePtr function = std::make_shared<LoxFunctionWrapper>(functionStmt);
     LoxObject functionObject(function);
-    environments.top().define(functionStmt->name, functionObject);
+    environment->define(functionStmt->name, functionObject);
 }
 
 //EXPRESSIONS
@@ -222,11 +224,11 @@ LoxObject Interpreter::visit(const UnaryExpr *unaryExpr) {
 }
 
 LoxObject Interpreter::visit(const LiteralExpr *literalExpr) {
-    return literalExpr->literal; //FIX THIS
+    return literalExpr->literal;
 }
 
 LoxObject Interpreter::visit(const VariableExpr *variableExpr) {
-    return environments.top().get(variableExpr->identifier);
+    return environment->get(variableExpr->identifier);
 }
 
 LoxObject Interpreter::visit(const OrExpr *orExpr) {
@@ -269,11 +271,20 @@ LoxObject Interpreter::visit(const FunctionCallExpr *functionCallExpr) {
     return function->call(*this, arguments);
 }
 
-void Interpreter::executeBlock(const std::vector<UniqueStmtPtr> &stmts, const Environment &newEnv) {
-    environments.push(newEnv);
-    auto finalAction = gsl::finally([this] {this->environments.pop();}); //Make sure that the new environment is popped even if exceptions are thrown
-                                                                            //TODO: Could I do this with RAII?
+void Interpreter::executeBlock(const std::vector<UniqueStmtPtr> &stmts, Environment::SharedPtr newEnv) {
+    ScopedEnvironment scope(environment, newEnv);
     for (auto const &stmt : stmts){
         execute(stmt.get());
     }
+}
+
+void Interpreter::loadBuiltinFunctions() {
+    std::shared_ptr<LoxCallable> clock = std::make_shared<standardFunctions::Clock>();
+    std::shared_ptr<LoxCallable> sleep = std::make_shared<standardFunctions::Sleep>();
+
+    std::vector<LoxObject> functions = {LoxObject(clock), LoxObject(sleep)};
+    for (const auto &function : functions){
+        globalEnv->define(function.getCallable()->name(), function);
+    }
+
 }

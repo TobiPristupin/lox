@@ -15,6 +15,14 @@ namespace standardFunctions {
         std::string to_string() override;
         std::string name() override;
     };
+
+    class Sleep : public LoxCallable {
+    public:
+        LoxObject call(Interpreter &interpreter, const std::vector<LoxObject> &arguments) override;
+        int arity() override;
+        std::string to_string() override;
+        std::string name() override;
+    };
 }
 
 
