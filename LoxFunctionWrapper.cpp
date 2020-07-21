@@ -3,13 +3,20 @@
 
 LoxObject LoxFunctionWrapper::call(Interpreter &interpreter, const std::vector<LoxObject> &arguments) {
     Environment::SharedPtr newEnv = std::make_shared<Environment>(interpreter.globalEnv);
-    assert(functionDeclStmt->params.size() == arguments.size()); //This should have aleady been checked.
+    assert(functionDeclStmt->params.size() == arguments.size()); //This should have already been checked.
     for (int i = 0; i < arguments.size(); i++){
         newEnv->define(functionDeclStmt->params[i], arguments[i]);
     }
 
-    interpreter.executeBlock(functionDeclStmt->body, newEnv);
-    return LoxObject();
+    try {
+        interpreter.executeBlock(functionDeclStmt->body, newEnv);
+    } catch (const ReturnException &returnStmt) {
+        /*NOTE: We're using exceptions as control flow here because it is the cleanest way to implement return given
+        how the book implements the interpreter. This exception was thrown in the visitReturnStmt method of the interpreter*/
+        return returnStmt.value;
+    }
+
+    return LoxObject::Nil();
 }
 
 int LoxFunctionWrapper::arity() {

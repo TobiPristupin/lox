@@ -26,7 +26,7 @@ std::string standardFunctions::Clock::name() {
 LoxObject standardFunctions::Sleep::call(Interpreter &interpreter, const std::vector<LoxObject> &arguments) {
     int time = (int) arguments[0].getNumber();
     std::this_thread::sleep_for(std::chrono::milliseconds(time));
-    return LoxObject();
+    return LoxObject::Nil();
 }
 
 int standardFunctions::Sleep::arity() {

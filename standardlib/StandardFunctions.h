@@ -23,6 +23,7 @@ namespace standardFunctions {
         std::string to_string() override;
         std::string name() override;
     };
+
 }
 
 

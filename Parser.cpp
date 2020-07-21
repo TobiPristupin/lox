@@ -79,6 +79,7 @@ UniqueStmtPtr Parser::statement() {
     if (match(TokenType::FOR)) return forStatement();
     if (match(TokenType::BREAK)) return breakStatement();
     if (match(TokenType::CONTINUE)) return continueStatement();
+    if (match(TokenType::RETURN)) return returnStatement();
 
     return exprStatement();
 }
@@ -190,6 +191,17 @@ UniqueStmtPtr Parser::continueStatement() {
         throw error("continue statement must be inside of a loop", previous().line);
     }
     return std::make_unique<ContinueStmt>();
+}
+
+UniqueStmtPtr Parser::returnStatement() {
+    Token keyword = previous();
+    UniqueExprPtr expr = nullptr;
+    if (!check(TokenType::SEMICOLON)){
+        expr = expression();
+    }
+
+    expect(TokenType::SEMICOLON, "Expected ';' after return statement");
+    return std::make_unique<ReturnStmt>(keyword, std::move(expr));
 }
 
 

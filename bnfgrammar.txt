@@ -8,12 +8,13 @@ funDecl :== "fun" function ;
 function :== IDENTIFIER "(" parameters? ")" block ;
 parameters :== IDENTIFIER ("," IDENTIFIER)* ;
 varDecl :== "var" IDENTIFIER ("=" expression)? ";" ;
-statement :== exprStatement | ifStatement | printStatement | whileStmt | forStmt | block;
+statement :== exprStatement | ifStatement | printStatement | whileStmt | forStmt | returnStmt | block;
 exprStatement :== expression ";" ;
 printStatement :== "print" expression ";" ;
 ifStatement :== "if" "(" expression ")" statement ("elif" "(" expression ")" statement)* ("else" statement)? ;
 whileStmt :== "while" "(" expression ")" statement ;
 forStmt :== "for" "(" (varDecl | exprStatement | ";") expression? ";" expression? ")" statement;
+returnStmt :== "return" expression? ";" ;
 block = "{" declaration* "}" ;
 
 //expressions

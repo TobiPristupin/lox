@@ -66,3 +66,14 @@ FunctionDeclStmt::FunctionDeclStmt(const Token &name, const std::vector<Token> &
 void FunctionDeclStmt::accept(StmtVisitor &visitor) {
     visitor.visit(this);
 }
+
+
+ReturnStmt::ReturnStmt(const Token &keyword, UniqueExprPtr expr) : keyword(keyword), expr(std::move(expr)) {}
+
+void ReturnStmt::accept(StmtVisitor &visitor) {
+    visitor.visit(this);
+}
+
+ReturnException::ReturnException(const LoxObject &value) : value(value) {
+    value.isNumber();
+}

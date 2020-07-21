@@ -38,6 +38,7 @@ private:
     UniqueStmtPtr forStatement();
     UniqueStmtPtr breakStatement();
     UniqueStmtPtr continueStatement();
+    UniqueStmtPtr returnStatement();
 
 
     std::vector<UniqueStmtPtr> block();

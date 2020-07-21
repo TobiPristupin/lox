@@ -17,16 +17,17 @@ public:
 
     void interpret(const std::vector<UniqueStmtPtr> &statements, bool replMode = false);
 
-    void visit(ExpressionStmt *expressionStmt) override;
-    void visit(PrintStmt *printStmt) override;
-    void visit(VarDeclarationStmt *varDeclarationStmt) override;
-    void visit(BlockStmt *blockStmt) override;
-    void visit(IfStmt *ifStmt) override;
-    void visit(BreakStmt *breakStmt) override;
-    void visit(WhileStmt *whileStmt) override;
-    void visit(ForStmt *forStmt) override;
-    void visit(ContinueStmt *continueStmt) override;
-    void visit(FunctionDeclStmt *functionStmt) override;
+    void visit(const ExpressionStmt *expressionStmt) override;
+    void visit(const PrintStmt *printStmt) override;
+    void visit(const VarDeclarationStmt *varDeclarationStmt) override;
+    void visit(const BlockStmt *blockStmt) override;
+    void visit(const IfStmt *ifStmt) override;
+    void visit(const BreakStmt *breakStmt) override;
+    void visit(const WhileStmt *whileStmt) override;
+    void visit(const ForStmt *forStmt) override;
+    void visit(const ContinueStmt *continueStmt) override;
+    void visit(const FunctionDeclStmt *functionStmt) override;
+    void visit(const ReturnStmt *returnStmt) override;
 
 
     LoxObject visit(const BinaryExpr *binaryExpr) override;

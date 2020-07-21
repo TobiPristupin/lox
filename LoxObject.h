@@ -21,13 +21,14 @@ public:
     LoxType type = LoxType::NIL;
 
     explicit LoxObject(const Token &token);
-    LoxObject(); //Use this constructor when initializing the object as NIL
     explicit LoxObject(double number);
     explicit LoxObject(const std::string &string);
     explicit LoxObject(const char* string);
     explicit LoxObject(bool boolean);
     explicit LoxObject(SharedCallablePtr callable);
     explicit LoxObject(LoxCallable* ptr) = delete;
+    static LoxObject Nil();
+    LoxObject(); //Initializes the object as NIL
 
     bool isNumber() const;
     bool isBoolean() const;

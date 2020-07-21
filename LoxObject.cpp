@@ -13,7 +13,9 @@ LoxObject::LoxObject(const char *string) : LoxObject(std::string(string)) {}
 
 LoxObject::LoxObject(bool boolean) : type(LoxType::BOOL), boolean(boolean) {}
 
-LoxObject::LoxObject() : type(LoxType::NIL) {}
+LoxObject LoxObject::Nil() {
+    return LoxObject();
+}
 
 LoxObject::LoxObject(SharedCallablePtr callable) : type(LoxType::CALLABLE), callable(std::move(callable)) {}
 
@@ -42,6 +44,8 @@ LoxObject::LoxObject(const Token &token) {
             throw std::runtime_error("Invalid token type when constructing LoxObject");
     }
 }
+
+LoxObject::LoxObject() : type(LoxType::NIL) {}
 
 
 bool LoxObject::isNumber() const {

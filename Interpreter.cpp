@@ -61,12 +61,12 @@ void Interpreter::execute(Stmt* stmt) {
 
 //STATEMENTS
 
-void Interpreter::visit(VarDeclarationStmt *varDeclarationStmt) {
+void Interpreter::visit(const VarDeclarationStmt *varDeclarationStmt) {
     if (varDeclarationStmt->expr != nullptr){
         LoxObject initializer = interpret(varDeclarationStmt->expr.get());
         environment->define(varDeclarationStmt->identifier, initializer);
     } else {
-        environment->define(varDeclarationStmt->identifier, LoxObject());
+        environment->define(varDeclarationStmt->identifier, LoxObject::Nil());
     }
 }
 
@@ -76,11 +76,11 @@ LoxObject Interpreter::visit(const AssignmentExpr *assignmentExpr) {
     return value;
 }
 
-void Interpreter::visit(ExpressionStmt *expressionStmt) {
+void Interpreter::visit(const ExpressionStmt *expressionStmt) {
     interpret(expressionStmt->expr.get());
 }
 
-void Interpreter::visit(PrintStmt *printStmt) {
+void Interpreter::visit(const PrintStmt *printStmt) {
     if (printStmt->expr.get() == nullptr){
         std::cout << "\n";
         return;
@@ -90,7 +90,7 @@ void Interpreter::visit(PrintStmt *printStmt) {
     std::cout << result << "\n";
 }
 
-void Interpreter::visit(IfStmt *ifStmt) {
+void Interpreter::visit(const IfStmt *ifStmt) {
     LoxObject condition = interpret(ifStmt->mainBranch.condition.get());
     if (condition.truthy()){
         execute(ifStmt->mainBranch.statement.get());
@@ -110,7 +110,7 @@ void Interpreter::visit(IfStmt *ifStmt) {
     }
 }
 
-void Interpreter::visit(WhileStmt *whileStmt) {
+void Interpreter::visit(const WhileStmt *whileStmt) {
     LoxObject condition = interpret(whileStmt->condition.get());
     while (condition.truthy()){
         try {
@@ -126,7 +126,7 @@ void Interpreter::visit(WhileStmt *whileStmt) {
     }
 }
 
-void Interpreter::visit(ForStmt *forStmt) {
+void Interpreter::visit(const ForStmt *forStmt) {
 //    Environment::SharedPtr previous_env = environment;
 //    environment = std::make_shared<Environment>(environment);
 
@@ -152,23 +152,38 @@ void Interpreter::visit(ForStmt *forStmt) {
     }
 }
 
-void Interpreter::visit(BlockStmt *blockStmt) {
+void Interpreter::visit(const BlockStmt *blockStmt) {
     Environment::SharedPtr newEnv = std::make_shared<Environment>(environment);
     executeBlock(blockStmt->statements, newEnv);
 }
 
-void Interpreter::visit(BreakStmt *breakStmt) {
+void Interpreter::visit(const BreakStmt *breakStmt) {
+    /*NOTE: We're using exceptions as control flow here because it is the cleanest way to implement break given
+    how the book implements the interpreter. This exception should be catched in the visitForStmt and visitWhileStmt methods*/
     throw BreakException();
 }
 
-void Interpreter::visit(ContinueStmt *continueStmt) {
+void Interpreter::visit(const ContinueStmt *continueStmt) {
+    /*NOTE: We're using exceptions as control flow here because it is the cleanest way to implement continue given
+    how the book implements the interpreter. This exception should be catched in the visitForStmt and visitWhileStmt methods*/
     throw ContinueException();
 }
 
-void Interpreter::visit(FunctionDeclStmt *functionStmt) {
+void Interpreter::visit(const FunctionDeclStmt *functionStmt) {
     SharedCallablePtr function = std::make_shared<LoxFunctionWrapper>(functionStmt);
     LoxObject functionObject(function);
     environment->define(functionStmt->name, functionObject);
+}
+
+void Interpreter::visit(const ReturnStmt *returnStmt) {
+    LoxObject value = LoxObject::Nil();
+    if (returnStmt->expr.get() != nullptr){
+        value = interpret(returnStmt->expr.get());
+    }
+
+    /*NOTE: We're using exceptions as control flow here because it is the cleanest way to implement return given
+    how the book implements the interpreter. This exception should be catched in the call method of LoxFunctionWrapper*/
+    throw ReturnException(value);
 }
 
 //EXPRESSIONS

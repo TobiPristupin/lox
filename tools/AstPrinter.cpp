@@ -12,27 +12,27 @@ LoxObject AstPrinter::visit(const BinaryExpr *binaryExpr) {
     ss << " ";
     binaryExpr->right->accept(*this);
     ss << ")";
-    return LoxObject();
+    return LoxObject::Nil();
 }
 
 LoxObject AstPrinter::visit(const GroupingExpr *groupingExpr) {
     ss << "(group ";
     groupingExpr->expr->accept(*this);
     ss << ")";
-    return LoxObject();
+    return LoxObject::Nil();
 }
 
 LoxObject AstPrinter::visit(const UnaryExpr *unaryExpr) {
     ss << "(" << unaryExpr->op.lexeme;
     unaryExpr->expr->accept(*this);
     ss << ")";
-    return LoxObject();
+    return LoxObject::Nil();
 }
 
 LoxObject AstPrinter::visit(const LiteralExpr *literalExpr) {
     LoxObject literal = literalExpr->literal;
     ss << literal;
-    return LoxObject();
+    return LoxObject::Nil();
 }
 
 

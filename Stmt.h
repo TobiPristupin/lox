@@ -15,21 +15,23 @@ class ForStmt;
 class BreakStmt;
 class ContinueStmt;
 class FunctionDeclStmt;
+class ReturnStmt;
 
 using UniqueStmtPtr = std::unique_ptr<Stmt>;
 
 class StmtVisitor {
 public:
-    virtual void visit(ExpressionStmt *expressionStmt) = 0;
-    virtual void visit(PrintStmt *printStmt) = 0;
-    virtual void visit(VarDeclarationStmt *varStmt) = 0;
-    virtual void visit(BlockStmt *blockStmt) = 0;
-    virtual void visit(IfStmt *ifStmt) = 0;
-    virtual void visit(WhileStmt *whileStmt) = 0;
-    virtual void visit(BreakStmt *breakStmt) = 0;
-    virtual void visit(ContinueStmt *continueStmt) = 0;
-    virtual void visit(ForStmt *forStmt) = 0;
-    virtual void visit(FunctionDeclStmt *functionStmt) = 0;
+    virtual void visit(const ExpressionStmt *expressionStmt) = 0;
+    virtual void visit(const PrintStmt *printStmt) = 0;
+    virtual void visit(const VarDeclarationStmt *varStmt) = 0;
+    virtual void visit(const BlockStmt *blockStmt) = 0;
+    virtual void visit(const IfStmt *ifStmt) = 0;
+    virtual void visit(const WhileStmt *whileStmt) = 0;
+    virtual void visit(const BreakStmt *breakStmt) = 0;
+    virtual void visit(const ContinueStmt *continueStmt) = 0;
+    virtual void visit(const ForStmt *forStmt) = 0;
+    virtual void visit(const FunctionDeclStmt *functionStmt) = 0;
+    virtual void visit(const ReturnStmt *returnStmt) = 0;
 
 };
 
@@ -131,6 +133,22 @@ public:
 
     FunctionDeclStmt(const Token &name, const std::vector<Token> &params, std::vector<UniqueStmtPtr> body);
     void accept(StmtVisitor &visitor) override;
+};
+
+class ReturnStmt : public Stmt {
+public:
+    UniqueExprPtr expr;
+    Token keyword;
+
+    explicit ReturnStmt(const Token &keyword, UniqueExprPtr expr);
+    void accept(StmtVisitor &visitor) override;
+};
+
+class ReturnException {
+public:
+    LoxObject value;
+
+    explicit ReturnException(const LoxObject& value);
 };
 
 
