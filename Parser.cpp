@@ -292,7 +292,51 @@ UniqueExprPtr Parser::unary() {
         return std::make_unique<UnaryExpr>(op, std::move(right));
     }
 
-    return functionCall();
+    return prefix();
+}
+
+UniqueExprPtr Parser::prefix() {
+    std::vector<TokenType> prefixTokens = {TokenType::PLUS_PLUS, TokenType::MINUS_MINUS};
+    if (match(prefixTokens)){
+        Token op = previous();
+        UniqueExprPtr right = prefix();
+        if (dynamic_cast<IncrementExpr*>(right.get()) || dynamic_cast<DecrementExpr*>(right.get())){
+            throw error("Operators '++' and '--' cannot be concatenated", peek().line);
+        }
+
+        VariableExpr* lvalue = dynamic_cast<VariableExpr*>(right.get());
+        if (lvalue){
+            Token identifier = lvalue->identifier;
+            if (op.type == TokenType::PLUS_PLUS) return std::make_unique<IncrementExpr>(identifier, IncrementExpr::Type::PREFIX);
+            else return std::make_unique<DecrementExpr>(identifier, DecrementExpr::Type::PREFIX);
+        } else {
+            throw error("Operators '++' and '--' must be applied to an lvalue operand (a variable)", op.line);
+        }
+    }
+
+    return postfix();
+}
+
+UniqueExprPtr Parser::postfix() {
+    UniqueExprPtr expr = functionCall();
+    std::vector<TokenType> postfixTokens = {TokenType::PLUS_PLUS, TokenType::MINUS_MINUS};
+    if (match(postfixTokens)){
+        Token op = previous();
+        VariableExpr* lvalue = dynamic_cast<VariableExpr*>(expr.get());
+        if (lvalue){
+            Token identifier = lvalue->identifier;
+            if (op.type == TokenType::PLUS_PLUS) expr = std::make_unique<IncrementExpr>(identifier, IncrementExpr::Type::POSTFIX);
+            else expr = std::make_unique<DecrementExpr>(identifier, DecrementExpr::Type::POSTFIX);
+        } else {
+            throw error("Operators '++' and '--' must be applied to an lvalue operand (a variable)", op.line);
+        }
+    }
+
+    if (match(postfixTokens)){
+        throw error("Operators '++' and '--' cannot be concatenated", peek().line);
+    }
+
+    return expr;
 }
 
 UniqueExprPtr Parser::functionCall() {

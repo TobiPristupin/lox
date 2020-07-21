@@ -73,10 +73,6 @@ std::optional<Token> Scanner::scanNextToken() {
             return createToken(TokenType::COMMA);
         case '.':
             return createToken(TokenType::DOT);
-        case '-':
-            return createToken(TokenType::MINUS);
-        case '+':
-            return createToken(TokenType::PLUS);
         case ';':
             return createToken(TokenType::SEMICOLON);
         case '*':
@@ -117,6 +113,20 @@ std::optional<Token> Scanner::scanNextToken() {
                 return std::nullopt;
             } else {
                 return createToken(TokenType::SLASH);
+            }
+        case '+':
+            if (currentCharMatches('+')){
+                advance();
+                return createToken(TokenType::PLUS_PLUS);
+            } else {
+                return createToken(TokenType::PLUS);
+            }
+        case '-':
+            if (currentCharMatches('-')){
+                advance();
+                return createToken(TokenType::MINUS_MINUS);
+            } else {
+                return createToken(TokenType::MINUS);
             }
 
             //strings

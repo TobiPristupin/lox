@@ -202,6 +202,22 @@ LoxObject LoxObject::operator!() const {
     throw std::runtime_error("Cannot apply unary operator '!' to operand of type " + loxTypeToString(this->type));
 }
 
+LoxObject LoxObject::operator++() {
+    if (isNumber()){
+        return LoxObject(++number);
+    }
+
+    throw std::runtime_error("Cannot apply prefix operator '++' to operand of type " + loxTypeToString(this->type));
+}
+
+LoxObject LoxObject::operator--() {
+    if (isNumber()){
+        return LoxObject(--number);
+    }
+
+    throw std::runtime_error("Cannot apply prefix operator '--' to operand of type " + loxTypeToString(this->type));
+}
+
 std::ostream &operator<<(std::ostream &os, const LoxObject &object) {
     if (object.isString()){
         std::string s = object.getString();

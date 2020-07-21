@@ -38,6 +38,8 @@ public:
     LoxObject visit(const OrExpr *orExpr) override;
     LoxObject visit(const AndExpr *andExpr) override;
     LoxObject visit(const FunctionCallExpr *functionCallExpr) override;
+    LoxObject visit(const IncrementExpr *incrementExpr) override;
+    LoxObject visit(const DecrementExpr *decrementExpr) override;
 
     void interpretReplMode(Stmt* stmt);
     LoxObject interpret(Expr* expr);

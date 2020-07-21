@@ -9,7 +9,7 @@ public:
     //LoxFunctionWrapper does not own the stmt, it only uses it. All statements are owned by Runner.cpp by using unique_ptrs
     FunctionDeclStmt* functionDeclStmt;
 
-    LoxFunctionWrapper(FunctionDeclStmt* stmt) : functionDeclStmt(stmt){};
+    explicit LoxFunctionWrapper(FunctionDeclStmt* stmt) : functionDeclStmt(stmt){};
     LoxObject call(Interpreter &interpreter, const std::vector<LoxObject> &arguments) override;
     int arity() override;
     std::string to_string() override;

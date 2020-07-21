@@ -25,7 +25,9 @@ equality :== comparison ( ("==" | "!=") comparison )* ;
 comparison :== addition ( (">" | ">=" | "<" | "<=") addition )* ;
 addition :== multiplication ( ("-" | "+") multiplication )* ;
 multiplication :== unary ( ("/" | "*") unary )* ;
-unary :== ("!" | "-") unary | call ;
+unary :== ("!" | "-") unary | prefix ;
+prefix :== ("++" | "--") postfix |
+postfix :==  call ("++" | "--")* ;
 call :== primary ( "(" arguments ")" )* ;
 arguments :== expression ( "," expression)* ;
 primary :== NUMBER | STRING | IDENTIFIER | "false" | "true" | "nil" | "(" expression ")" ;
@@ -35,4 +37,6 @@ primary :== NUMBER | STRING | IDENTIFIER | "false" | "true" | "nil" | "(" expres
 * elif
 * break and continue
 * print supports "\n" and "\t", empty print prints a newline
+* support for prefix and postfix ++ and --
+
 #14(6+1)61 68yeee79y

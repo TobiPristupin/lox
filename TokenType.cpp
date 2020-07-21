@@ -42,6 +42,10 @@ std::string tokenTypeToString(TokenType type) {
             return "LESS";
         case TokenType::LESS_EQUAL:
             return "LESS_EQUAL";
+        case TokenType::PLUS_PLUS:
+            return "PLUS_PLUS";
+        case TokenType::MINUS_MINUS:
+            return "MINUS_MINUS";
         case TokenType::IDENTIFIER:
             return "IDENTIFIER";
         case TokenType::STRING:

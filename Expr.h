@@ -17,6 +17,8 @@ class AssignmentExpr;
 class OrExpr;
 class AndExpr;
 class FunctionCallExpr;
+class IncrementExpr;
+class DecrementExpr;
 
 using UniqueExprPtr = std::unique_ptr<Expr>;
 
@@ -31,12 +33,14 @@ public:
     virtual LoxObject visit(const OrExpr* orExpr) = 0;
     virtual LoxObject visit(const AndExpr* andExpr) = 0;
     virtual LoxObject visit(const FunctionCallExpr* functionCallExpr) = 0;
+    virtual LoxObject visit(const IncrementExpr* incrementExpr) = 0;
+    virtual LoxObject visit(const DecrementExpr* decrementExpr) = 0;
 };
 
 
 class Expr {
 public:
-    virtual ~Expr() = 0;
+    virtual ~Expr() = default;
     virtual LoxObject accept(ExprVisitor& visitor) = 0;
 };
 
@@ -54,7 +58,7 @@ class GroupingExpr : public Expr {
 public:
     UniqueExprPtr expr;
 
-    GroupingExpr(UniqueExprPtr expr);
+    explicit GroupingExpr(UniqueExprPtr expr);
     LoxObject accept(ExprVisitor& visitor) override;
 };
 
@@ -71,17 +75,16 @@ class LiteralExpr : public Expr {
 public:
     LoxObject literal;
 
-    LiteralExpr(const LoxObject &literal);
+    explicit LiteralExpr(const LoxObject &literal);
     LoxObject accept(ExprVisitor& visitor) override;
 
 };
-
 
 class VariableExpr : public Expr {
 public:
     Token identifier;
 
-    VariableExpr(const Token &identifier);
+    explicit VariableExpr(const Token &identifier);
     LoxObject accept(ExprVisitor& visitor) override;
 
 };
@@ -118,6 +121,32 @@ public:
     std::vector<UniqueExprPtr> arguments;
 
     FunctionCallExpr(UniqueExprPtr callee, const Token &closingParen, std::vector<UniqueExprPtr> arguments);
+    LoxObject accept(ExprVisitor &visitor) override;
+};
+
+class IncrementExpr : public Expr {
+public:
+    enum class Type {
+        POSTFIX, PREFIX
+    };
+
+    Token identifier;
+    IncrementExpr::Type type;
+
+    IncrementExpr(const Token &identifier, IncrementExpr::Type type);
+    LoxObject accept(ExprVisitor &visitor) override;
+};
+
+class DecrementExpr : public Expr {
+public:
+    enum class Type {
+        POSTFIX, PREFIX
+    };
+
+    Token identifier;
+    DecrementExpr::Type type;
+
+    DecrementExpr(const Token &identifier, Type type);
     LoxObject accept(ExprVisitor &visitor) override;
 };
 

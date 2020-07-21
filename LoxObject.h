@@ -53,6 +53,8 @@ public:
     friend bool operator>=(const LoxObject &lhs, const LoxObject &rhs);
     friend bool operator<(const LoxObject &lhs, const LoxObject &rhs);
     friend bool operator<=(const LoxObject &lhs, const LoxObject &rhs);
+    LoxObject operator++();
+    LoxObject operator--();
     LoxObject operator-() const;
     LoxObject operator!() const;
 

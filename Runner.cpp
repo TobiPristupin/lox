@@ -51,6 +51,7 @@ int Runner::runCode(const std::string& code, bool replMode) {
         return 65;
     }
 
+
     try {
         interpreter.interpret(statements, replMode);
     } catch (const LoxRuntimeError &exception) {

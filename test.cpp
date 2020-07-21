@@ -51,11 +51,8 @@ public:
 #include <chrono>
 int main(){
     int a = 2;
-    int &ref = a;
-    int b = ref;
-    b = 10;
-    std::cout << ref << "\n";
-
+    std::cout << a << '\n';
+    std::cout << a << '\n';
 
 }
 

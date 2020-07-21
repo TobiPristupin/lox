@@ -223,6 +223,26 @@ LoxObject Interpreter::visit(const UnaryExpr *unaryExpr) {
     throw std::runtime_error("Invalid unary operand");
 }
 
+LoxObject Interpreter::visit(const IncrementExpr *incrementExpr) {
+    LoxObject prev = environment->get(incrementExpr->identifier);
+    LoxObject inc = prev + LoxObject(1.0);
+    environment->assign(incrementExpr->identifier, inc);
+    if (incrementExpr->type == IncrementExpr::Type::POSTFIX){
+        return prev;
+    }
+    return inc;
+}
+
+LoxObject Interpreter::visit(const DecrementExpr *decrementExpr) {
+    LoxObject prev = environment->get(decrementExpr->identifier);
+    LoxObject dec = prev - LoxObject(1.0);
+    environment->assign(decrementExpr->identifier, dec);
+    if (decrementExpr->type == DecrementExpr::Type::POSTFIX){
+        return prev;
+    }
+    return dec;
+}
+
 LoxObject Interpreter::visit(const LiteralExpr *literalExpr) {
     return literalExpr->literal;
 }
