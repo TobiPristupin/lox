@@ -170,7 +170,7 @@ void Interpreter::visit(const ContinueStmt *continueStmt) {
 }
 
 void Interpreter::visit(const FunctionDeclStmt *functionStmt) {
-    SharedCallablePtr function = std::make_shared<LoxFunctionWrapper>(functionStmt);
+    SharedCallablePtr function = std::make_shared<LoxFunctionWrapper>(functionStmt, environment);
     LoxObject functionObject(function);
     environment->define(functionStmt->name, functionObject);
 }

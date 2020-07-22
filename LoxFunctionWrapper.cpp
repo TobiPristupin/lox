@@ -1,8 +1,10 @@
 #include <cassert>
 #include "LoxFunctionWrapper.h"
 
+LoxFunctionWrapper::LoxFunctionWrapper(const FunctionDeclStmt *stmt, Environment::SharedPtr closure)  : functionDeclStmt(stmt), closure(std::move(closure)) {}
+
 LoxObject LoxFunctionWrapper::call(Interpreter &interpreter, const std::vector<LoxObject> &arguments) {
-    Environment::SharedPtr newEnv = std::make_shared<Environment>(interpreter.globalEnv);
+    Environment::SharedPtr newEnv = std::make_shared<Environment>(closure);
     assert(functionDeclStmt->params.size() == arguments.size()); //This should have already been checked.
     for (int i = 0; i < arguments.size(); i++){
         newEnv->define(functionDeclStmt->params[i], arguments[i]);
