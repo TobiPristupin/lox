@@ -1,7 +1,9 @@
 #include <cassert>
+#include <sstream>
 #include "LoxFunctionWrapper.h"
 
-LoxFunctionWrapper::LoxFunctionWrapper(const FunctionDeclStmt *stmt, Environment::SharedPtr closure)  : functionDeclStmt(stmt), closure(std::move(closure)) {}
+LoxFunctionWrapper::LoxFunctionWrapper(const FunctionDeclStmt *functionDeclStmt, Environment::SharedPtr closure)  : functionDeclStmt(functionDeclStmt), closure(std::move(closure)) {}
+
 
 LoxObject LoxFunctionWrapper::call(Interpreter &interpreter, const std::vector<LoxObject> &arguments) {
     Environment::SharedPtr newEnv = std::make_shared<Environment>(closure);
@@ -31,4 +33,32 @@ std::string LoxFunctionWrapper::to_string() {
 
 std::string LoxFunctionWrapper::name() {
     return functionDeclStmt->name.lexeme;
+}
+
+
+LoxLambdaWrapper::LoxLambdaWrapper(const LambdaExpr *lambdaExpr, Environment::SharedPtr closure) : lambdaExpr(lambdaExpr), closure(std::move(closure)) {}
+
+LoxObject LoxLambdaWrapper::call(Interpreter &interpreter, const std::vector<LoxObject> &arguments) {
+    Environment::SharedPtr newEnv = std::make_shared<Environment>(closure);
+    assert(lambdaExpr->params.size() == arguments.size()); //This should have already been checked.
+    for (int i = 0; i < arguments.size(); i++){
+        newEnv->define(lambdaExpr->params[i], arguments[i]);
+    }
+
+
+    return interpreter.interpret(lambdaExpr->body.get(), newEnv);
+}
+
+int LoxLambdaWrapper::arity() {
+    return lambdaExpr->params.size();
+}
+
+std::string LoxLambdaWrapper::to_string() {
+    return "<function " + name() + ">";
+}
+
+std::string LoxLambdaWrapper::name() {
+    std::stringstream ss;
+    ss << "lambda at " << lambdaExpr;
+    return ss.str();
 }

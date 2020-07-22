@@ -41,9 +41,11 @@ public:
     LoxObject visit(const FunctionCallExpr *functionCallExpr) override;
     LoxObject visit(const IncrementExpr *incrementExpr) override;
     LoxObject visit(const DecrementExpr *decrementExpr) override;
+    LoxObject visit(const LambdaExpr *lambdaExpr) override;
 
     void interpretReplMode(Stmt* stmt);
     LoxObject interpret(Expr* expr);
+    LoxObject interpret(Expr* expr, Environment::SharedPtr newEnv);
     void execute(Stmt* pStmt);
     void executeBlock(const std::vector<UniqueStmtPtr> &stmts, Environment::SharedPtr newEnv);
     void loadBuiltinFunctions();

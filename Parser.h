@@ -40,11 +40,11 @@ private:
     UniqueStmtPtr continueStatement();
     UniqueStmtPtr returnStatement();
 
-
     std::vector<UniqueStmtPtr> block();
 
     UniqueExprPtr expression();
     UniqueExprPtr assignment();
+    UniqueExprPtr lambda();
     UniqueExprPtr logicOr();
     UniqueExprPtr logicAnd();
     UniqueExprPtr equality();

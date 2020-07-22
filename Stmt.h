@@ -2,7 +2,9 @@
 #define JLOX_STMT_H
 
 #include <vector>
-#include "Expr.h"
+#include "Token.h"
+#include "LoxObject.h"
+#include "typedefs.h"
 
 class Stmt;
 class ExpressionStmt;
@@ -17,7 +19,7 @@ class ContinueStmt;
 class FunctionDeclStmt;
 class ReturnStmt;
 
-using UniqueStmtPtr = std::unique_ptr<Stmt>;
+class Expr;
 
 class StmtVisitor {
 public:

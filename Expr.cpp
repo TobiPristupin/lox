@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Expr.h"
+#include "Stmt.h"
 
 
 
@@ -71,5 +72,12 @@ LoxObject IncrementExpr::accept(ExprVisitor &visitor) {
 DecrementExpr::DecrementExpr(const Token &identifier, DecrementExpr::Type type) : identifier(identifier), type(type) {}
 
 LoxObject DecrementExpr::accept(ExprVisitor &visitor) {
+    return visitor.visit(this);
+}
+
+
+LambdaExpr::LambdaExpr(const std::vector<Token> &params, UniqueExprPtr body) : params(params), body(std::move(body)){}
+
+LoxObject LambdaExpr::accept(ExprVisitor &visitor) {
     return visitor.visit(this);
 }

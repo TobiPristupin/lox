@@ -19,7 +19,8 @@ block = "{" declaration* "}" ;
 
 //expressions
 expression :== assignment
-assignment :== (IDENTIFIER "=" equality ";") | logic_or;
+assignment :== (IDENTIFIER "=" equality ";") | lambda;
+lambda :== "lambda" arguments? ":" statement | logic_or ;
 logic_or :== logic_and ("or" logic_and)* ;
 logic_and :== equality ("and" equality)* ;
 equality :== comparison ( ("==" | "!=") comparison )* ;

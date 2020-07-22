@@ -210,7 +210,7 @@ UniqueExprPtr Parser::expression() {
 }
 
 UniqueExprPtr Parser::assignment() {
-    UniqueExprPtr expr = logicOr();
+    UniqueExprPtr expr = lambda();
     if (match(EQUAL)){
         Token op = previous();
         UniqueExprPtr rvalue = assignment();
@@ -225,6 +225,30 @@ UniqueExprPtr Parser::assignment() {
     }
 
     return expr;
+}
+
+UniqueExprPtr Parser::lambda() {
+    if (!match(TokenType::LAMBDA)){
+        return logicOr();
+    }
+
+    std::vector<Token> params;
+    if (!check(TokenType::COLON)){
+        do {
+            if (params.size() >= 255){
+                //Report the error but don't throw it bc throwing it will cause the parser to synchronize and we want to keep parsing
+                std::cout << error("Lambda expression cannot have more than 255 parameters", peek().line).what() << "\n";
+                hadError = true;
+            }
+
+            Token param = expect(TokenType::IDENTIFIER, "Expected parameter for lambda expression");
+            params.push_back(param);
+        } while (match(TokenType::COMMA));
+    }
+    expect(TokenType::COLON, "Expected colon after lambda parameter list");
+//    UniqueStmtPtr body = statement();
+    UniqueExprPtr body = logicOr();
+    return std::make_unique<LambdaExpr>(params, std::move(body));
 }
 
 UniqueExprPtr Parser::logicOr() {

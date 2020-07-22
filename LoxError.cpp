@@ -1,8 +1,3 @@
-//
-// Created by pristu on 4/11/20.
-//
-
-#include <iostream>
 #include "LoxError.h"
 
 LoxError::LoxError(const std::string &message, int line, int pos) : line(line), pos(pos) {

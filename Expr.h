@@ -5,7 +5,7 @@
 #include <vector>
 #include "Token.h"
 #include "LoxObject.h"
-
+#include "typedefs.h"
 
 class Expr;
 class BinaryExpr;
@@ -19,8 +19,10 @@ class AndExpr;
 class FunctionCallExpr;
 class IncrementExpr;
 class DecrementExpr;
+class LambdaExpr;
 
-using UniqueExprPtr = std::unique_ptr<Expr>;
+class Stmt;
+
 
 class ExprVisitor {
 public:
@@ -35,6 +37,7 @@ public:
     virtual LoxObject visit(const FunctionCallExpr* functionCallExpr) = 0;
     virtual LoxObject visit(const IncrementExpr* incrementExpr) = 0;
     virtual LoxObject visit(const DecrementExpr* decrementExpr) = 0;
+    virtual LoxObject visit(const LambdaExpr* lambdaExpr) = 0;
 };
 
 
@@ -147,6 +150,15 @@ public:
     DecrementExpr::Type type;
 
     DecrementExpr(const Token &identifier, Type type);
+    LoxObject accept(ExprVisitor &visitor) override;
+};
+
+class LambdaExpr : public Expr {
+public:
+    std::vector<Token> params;
+    UniqueExprPtr body;
+
+    LambdaExpr(const std::vector<Token> &params, UniqueExprPtr body);
     LoxObject accept(ExprVisitor &visitor) override;
 };
 

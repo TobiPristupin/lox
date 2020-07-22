@@ -11,7 +11,22 @@ public:
     const FunctionDeclStmt* functionDeclStmt;
     Environment::SharedPtr closure;
 
-    explicit LoxFunctionWrapper(const FunctionDeclStmt* stmt, Environment::SharedPtr closure);
+    LoxFunctionWrapper(const FunctionDeclStmt* functionDeclStmt, Environment::SharedPtr closure);
+    LoxObject call(Interpreter &interpreter, const std::vector<LoxObject> &arguments) override;
+    int arity() override;
+    std::string to_string() override;
+    std::string name() override;
+
+};
+
+//This class wraps a LambdaExpr into a LoxCallable. Basically it acts as the intermediary between the parser and the interpreter.
+class LoxLambdaWrapper : public LoxCallable {
+public:
+
+    const LambdaExpr* lambdaExpr;
+    Environment::SharedPtr closure;
+
+    LoxLambdaWrapper(const LambdaExpr* lambdaExpr, Environment::SharedPtr closure);
     LoxObject call(Interpreter &interpreter, const std::vector<LoxObject> &arguments) override;
     int arity() override;
     std::string to_string() override;

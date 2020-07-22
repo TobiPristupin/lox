@@ -1,13 +1,2 @@
-fun makeCounter(){
-    var i = 0;
-    fun count(){
-        i++;
-        print i;
-    }
-
-    return count;
-}
-
-var counter = makeCounter();
-counter();
-counter();
+var func = lambda : 1 + 2;
+print func();

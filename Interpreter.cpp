@@ -54,6 +54,10 @@ LoxObject Interpreter::interpret(Expr *expr) {
     return expr->accept(*this);
 }
 
+LoxObject Interpreter::interpret(Expr *expr, Environment::SharedPtr newEnv) {
+    ScopedEnvironment env(environment, newEnv);
+    return interpret(expr);
+}
 
 void Interpreter::execute(Stmt* stmt) {
     stmt->accept(*this);
@@ -173,6 +177,12 @@ void Interpreter::visit(const FunctionDeclStmt *functionStmt) {
     SharedCallablePtr function = std::make_shared<LoxFunctionWrapper>(functionStmt, environment);
     LoxObject functionObject(function);
     environment->define(functionStmt->name, functionObject);
+}
+
+LoxObject Interpreter::visit(const LambdaExpr *lambdaExpr) {
+    SharedCallablePtr function = std::make_shared<LoxLambdaWrapper>(lambdaExpr, environment);
+    LoxObject functionObject(function);
+    return functionObject;
 }
 
 void Interpreter::visit(const ReturnStmt *returnStmt) {

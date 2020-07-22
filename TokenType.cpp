@@ -22,6 +22,8 @@ std::string tokenTypeToString(TokenType type) {
             return "PLUS";
         case TokenType::SEMICOLON:
             return "SEMICOLON";
+        case TokenType::COLON:
+            return "SEMICOLON";
         case TokenType::SLASH:
             return "SLASH";
         case TokenType::STAR:
@@ -84,6 +86,8 @@ std::string tokenTypeToString(TokenType type) {
             return "SUPER";
         case TokenType::THIS:
             return "THIS";
+        case TokenType::LAMBDA:
+            return "LAMBDA";
         case TokenType::TRUE:
             return "TRUE";
         case TokenType::VAR:

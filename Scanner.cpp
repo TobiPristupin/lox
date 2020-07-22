@@ -24,7 +24,8 @@ std::map<std::string, TokenType> Scanner::reservedKeywords = {
         {"var", TokenType::VAR},
         {"while", TokenType::WHILE},
         {"break", TokenType::BREAK},
-        {"continue", TokenType::CONTINUE}
+        {"continue", TokenType::CONTINUE},
+        {"lambda", TokenType::LAMBDA}
 };
 
 Scanner::Scanner(const std::string &source) : source(source) {}
@@ -75,6 +76,8 @@ std::optional<Token> Scanner::scanNextToken() {
             return createToken(TokenType::DOT);
         case ';':
             return createToken(TokenType::SEMICOLON);
+        case ':':
+            return createToken(TokenType::COLON);
         case '*':
             return createToken(TokenType::STAR);
 

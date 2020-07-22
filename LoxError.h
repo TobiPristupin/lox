@@ -5,10 +5,10 @@
 #include <string>
 
 class LoxError : public std::exception {
-protected:
+public:
     std::string message;
     int line, pos;
-public:
+
     LoxError(const std::string &message, int line=-1, int pos=-1);
     const char *what() const noexcept override;
 };
