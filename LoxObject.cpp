@@ -260,6 +260,8 @@ std::string loxTypeToString(LoxType type) {
         case LoxType::CALLABLE:
             return "callable";
     }
+
+    return "unreachable";
 }
 
 

@@ -249,9 +249,9 @@ LoxObject Interpreter::visit(const UnaryExpr *unaryExpr) {
 }
 
 LoxObject Interpreter::visit(const IncrementExpr *incrementExpr) {
-    LoxObject prev = environment->get(incrementExpr->identifier);
+    LoxObject prev = environment->get(incrementExpr->variable->identifier);
     LoxObject inc = prev + LoxObject(1.0);
-    environment->assign(incrementExpr->identifier, inc);
+    environment->assign(incrementExpr->variable->identifier, inc);
     if (incrementExpr->type == IncrementExpr::Type::POSTFIX){
         return prev;
     }
@@ -259,9 +259,9 @@ LoxObject Interpreter::visit(const IncrementExpr *incrementExpr) {
 }
 
 LoxObject Interpreter::visit(const DecrementExpr *decrementExpr) {
-    LoxObject prev = environment->get(decrementExpr->identifier);
+    LoxObject prev = environment->get(decrementExpr->variable->identifier);
     LoxObject dec = prev - LoxObject(1.0);
-    environment->assign(decrementExpr->identifier, dec);
+    environment->assign(decrementExpr->variable->identifier, dec);
     if (decrementExpr->type == DecrementExpr::Type::POSTFIX){
         return prev;
     }

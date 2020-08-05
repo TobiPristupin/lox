@@ -133,10 +133,10 @@ public:
         POSTFIX, PREFIX
     };
 
-    Token identifier;
+    std::unique_ptr<VariableExpr> variable;
     IncrementExpr::Type type;
 
-    IncrementExpr(const Token &identifier, IncrementExpr::Type type);
+    IncrementExpr(std::unique_ptr<VariableExpr> variable, IncrementExpr::Type type);
     LoxObject accept(ExprVisitor &visitor) override;
 };
 
@@ -146,10 +146,10 @@ public:
         POSTFIX, PREFIX
     };
 
-    Token identifier;
+    std::unique_ptr<VariableExpr>  variable;
     DecrementExpr::Type type;
 
-    DecrementExpr(const Token &identifier, Type type);
+    DecrementExpr(std::unique_ptr<VariableExpr> variable, Type type);
     LoxObject accept(ExprVisitor &visitor) override;
 };
 

@@ -6,6 +6,7 @@
 #include "Parser.h"
 #include "FileReader.h"
 #include "Interpreter.h"
+#include "Resolver.h"
 
 
 Interpreter Runner::interpreter = Interpreter();
@@ -51,6 +52,8 @@ int Runner::runCode(const std::string& code, bool replMode) {
         return 65;
     }
 
+    Resolver resolver;
+    std::unordered_map<const Expr*, int> distances = resolver.resolve(statements);
 
     try {
         interpreter.interpret(statements, replMode);

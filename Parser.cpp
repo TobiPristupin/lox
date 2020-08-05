@@ -342,9 +342,9 @@ UniqueExprPtr Parser::prefix() {
 
         VariableExpr* lvalue = dynamic_cast<VariableExpr*>(right.get());
         if (lvalue){
-            Token identifier = lvalue->identifier;
-            if (op.type == TokenType::PLUS_PLUS) return std::make_unique<IncrementExpr>(identifier, IncrementExpr::Type::PREFIX);
-            else return std::make_unique<DecrementExpr>(identifier, DecrementExpr::Type::PREFIX);
+            std::unique_ptr<VariableExpr> identifier(static_cast<VariableExpr*>(right.release()));
+            if (op.type == TokenType::PLUS_PLUS) return std::make_unique<IncrementExpr>(std::move(identifier), IncrementExpr::Type::PREFIX);
+            else return std::make_unique<DecrementExpr>(std::move(identifier), DecrementExpr::Type::PREFIX);
         } else {
             throw error("Operators '++' and '--' must be applied to an lvalue operand (a variable)", op.line);
         }
@@ -360,9 +360,9 @@ UniqueExprPtr Parser::postfix() {
         Token op = previous();
         VariableExpr* lvalue = dynamic_cast<VariableExpr*>(expr.get());
         if (lvalue){
-            Token identifier = lvalue->identifier;
-            if (op.type == TokenType::PLUS_PLUS) expr = std::make_unique<IncrementExpr>(identifier, IncrementExpr::Type::POSTFIX);
-            else expr = std::make_unique<DecrementExpr>(identifier, DecrementExpr::Type::POSTFIX);
+            std::unique_ptr<VariableExpr> identifier(static_cast<VariableExpr*>(expr.release()));
+            if (op.type == TokenType::PLUS_PLUS) expr = std::make_unique<IncrementExpr>(std::move(identifier), IncrementExpr::Type::POSTFIX);
+            else expr = std::make_unique<DecrementExpr>(std::move(identifier), DecrementExpr::Type::POSTFIX);
         } else {
             throw error("Operators '++' and '--' must be applied to an lvalue operand (a variable)", op.line);
         }

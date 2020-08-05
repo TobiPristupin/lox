@@ -63,13 +63,13 @@ LoxObject FunctionCallExpr::accept(ExprVisitor &visitor) {
     return visitor.visit(this);
 }
 
-IncrementExpr::IncrementExpr(const Token &identifier, IncrementExpr::Type type) : identifier(identifier), type(type) {}
+IncrementExpr::IncrementExpr(std::unique_ptr<VariableExpr> variable, IncrementExpr::Type type) : variable(std::move(variable)), type(type) {}
 
 LoxObject IncrementExpr::accept(ExprVisitor &visitor) {
     return visitor.visit(this);
 }
 
-DecrementExpr::DecrementExpr(const Token &identifier, DecrementExpr::Type type) : identifier(identifier), type(type) {}
+DecrementExpr::DecrementExpr(std::unique_ptr<VariableExpr> variable, DecrementExpr::Type type) : variable(std::move(variable)), type(type) {}
 
 LoxObject DecrementExpr::accept(ExprVisitor &visitor) {
     return visitor.visit(this);

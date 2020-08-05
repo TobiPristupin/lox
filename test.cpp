@@ -3,6 +3,7 @@
 #include <variant>
 #include <vector>
 #include <memory>
+#include <unordered_map>
 
 class Res {
 public:
@@ -17,7 +18,6 @@ public:
     }
 
 };
-
 
 
 std::unique_ptr<Res> ret(){
@@ -48,11 +48,14 @@ public:
     Takes(std::shared_ptr<Res> ptr) : ptr(std::move(ptr)) {}
 };
 
-#include <chrono>
-int main(){
-    int a = 2;
-    std::cout << a << '\n';
-    std::cout << a << '\n';
 
+int main(){
+    std::unordered_map<int, std::string> pp;
+    pp[1] = "hey";
+    if (pp[2] == "hey"){
+        std::cout << "true\n";
+    }
+
+    std::cout << pp[2] << "\n";
 }
 

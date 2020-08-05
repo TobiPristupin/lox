@@ -97,4 +97,6 @@ std::string tokenTypeToString(TokenType type) {
         case TokenType::END_OF_FILE:
             return "END_OF_FILE";
     }
+
+    return "unreachable";
 }

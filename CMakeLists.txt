@@ -12,7 +12,7 @@ add_subdirectory(lib/GSL-master)
 include_directories(lib/GSL-master/include)
 
 # Now simply link against gtest or gtest_main as needed. Eg
-add_executable(jlox main.cpp Runner.cpp Runner.h TokenType.h Token.h Scanner.cpp Scanner.h TokenType.cpp LoxError.cpp LoxError.h Expr.cpp Expr.h Parser.cpp Parser.h tools/AstPrinter.cpp tools/AstPrinter.h FileReader.cpp FileReader.h tests/ScannerTest.cpp tests/ParserTest.cpp Token.cpp Interpreter.h Interpreter.cpp tests/InterpreterTest.cpp Stmt.cpp Stmt.h Environment.cpp Environment.h LoxObject.cpp LoxObject.h tools/Utils.cpp tools/Utils.h LoxCallable.h standardlib/StandardFunctions.h standardlib/StandardFunctions.cpp LoxFunctionWrapper.cpp LoxFunctionWrapper.h typedefs.h)
+add_executable(jlox main.cpp Runner.cpp Runner.h TokenType.h Token.h Scanner.cpp Scanner.h TokenType.cpp LoxError.cpp LoxError.h Expr.cpp Expr.h Parser.cpp Parser.h tools/AstPrinter.cpp tools/AstPrinter.h FileReader.cpp FileReader.h tests/ScannerTest.cpp tests/ParserTest.cpp Token.cpp Interpreter.h Interpreter.cpp tests/InterpreterTest.cpp Stmt.cpp Stmt.h Environment.cpp Environment.h LoxObject.cpp LoxObject.h tools/Utils.cpp tools/Utils.h LoxCallable.h standardlib/StandardFunctions.h standardlib/StandardFunctions.cpp LoxFunctionWrapper.cpp LoxFunctionWrapper.h typedefs.h Resolver.cpp Resolver.h)
 target_link_libraries(jlox gtest gtest_main)
 add_executable(test test.cpp)
 

@@ -30,7 +30,6 @@ int main(int argc, char *argv[]) {
 #endif
 }
 
-//Check the typedefs.h thing
 //TODO: add support for named parameters?
 //TODO: Convert print into function
 //TODO: Add int to str conversion

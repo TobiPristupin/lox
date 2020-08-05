@@ -1,2 +1,12 @@
-var func = lambda : 1 + 2;
-print func();
+var a = "global";
+{
+
+  var c = 1230;
+  fun showA() {
+    print c;
+  }
+
+  showA();
+  var a = "block";
+  showA();
+}
