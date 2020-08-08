@@ -12,10 +12,11 @@ class Interpreter : public ExprVisitor, public StmtVisitor {
 public:
     Environment::SharedPtr globalEnv;
     Environment::SharedPtr environment;
+    std::unordered_map<const Expr*, int> localsDistances;
 
     Interpreter();
 
-    void interpret(const std::vector<UniqueStmtPtr> &statements, bool replMode = false);
+    void interpret(const std::vector<UniqueStmtPtr> &statements, const std::unordered_map<const Expr*, int> &distances, bool replMode = false);
 
     void visit(const ExpressionStmt *expressionStmt) override;
     void visit(const PrintStmt *printStmt) override;
@@ -49,6 +50,7 @@ public:
     void execute(Stmt* pStmt);
     void executeBlock(const std::vector<UniqueStmtPtr> &stmts, Environment::SharedPtr newEnv);
     void loadBuiltinFunctions();
+    LoxObject lookupVariable(const VariableExpr *pExpr);
 };
 
 

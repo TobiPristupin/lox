@@ -1,6 +1,7 @@
 #include "Resolver.h"
 #include "LoxError.h"
 
+
 std::unordered_map<const Expr*, int> Resolver::resolve(const std::vector<UniqueStmtPtr> &stmts) {
     for (auto const &stmt : stmts){
         resolve(stmt.get());
@@ -97,10 +98,12 @@ void Resolver::visit(const BreakStmt *breakStmt) {}
 void Resolver::visit(const ContinueStmt *continueStmt) {}
 
 void Resolver::visit(const ForStmt *forStmt) {
-    resolve(forStmt->initializer.get());
+    beginScope();
+    if (forStmt->initializer.get() != nullptr) resolve(forStmt->initializer.get());
+    if (forStmt->condition.get() != nullptr) resolve(forStmt->condition.get());
+    if (forStmt->increment.get() != nullptr) resolve(forStmt->increment.get());
     resolve(forStmt->body.get());
-    resolve(forStmt->increment.get());
-    resolve(forStmt->body.get());
+    endScope();
 }
 
 void Resolver::visit(const FunctionDeclStmt *functionStmt) {
@@ -188,12 +191,12 @@ LoxObject Resolver::visit(const FunctionCallExpr *functionCallExpr) {
 }
 
 LoxObject Resolver::visit(const IncrementExpr *incrementExpr) {
-    resolve(incrementExpr->variable.get());
+    resolveLocal(incrementExpr->variable.get(), incrementExpr->variable->identifier);
     return LoxObject::Nil();
 }
 
 LoxObject Resolver::visit(const DecrementExpr *decrementExpr) {
-    resolve(decrementExpr->variable.get());
+    resolveLocal(decrementExpr->variable.get(), decrementExpr->variable->identifier);
     return LoxObject::Nil();
 }
 

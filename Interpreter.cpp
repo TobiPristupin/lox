@@ -23,7 +23,9 @@ Interpreter::Interpreter() {
  * own the dynamically allocated statement objects, it only operates on them, so it should use raw pointers instead of a
  * smart pointer to signal that it does not own and has no influence over the lifetime of the objects.
  * */
-void Interpreter::interpret(const std::vector<UniqueStmtPtr> &statements, bool replMode) {
+void Interpreter::interpret(const std::vector<UniqueStmtPtr> &statements, const std::unordered_map<const Expr*, int> &distances, bool replMode) {
+    this->localsDistances = distances;
+
     if (replMode){
         assert(statements.size() == 1);
         interpretReplMode(statements[0].get());
@@ -76,9 +78,15 @@ void Interpreter::visit(const VarDeclarationStmt *varDeclarationStmt) {
 
 LoxObject Interpreter::visit(const AssignmentExpr *assignmentExpr) {
     LoxObject value = interpret(assignmentExpr->value.get());
-    environment->assign(assignmentExpr->identifier, value);
+    if (localsDistances.find(assignmentExpr) != localsDistances.end()){
+        environment->assignAt(assignmentExpr->identifier, value, localsDistances[assignmentExpr]);
+    } else {
+        globalEnv->assign(assignmentExpr->identifier, value);
+    }
+
     return value;
 }
+
 
 void Interpreter::visit(const ExpressionStmt *expressionStmt) {
     interpret(expressionStmt->expr.get());
@@ -249,19 +257,34 @@ LoxObject Interpreter::visit(const UnaryExpr *unaryExpr) {
 }
 
 LoxObject Interpreter::visit(const IncrementExpr *incrementExpr) {
-    LoxObject prev = environment->get(incrementExpr->variable->identifier);
+    LoxObject prev = interpret(incrementExpr->variable.get());
     LoxObject inc = prev + LoxObject(1.0);
-    environment->assign(incrementExpr->variable->identifier, inc);
+
+    const VariableExpr *variableExpr = incrementExpr->variable.get();
+    if (localsDistances.find(variableExpr) != localsDistances.end()){
+        environment->assignAt(variableExpr->identifier, inc, localsDistances[variableExpr]);
+    } else {
+        globalEnv->assign(variableExpr->identifier, inc);
+    }
+
     if (incrementExpr->type == IncrementExpr::Type::POSTFIX){
         return prev;
     }
+
     return inc;
 }
 
 LoxObject Interpreter::visit(const DecrementExpr *decrementExpr) {
-    LoxObject prev = environment->get(decrementExpr->variable->identifier);
+    LoxObject prev = interpret(decrementExpr->variable.get());
     LoxObject dec = prev - LoxObject(1.0);
-    environment->assign(decrementExpr->variable->identifier, dec);
+
+    const VariableExpr *variableExpr = decrementExpr->variable.get();
+    if (localsDistances.find(variableExpr) != localsDistances.end()){
+        environment->assignAt(variableExpr->identifier, dec, localsDistances[variableExpr]);
+    } else {
+        globalEnv->assign(variableExpr->identifier, dec);
+    }
+
     if (decrementExpr->type == DecrementExpr::Type::POSTFIX){
         return prev;
     }
@@ -273,7 +296,15 @@ LoxObject Interpreter::visit(const LiteralExpr *literalExpr) {
 }
 
 LoxObject Interpreter::visit(const VariableExpr *variableExpr) {
-    return environment->get(variableExpr->identifier);
+    LoxObject obj = lookupVariable(variableExpr);
+    return obj;
+}
+
+LoxObject Interpreter::lookupVariable(const VariableExpr *variableExpr) {
+    if (localsDistances.find(variableExpr) != localsDistances.end()){
+        return environment->getAt(variableExpr->identifier, localsDistances[variableExpr]);
+    }
+    return globalEnv->get(variableExpr->identifier);
 }
 
 LoxObject Interpreter::visit(const OrExpr *orExpr) {
@@ -333,3 +364,6 @@ void Interpreter::loadBuiltinFunctions() {
     }
 
 }
+
+
+

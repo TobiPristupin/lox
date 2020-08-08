@@ -1,3 +1,4 @@
+#include <cassert>
 #include "Environment.h"
 #include "LoxError.h"
 #include "LoxObject.h"
@@ -17,6 +18,16 @@ LoxObject Environment::get(const Token &identifier) {
     }
 
     return parentEnv->get(identifier);
+}
+
+LoxObject Environment::getAt(const Token &identifier, int distance) {
+    Environment* env = ancestor(distance);
+    std::string key = identifier.lexeme;
+    if (env->variables.count(key) == 0){
+        throw std::runtime_error("Variable does not exist. Bug in resolver, this should not be happening");
+    }
+
+    return env->variables[key];
 }
 
 void Environment::define(const Token &identifier, const LoxObject &val) {
@@ -50,8 +61,28 @@ void Environment::assign(const Token &identifier, const LoxObject &val) {
     parentEnv->assign(identifier, val);
 }
 
+void Environment::assignAt(const Token &identifier, const LoxObject &val, int distance) {
+    Environment* env = ancestor(distance);
+    std::string key = identifier.lexeme;
+    if (env->variables.count(key) == 0){
+        throw std::runtime_error("Undefined variable when assigning. Bug in the Resolver, this should not be happening");
+    }
+
+    env->variables[key] = val;
+}
+
 Environment::SharedPtr Environment::parent() {
     return parentEnv;
+}
+
+Environment* Environment::ancestor(int distance) {
+    Environment* currentEnv = this;
+    for (int i = 0; i < distance; i++){
+        assert(currentEnv->parent() != nullptr);
+        currentEnv = currentEnv->parent().get();
+    }
+
+    return currentEnv;
 }
 
 

@@ -1,12 +1,10 @@
-var a = "global";
-{
-
-  var c = 1230;
-  fun showA() {
-    print c;
-  }
-
-  showA();
-  var a = "block";
-  showA();
+fun foo(){
+    var a = 10;
+    return lambda : a;
 }
+
+var bar = foo();
+print bar();
+var a = 200;
+print a;
+print bar();

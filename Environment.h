@@ -14,15 +14,23 @@ public:
 
     using SharedPtr = std::shared_ptr<Environment>;
     explicit Environment(Environment::SharedPtr parent = nullptr);
+
     void define(const Token &identifier, const LoxObject &val);
     void define(const std::string &key, const LoxObject &val);
+
     LoxObject get(const Token &identifier);
+    LoxObject getAt(const Token &identifier, int distance);
+
     void assign(const Token &identifier, const LoxObject &val);
+    void assignAt(const Token &identifier, const LoxObject &val, int distance);
+
     Environment::SharedPtr parent();
 
 private:
     Environment::SharedPtr parentEnv;
     std::unordered_map<std::string, LoxObject> variables;
+
+    Environment* ancestor(int distance);
 };
 
 //This class uses a little bit of magic with references to set the environment of the caller to

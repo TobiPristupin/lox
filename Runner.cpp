@@ -56,7 +56,7 @@ int Runner::runCode(const std::string& code, bool replMode) {
     std::unordered_map<const Expr*, int> distances = resolver.resolve(statements);
 
     try {
-        interpreter.interpret(statements, replMode);
+        interpreter.interpret(statements, distances, replMode);
     } catch (const LoxRuntimeError &exception) {
         std::cout << exception.what() << "\n";
         return 70;
