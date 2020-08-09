@@ -115,6 +115,9 @@ public:
 
 class BreakStmt : public Stmt {
 public:
+    Token keyword;
+
+    BreakStmt(const Token &keyword);
     void accept(StmtVisitor &visitor) override;
 };
 
@@ -122,6 +125,9 @@ class BreakException {};
 
 class ContinueStmt : public Stmt {
 public:
+    Token keyword;
+
+    ContinueStmt(const Token &keyword);
     void accept(StmtVisitor &visitor) override;
 };
 

@@ -1,13 +1,27 @@
+#include <iostream>
+#include <gsl/gsl_util>
 #include "Resolver.h"
 #include "LoxError.h"
 
 
-std::unordered_map<const Expr*, int> Resolver::resolve(const std::vector<UniqueStmtPtr> &stmts) {
+std::unordered_map<const Expr*, int> Resolver::resolve(const std::vector<UniqueStmtPtr> &stmts, bool &successFlag) {
+    successFlag = true;
     for (auto const &stmt : stmts){
-        resolve(stmt.get());
+        try {
+            resolve(stmt.get());
+        } catch (const LoxParsingError &error) {
+            std::cout << error.what() << "\n";
+            successFlag = false;
+        }
     }
 
     return distances;
+}
+
+void Resolver::resolve(const std::vector<UniqueStmtPtr> &stmts) {
+    for (auto const &stmt : stmts){
+        resolve(stmt.get());
+    }
 }
 
 void Resolver::resolve(Stmt *stmt) {
@@ -40,6 +54,10 @@ void Resolver::endScope() {
 void Resolver::declare(const Token &name) {
     if (scopes.empty()){
         return;
+    }
+
+    if (scopes.back().find(name.lexeme) != scopes.back().end()){
+        throw LoxParsingError("Cannot redefine a variable. Variable '" + name.lexeme + "' has already been defined.", name.line);
     }
 
     scopes.back()[name.lexeme] = false;
@@ -89,15 +107,29 @@ void Resolver::visit(const IfStmt *ifStmt) {
 }
 
 void Resolver::visit(const WhileStmt *whileStmt) {
+    loopNestingLevel++;
+
+    auto finalAction = gsl::finally([this] {this->loopNestingLevel--;}); //Make sure that loopNestingLevel is decreased even if exceptions are thrown
     resolve(whileStmt->condition.get());
     resolve(whileStmt->body.get());
 }
 
-void Resolver::visit(const BreakStmt *breakStmt) {}
+void Resolver::visit(const BreakStmt *breakStmt) {
+    if (loopNestingLevel == 0){
+        throw LoxParsingError("'break' statement must be inside of a loop", breakStmt->keyword.line);
+    }
+}
 
-void Resolver::visit(const ContinueStmt *continueStmt) {}
+void Resolver::visit(const ContinueStmt *continueStmt) {
+    if (loopNestingLevel == 0){
+        throw LoxParsingError("'continue' statement must be inside of a loop", continueStmt->keyword.line);
+    }
+}
 
 void Resolver::visit(const ForStmt *forStmt) {
+    loopNestingLevel++;
+    auto finalAction = gsl::finally([this] {this->loopNestingLevel--;});
+
     beginScope();
     if (forStmt->initializer.get() != nullptr) resolve(forStmt->initializer.get());
     if (forStmt->condition.get() != nullptr) resolve(forStmt->condition.get());
@@ -109,10 +141,14 @@ void Resolver::visit(const ForStmt *forStmt) {
 void Resolver::visit(const FunctionDeclStmt *functionStmt) {
     declare(functionStmt->name);
     define(functionStmt->name);
-    resolveFunction(functionStmt);
+    resolveFunction(functionStmt, FunctionType::FUNCTION);
 }
 
-void Resolver::resolveFunction(const FunctionDeclStmt *functionStmt) {
+void Resolver::resolveFunction(const FunctionDeclStmt *functionStmt, FunctionType type) {
+    FunctionType enclosing = currentFunction;
+    currentFunction = type;
+    auto finalAction = gsl::finally([this, enclosing] {this->currentFunction = enclosing;});
+
     beginScope();
     for (const Token &param : functionStmt->params){
         declare(param);
@@ -121,9 +157,14 @@ void Resolver::resolveFunction(const FunctionDeclStmt *functionStmt) {
 
     resolve(functionStmt->body);
     endScope();
+
 }
 
 void Resolver::visit(const ReturnStmt *returnStmt) {
+    if (currentFunction == FunctionType::NONE){
+        throw LoxParsingError("'return' statement must be inside a function", returnStmt->keyword.line);
+    }
+
     if (returnStmt->expr != nullptr){
         resolve(returnStmt->expr.get());
     }

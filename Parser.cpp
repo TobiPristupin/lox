@@ -139,8 +139,6 @@ UniqueStmtPtr Parser::ifStatement() {
 }
 
 UniqueStmtPtr Parser::whileStatement() {
-    loopNestingLevel++;
-    auto finalAction = gsl::finally([this] {this->loopNestingLevel--;}); //Make sure that loopNestingLevel is decreased even if exceptions are thrown
     expect(TokenType::LEFT_PAREN, "Expect '(' after while");
     UniqueExprPtr condition = expression();
     expect(TokenType::RIGHT_PAREN, "Expect ')' after while condition");
@@ -149,8 +147,6 @@ UniqueStmtPtr Parser::whileStatement() {
 }
 
 UniqueStmtPtr Parser::forStatement() {
-    loopNestingLevel++;
-    auto finalAction = gsl::finally([this] {this->loopNestingLevel--;}); //Make sure that loopNestingLevel is decreased even if exceptions are thrown
     expect(TokenType::LEFT_PAREN, "Expect '(' after for");
     UniqueStmtPtr initializer = nullptr;
     if (match(TokenType::VAR)){
@@ -178,19 +174,15 @@ UniqueStmtPtr Parser::forStatement() {
 }
 
 UniqueStmtPtr Parser::breakStatement() {
+    Token keyword = previous();
     expect(TokenType::SEMICOLON, "Expect ';' after break");
-    if (loopNestingLevel == 0){
-        throw error("break statement must be inside of a loop", previous().line);
-    }
-    return std::make_unique<BreakStmt>();
+    return std::make_unique<BreakStmt>(keyword);
 }
 
 UniqueStmtPtr Parser::continueStatement() {
+    Token keyword = previous();
     expect(TokenType::SEMICOLON, "Expect ';' after continue");
-    if (loopNestingLevel == 0){
-        throw error("continue statement must be inside of a loop", previous().line);
-    }
-    return std::make_unique<ContinueStmt>();
+    return std::make_unique<ContinueStmt>(keyword);
 }
 
 UniqueStmtPtr Parser::returnStatement() {
@@ -246,7 +238,6 @@ UniqueExprPtr Parser::lambda() {
         } while (match(TokenType::COMMA));
     }
     expect(TokenType::COLON, "Expected colon after lambda parameter list");
-//    UniqueStmtPtr body = statement();
     UniqueExprPtr body = logicOr();
     return std::make_unique<LambdaExpr>(params, std::move(body));
 }

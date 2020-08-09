@@ -10,7 +10,7 @@
 class Resolver : public ExprVisitor, StmtVisitor {
 
 public:
-    std::unordered_map<const Expr*, int> resolve(const std::vector<UniqueStmtPtr> &stmts);
+    std::unordered_map<const Expr*, int> resolve(const std::vector<UniqueStmtPtr> &stmts, bool &successFlag);
 
     LoxObject visit(const BinaryExpr *binaryExpr) override;
     LoxObject visit(const GroupingExpr *groupingExpr) override;
@@ -38,20 +38,29 @@ public:
     void visit(const ReturnStmt *returnStmt) override;
 
 private:
+    enum class FunctionType {
+        NONE, FUNCTION
+    };
+
     std::unordered_map<const Expr*, int> distances;
+    int loopNestingLevel = 0;
+    FunctionType currentFunction = FunctionType::NONE;
 
     //the string is the variable name, the boolean is true if the variable has been initialized, false otherwise
     using Scope = std::unordered_map<std::string, bool>;
     std::vector<Scope> scopes;
 
+    void resolve(const std::vector<UniqueStmtPtr> &stmts);
     void resolve(Stmt* stmt);
     void resolve(Expr* expr);
     void resolveLocal(const Expr* expr, const Token &name);
-    void resolveFunction(const FunctionDeclStmt *functionStmt);
+    void resolveFunction(const FunctionDeclStmt *functionStmt, FunctionType type);
     void beginScope();
     void endScope();
     void declare(const Token &name);
     void define(const Token &name);
+
+
 
 };
 

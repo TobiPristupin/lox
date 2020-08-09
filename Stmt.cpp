@@ -53,9 +53,15 @@ void ForStmt::accept(StmtVisitor &visitor) {
     visitor.visit(this);
 }
 
+
+BreakStmt::BreakStmt(const Token &keyword) : keyword(keyword) {}
+
 void BreakStmt::accept(StmtVisitor &visitor) {
     visitor.visit(this);
 }
+
+
+ContinueStmt::ContinueStmt(const Token &keyword) : keyword(keyword) {}
 
 void ContinueStmt::accept(StmtVisitor &visitor) {
     visitor.visit(this);

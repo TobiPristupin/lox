@@ -23,9 +23,6 @@ private:
     int current = 0;
     bool hadError = false;
 
-    //This variable keeps track of  the amount of loops (for or while) the parser is currently nested in. It is used to avoid break
-    //and continue statements outside of any loop.
-    int loopNestingLevel = 0;
 
     UniqueStmtPtr declaration();
     UniqueStmtPtr varDeclStatement();

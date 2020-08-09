@@ -42,18 +42,27 @@ int Runner::runCode(const std::string& code, bool replMode) {
         return 65;
     }
 
+
+    Parser parser(tokens);
     /*Because the parser can keep parsing after multiple errors instead of exiting at the first error, it has its own
     exception handling functionality baked into it, and the caller only has to worry about success or not.*/
-    Parser parser(tokens);
-    bool successFlag = false;
-    std::vector<UniqueStmtPtr> statements = parser.parse(successFlag);
-
-    if (!successFlag){
+    bool parsingSuccess = true;
+    std::vector<UniqueStmtPtr> statements = parser.parse(parsingSuccess);
+    if (!parsingSuccess){
         return 65;
     }
 
     Resolver resolver;
-    std::unordered_map<const Expr*, int> distances = resolver.resolve(statements);
+    std::unordered_map<const Expr*, int> distances;
+    /*Because the resolver can keep going after multiple errors instead of exiting at the first error, it has its own
+    exception handling functionality baked into it, and the caller only has to worry about success or not.*/
+    bool resolvingSuccess = false;
+    distances = resolver.resolve(statements, resolvingSuccess);
+    if (!resolvingSuccess){
+        return 65;
+    }
+
+
 
     try {
         interpreter.interpret(statements, distances, replMode);
