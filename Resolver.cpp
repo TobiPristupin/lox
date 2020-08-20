@@ -160,6 +160,11 @@ void Resolver::resolveFunction(const FunctionDeclStmt *functionStmt, FunctionTyp
 
 }
 
+void Resolver::visit(const ClassDeclStmt *classDeclStmt) {
+    declare(classDeclStmt->identifier);
+    define(classDeclStmt->identifier);
+}
+
 void Resolver::visit(const ReturnStmt *returnStmt) {
     if (currentFunction == FunctionType::NONE){
         throw LoxParsingError("'return' statement must be inside a function", returnStmt->keyword.line);

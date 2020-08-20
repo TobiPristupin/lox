@@ -81,6 +81,12 @@ void ReturnStmt::accept(StmtVisitor &visitor) {
     visitor.visit(this);
 }
 
-ReturnException::ReturnException(const LoxObject &value) : value(value) {
-    value.isNumber();
+ReturnException::ReturnException(const LoxObject &value) : value(value) {}
+
+
+ClassDeclStmt::ClassDeclStmt(const Token &identifier, std::vector<std::unique_ptr<FunctionDeclStmt>> methods) :
+    identifier(identifier), methods(std::move(methods)) {}
+
+void ClassDeclStmt::accept(StmtVisitor &visitor) {
+    visitor.visit(this);
 }

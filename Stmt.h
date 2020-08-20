@@ -18,6 +18,7 @@ class BreakStmt;
 class ContinueStmt;
 class FunctionDeclStmt;
 class ReturnStmt;
+class ClassDeclStmt;
 
 class Expr;
 
@@ -34,6 +35,7 @@ public:
     virtual void visit(const ForStmt *forStmt) = 0;
     virtual void visit(const FunctionDeclStmt *functionStmt) = 0;
     virtual void visit(const ReturnStmt *returnStmt) = 0;
+    virtual void visit(const ClassDeclStmt *classDeclStmt) = 0;
 
 };
 
@@ -159,6 +161,14 @@ public:
     explicit ReturnException(const LoxObject& value);
 };
 
+class ClassDeclStmt : public Stmt {
+public:
+    Token identifier;
+    std::vector<std::unique_ptr<FunctionDeclStmt>> methods;
+
+    ClassDeclStmt(const Token &identifier, std::vector<std::unique_ptr<FunctionDeclStmt>> methods);
+    void accept(StmtVisitor &visitor) override;
+};
 
 
 #endif //JLOX_STMT_H

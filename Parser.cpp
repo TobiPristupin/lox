@@ -24,6 +24,7 @@ UniqueStmtPtr Parser::declaration() {
     try {
         if (match(TokenType::VAR)) return varDeclStatement();
         if (match(TokenType::FUN)) return functionDeclStatement(FunctionType::FUNCTION);
+        if (match(TokenType::CLASS)) return classDeclStatement();
         return statement();
     } catch (const LoxParsingError &error) {
         //Report the exception but don't let it bubble up and stop the program. Instead, synchronize the parser and keep parsing.
@@ -69,6 +70,20 @@ UniqueStmtPtr Parser::functionDeclStatement(FunctionType type) {
 
     std::vector<UniqueStmtPtr> body = block();
     return std::make_unique<FunctionDeclStmt>(name, parameters, std::move(body));
+}
+
+UniqueStmtPtr Parser::classDeclStatement() {
+    Token name = expect(TokenType::IDENTIFIER, "Expected class name");
+    expect(TokenType::LEFT_BRACE, "Expected '{' before class body");
+    std::vector<std::unique_ptr<FunctionDeclStmt>> methods;
+    while (!check(TokenType::RIGHT_BRACE) && !isAtEnd()){
+        UniqueStmtPtr functionDecl = functionDeclStatement(FunctionType::METHOD);
+        std::unique_ptr<FunctionDeclStmt> method(dynamic_cast<FunctionDeclStmt*>(functionDecl.release()));
+        methods.push_back(std::move(method));
+    }
+
+    expect(TokenType::RIGHT_BRACE, "Expected '}' after class body");
+    return std::make_unique<ClassDeclStmt>(name, std::move(methods));
 }
 
 UniqueStmtPtr Parser::statement() {
@@ -465,7 +480,9 @@ LoxParsingError Parser::error(const std::string &message, int line) {
     return LoxParsingError(message, line);
 }
 
-void Parser::synchronize() { //synchronizes the parser to the next statement when it finds an error
+void Parser::synchronize() {//synchronizes the parser to the next statement when it finds an error
+    advance();
+
     while (!isAtEnd()){
         if (previous().type == TokenType::SEMICOLON){
             return; //found new statement
@@ -488,6 +505,8 @@ void Parser::synchronize() { //synchronizes the parser to the next statement whe
     }
 
 }
+
+
 
 
 

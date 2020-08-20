@@ -68,5 +68,7 @@ private:
     SharedCallablePtr callable;
 };
 
+using SharedLoxObjPtr = std::shared_ptr<LoxObject>;
+
 
 #endif //JLOX_LOXOBJECT_H

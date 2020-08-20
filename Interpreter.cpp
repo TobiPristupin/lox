@@ -8,6 +8,7 @@
 #include "LoxCallable.h"
 #include "standardlib/StandardFunctions.h"
 #include "LoxFunctionWrapper.h"
+#include "LoxClassWrapper.h"
 
 //TODO: Add support for loading standard function in a more clean way
 
@@ -204,6 +205,19 @@ void Interpreter::visit(const ReturnStmt *returnStmt) {
     throw ReturnException(value);
 }
 
+
+void Interpreter::visit(const ClassDeclStmt *classDeclStmt) {
+//    SharedCallablePtr function = std::make_shared<LoxFunctionWrapper>(functionStmt, environment);
+//    LoxObject functionObject(function);
+//    environment->define(functionStmt->name, functionObject);
+
+
+//    environment->define(classDeclStmt->identifier, LoxObject::Nil());
+//    SharedLoxObjPtr classWrapper = std::make_shared<LoxClassWrapper>(classDeclStmt->identifier.lexeme);
+//    environment->assign(classDeclStmt->identifier, classWrapper.g);
+}
+
+
 //EXPRESSIONS
 
 LoxObject Interpreter::visit(const BinaryExpr *binaryExpr) {
@@ -364,6 +378,8 @@ void Interpreter::loadBuiltinFunctions() {
     }
 
 }
+
+
 
 
 

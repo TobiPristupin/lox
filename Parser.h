@@ -65,6 +65,8 @@ private:
     bool isAtEnd();
     LoxParsingError error(const std::string &message, int line) noexcept(false);
     void synchronize();
+
+    UniqueStmtPtr classDeclStatement();
 };
 
 

@@ -36,6 +36,7 @@ public:
     void visit(const ForStmt *forStmt) override;
     void visit(const FunctionDeclStmt *functionStmt) override;
     void visit(const ReturnStmt *returnStmt) override;
+    void visit(const ClassDeclStmt *classDeclStmt) override;
 
 private:
     enum class FunctionType {

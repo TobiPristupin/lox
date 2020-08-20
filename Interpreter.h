@@ -29,6 +29,7 @@ public:
     void visit(const ContinueStmt *continueStmt) override;
     void visit(const FunctionDeclStmt *functionStmt) override;
     void visit(const ReturnStmt *returnStmt) override;
+    void visit(const ClassDeclStmt *classDeclStmt) override;
 
 
     LoxObject visit(const BinaryExpr *binaryExpr) override;

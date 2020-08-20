@@ -1,0 +1,10 @@
+class obj {
+    hello(){
+        print 10;
+    }
+
+    goodbye(){
+        return 20;
+    }
+}
+

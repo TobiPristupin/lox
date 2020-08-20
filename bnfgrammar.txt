@@ -3,8 +3,9 @@ GRAMMAR ADJUSTED FOR PRECEDENCE AND ASSOCIATIVITY:
 program :== declaration* EOF ;
 
 //statements
-declaration :== varDecl | funDecl | statement ;
+declaration :== varDecl | funDecl | classDecl | statement ;
 funDecl :== "fun" function ;
+classDecl :== "class" IDENTIFIER "{" function* "}" ;
 function :== IDENTIFIER "(" parameters? ")" block ;
 parameters :== IDENTIFIER ("," IDENTIFIER)* ;
 varDecl :== "var" IDENTIFIER ("=" expression)? ";" ;
