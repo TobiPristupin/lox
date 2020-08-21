@@ -20,6 +20,7 @@ class CallExpr;
 class IncrementExpr;
 class DecrementExpr;
 class LambdaExpr;
+class GetExpr;
 
 class Stmt;
 
@@ -38,6 +39,7 @@ public:
     virtual LoxObject visit(const IncrementExpr* incrementExpr) = 0;
     virtual LoxObject visit(const DecrementExpr* decrementExpr) = 0;
     virtual LoxObject visit(const LambdaExpr* lambdaExpr) = 0;
+    virtual LoxObject visit(const GetExpr* getExpr) = 0;
 };
 
 
@@ -159,6 +161,15 @@ public:
     UniqueExprPtr body;
 
     LambdaExpr(const std::vector<Token> &params, UniqueExprPtr body);
+    LoxObject accept(ExprVisitor &visitor) override;
+};
+
+class GetExpr : public Expr {
+public:
+    UniqueExprPtr expr;
+    Token identifier;
+
+    GetExpr(UniqueExprPtr expr, const Token &identifier);
     LoxObject accept(ExprVisitor &visitor) override;
 };
 

@@ -24,6 +24,7 @@ public:
     LoxObject visit(const IncrementExpr *incrementExpr) override;
     LoxObject visit(const DecrementExpr *decrementExpr) override;
     LoxObject visit(const LambdaExpr *lambdaExpr) override;
+    LoxObject visit(const GetExpr *getExpr) override;
 
     void visit(const ExpressionStmt *expressionStmt) override;
     void visit(const PrintStmt *printStmt) override;

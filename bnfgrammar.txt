@@ -31,7 +31,7 @@ multiplication :== unary ( ("/" | "*") unary )* ;
 unary :== ("!" | "-") unary | prefix ;
 prefix :== ("++" | "--") postfix |
 postfix :==  call ("++" | "--")* ;
-call :== primary ( "(" arguments ")" )* ;
+call :== primary ( "(" arguments ")" | "." IDENTIFIER)* ;
 arguments :== expression ( "," expression)* ;
 primary :== NUMBER | STRING | IDENTIFIER | "false" | "true" | "nil" | "(" expression ")" ;
 

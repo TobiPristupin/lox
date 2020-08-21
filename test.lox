@@ -1,14 +1,4 @@
-class obj {
-    hello(){
-        print 10;
-    }
-
-    goodbye(){
-        return 20;
-    }
-}
-
-var instance = obj();
-print instance;
-var second = obj();
-print second;
+obj.a;
+obj.a.f;
+obj.funn(10).property;
+obj.funn(10).getA();

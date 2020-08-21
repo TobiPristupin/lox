@@ -360,7 +360,7 @@ UniqueExprPtr Parser::prefix() {
 }
 
 UniqueExprPtr Parser::postfix() {
-    UniqueExprPtr expr = functionCall();
+    UniqueExprPtr expr = call();
     std::vector<TokenType> postfixTokens = {TokenType::PLUS_PLUS, TokenType::MINUS_MINUS};
     if (match(postfixTokens)){
         Token op = previous();
@@ -381,11 +381,14 @@ UniqueExprPtr Parser::postfix() {
     return expr;
 }
 
-UniqueExprPtr Parser::functionCall() {
+UniqueExprPtr Parser::call() {
     UniqueExprPtr expr = primary();
     while (true){
         if (match(TokenType::LEFT_PAREN)){
             expr = finishCall(std::move(expr));
+        } else if (match(TokenType::DOT)){
+            Token identifier = expect(TokenType::IDENTIFIER, "Expected property name after '.'");
+            expr = std::make_unique<GetExpr>(std::move(expr), identifier);
         } else {
             break;
         }

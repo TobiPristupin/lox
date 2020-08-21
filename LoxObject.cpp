@@ -4,6 +4,7 @@
 #include "LoxObject.h"
 #include "tools/Utils.h"
 #include "LoxCallable.h"
+#include "LoxClass.h"
 
 LoxObject::LoxObject(double number) : type(LoxType::NUMBER), number(number) {}
 

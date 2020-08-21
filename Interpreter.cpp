@@ -357,6 +357,15 @@ LoxObject Interpreter::visit(const CallExpr *callExpr) {
     return function->call(*this, arguments);
 }
 
+LoxObject Interpreter::visit(const GetExpr *getExpr) {
+    LoxObject obj = interpret(getExpr->expr.get());
+    if (obj.isClassInstance()){
+        return obj.getClassInstance()->getProperty(getExpr->identifier);
+    }
+
+    throw LoxRuntimeError("Only instances have properties", getExpr->identifier.line);
+}
+
 void Interpreter::executeBlock(const std::vector<UniqueStmtPtr> &stmts, Environment::SharedPtr newEnv) {
     ScopedEnvironment scope(environment, newEnv);
     for (auto const &stmt : stmts){

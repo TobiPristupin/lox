@@ -3,7 +3,6 @@
 
 #include <memory>
 #include "Token.h"
-#include "LoxClass.h"
 
 enum class LoxType {
     NIL, BOOL, NUMBER, STRING, CALLABLE, INSTANCE
@@ -12,6 +11,7 @@ enum class LoxType {
 std::string loxTypeToString(LoxType type);
 
 class LoxCallable;
+class LoxClassInstance;
 
 /*A shared ptr is used because there may be scenarios where a Callable object such as a function has to be owned
 by more than one LoxObject.*/
@@ -20,7 +20,6 @@ using SharedInstancePtr = std::shared_ptr<LoxClassInstance>;
 
 /* This class is a wrapper to represent bool, nil, numbers, strings, callables, and instances.
  * */
-
 class LoxObject {
 public:
     LoxType type = LoxType::NIL;

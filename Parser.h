@@ -51,7 +51,7 @@ private:
     UniqueExprPtr unary();
     UniqueExprPtr prefix();
     UniqueExprPtr postfix();
-    UniqueExprPtr functionCall();
+    UniqueExprPtr call();
     UniqueExprPtr finishCall(UniqueExprPtr expr);
     UniqueExprPtr primary();
 

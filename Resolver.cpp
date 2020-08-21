@@ -236,6 +236,11 @@ LoxObject Resolver::visit(const CallExpr *functionCallExpr) {
     return LoxObject::Nil();
 }
 
+LoxObject Resolver::visit(const GetExpr *getExpr) {
+    resolve(getExpr->expr.get());
+    return LoxObject::Nil();
+}
+
 LoxObject Resolver::visit(const IncrementExpr *incrementExpr) {
     resolveLocal(incrementExpr->variable.get(), incrementExpr->variable->identifier);
     return LoxObject::Nil();

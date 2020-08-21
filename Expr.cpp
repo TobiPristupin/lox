@@ -81,3 +81,9 @@ LambdaExpr::LambdaExpr(const std::vector<Token> &params, UniqueExprPtr body) : p
 LoxObject LambdaExpr::accept(ExprVisitor &visitor) {
     return visitor.visit(this);
 }
+
+GetExpr::GetExpr(UniqueExprPtr expr, const Token &identifier) : expr(std::move(expr)), identifier(identifier) {}
+
+LoxObject GetExpr::accept(ExprVisitor &visitor) {
+    return visitor.visit(this);
+}

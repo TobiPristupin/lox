@@ -4,12 +4,13 @@
 
 #include <string>
 #include <memory>
+#include <unordered_map>
 #include "LoxCallable.h"
+#include "LoxObject.h"
 
 class LoxClassWrapper : public LoxCallable, public std::enable_shared_from_this<LoxClassWrapper> {
-public:
-    std::string className;
 
+public:
     explicit LoxClassWrapper(const std::string &name);
 
     LoxObject call(Interpreter &interpreter, const std::vector<LoxObject> &arguments) override;
@@ -17,14 +18,22 @@ public:
     std::string to_string() override;
     std::string name() override;
 
+private:
+    std::string className;
+    std::shared_ptr<LoxClassWrapper> loxClass;
+
 };
 
 class LoxClassInstance {
-public:
-    std::shared_ptr<LoxClassWrapper> loxClass;
 
+public:
     explicit LoxClassInstance(std::shared_ptr<LoxClassWrapper> loxClass);
+    LoxObject getProperty(const Token &identifier);
     std::string to_string();
+
+private:
+    std::shared_ptr<LoxClassWrapper> loxClass;
+    std::unordered_map<std::string, LoxObject> fields;
 };
 
 

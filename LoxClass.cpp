@@ -3,6 +3,7 @@
 #include <sstream>
 #include "LoxClass.h"
 #include "LoxObject.h"
+#include "LoxError.h"
 
 
 LoxClassWrapper::LoxClassWrapper(const std::string &name) : className(name) {}
@@ -27,6 +28,15 @@ std::string LoxClassWrapper::name() {
 
 
 LoxClassInstance::LoxClassInstance(std::shared_ptr<LoxClassWrapper> loxClass) : loxClass(std::move(loxClass)) {}
+
+LoxObject LoxClassInstance::getProperty(const Token &identifier) {
+    std::string key = identifier.lexeme;
+    if (fields.find(key) == fields.end()){
+        throw LoxRuntimeError("Undefined property '" + key + "'", identifier.line);
+    }
+
+    return fields[key];
+}
 
 std::string LoxClassInstance::to_string() {
     std::stringstream ss;
