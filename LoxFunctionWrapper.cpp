@@ -1,6 +1,7 @@
 #include <cassert>
 #include <sstream>
 #include "LoxFunctionWrapper.h"
+#include "Interpreter.h"
 
 LoxFunctionWrapper::LoxFunctionWrapper(const FunctionDeclStmt *functionDeclStmt, Environment::SharedPtr closure)  : functionDeclStmt(functionDeclStmt), closure(std::move(closure)) {}
 

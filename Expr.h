@@ -16,7 +16,7 @@ class VariableExpr;
 class AssignmentExpr;
 class OrExpr;
 class AndExpr;
-class FunctionCallExpr;
+class CallExpr;
 class IncrementExpr;
 class DecrementExpr;
 class LambdaExpr;
@@ -34,7 +34,7 @@ public:
     virtual LoxObject visit(const AssignmentExpr* assignmentExpr) = 0;
     virtual LoxObject visit(const OrExpr* orExpr) = 0;
     virtual LoxObject visit(const AndExpr* andExpr) = 0;
-    virtual LoxObject visit(const FunctionCallExpr* functionCallExpr) = 0;
+    virtual LoxObject visit(const CallExpr* functionCallExpr) = 0;
     virtual LoxObject visit(const IncrementExpr* incrementExpr) = 0;
     virtual LoxObject visit(const DecrementExpr* decrementExpr) = 0;
     virtual LoxObject visit(const LambdaExpr* lambdaExpr) = 0;
@@ -117,13 +117,13 @@ public:
     LoxObject accept(ExprVisitor &visitor) override;
 };
 
-class FunctionCallExpr : public Expr {
+class CallExpr : public Expr {
 public:
     UniqueExprPtr callee;
     Token closingParen;
     std::vector<UniqueExprPtr> arguments;
 
-    FunctionCallExpr(UniqueExprPtr callee, const Token &closingParen, std::vector<UniqueExprPtr> arguments);
+    CallExpr(UniqueExprPtr callee, const Token &closingParen, std::vector<UniqueExprPtr> arguments);
     LoxObject accept(ExprVisitor &visitor) override;
 };
 

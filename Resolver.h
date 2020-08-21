@@ -20,7 +20,7 @@ public:
     LoxObject visit(const AssignmentExpr *assignmentExpr) override;
     LoxObject visit(const OrExpr *orExpr) override;
     LoxObject visit(const AndExpr *andExpr) override;
-    LoxObject visit(const FunctionCallExpr *functionCallExpr) override;
+    LoxObject visit(const CallExpr *functionCallExpr) override;
     LoxObject visit(const IncrementExpr *incrementExpr) override;
     LoxObject visit(const DecrementExpr *decrementExpr) override;
     LoxObject visit(const LambdaExpr *lambdaExpr) override;

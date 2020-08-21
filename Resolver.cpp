@@ -228,7 +228,7 @@ LoxObject Resolver::visit(const AndExpr *andExpr) {
     return LoxObject::Nil();
 }
 
-LoxObject Resolver::visit(const FunctionCallExpr *functionCallExpr) {
+LoxObject Resolver::visit(const CallExpr *functionCallExpr) {
     resolve(functionCallExpr->callee.get());
     for (const auto &arg : functionCallExpr->arguments){
         resolve(arg.get());

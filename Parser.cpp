@@ -410,7 +410,7 @@ UniqueExprPtr Parser::finishCall(UniqueExprPtr expr) {
     }
 
     Token closingParen = expect(TokenType::RIGHT_PAREN, "Expect closing parenthesis after function argument list");
-    return std::make_unique<FunctionCallExpr>(std::move(expr), closingParen, std::move(arguments));
+    return std::make_unique<CallExpr>(std::move(expr), closingParen, std::move(arguments));
 }
 
 UniqueExprPtr Parser::primary() {

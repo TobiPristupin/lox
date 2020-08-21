@@ -56,10 +56,10 @@ LoxObject AndExpr::accept(ExprVisitor &visitor) {
 }
 
 
-FunctionCallExpr::FunctionCallExpr(UniqueExprPtr callee, const Token &closingParen,
-                                   std::vector<UniqueExprPtr> arguments) : callee(std::move(callee)), closingParen(closingParen), arguments(std::move(arguments)){}
+CallExpr::CallExpr(UniqueExprPtr callee, const Token &closingParen,
+                   std::vector<UniqueExprPtr> arguments) : callee(std::move(callee)), closingParen(closingParen), arguments(std::move(arguments)){}
 
-LoxObject FunctionCallExpr::accept(ExprVisitor &visitor) {
+LoxObject CallExpr::accept(ExprVisitor &visitor) {
     return visitor.visit(this);
 }
 

@@ -8,3 +8,7 @@ class obj {
     }
 }
 
+var instance = obj();
+print instance;
+var second = obj();
+print second;

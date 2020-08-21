@@ -8,7 +8,7 @@
 #include "LoxCallable.h"
 #include "standardlib/StandardFunctions.h"
 #include "LoxFunctionWrapper.h"
-#include "LoxClassWrapper.h"
+#include "LoxClass.h"
 
 //TODO: Add support for loading standard function in a more clean way
 
@@ -207,14 +207,10 @@ void Interpreter::visit(const ReturnStmt *returnStmt) {
 
 
 void Interpreter::visit(const ClassDeclStmt *classDeclStmt) {
-//    SharedCallablePtr function = std::make_shared<LoxFunctionWrapper>(functionStmt, environment);
-//    LoxObject functionObject(function);
-//    environment->define(functionStmt->name, functionObject);
-
-
-//    environment->define(classDeclStmt->identifier, LoxObject::Nil());
-//    SharedLoxObjPtr classWrapper = std::make_shared<LoxClassWrapper>(classDeclStmt->identifier.lexeme);
-//    environment->assign(classDeclStmt->identifier, classWrapper.g);
+    environment->define(classDeclStmt->identifier, LoxObject::Nil());
+    SharedCallablePtr klass = std::make_shared<LoxClassWrapper>(classDeclStmt->identifier.lexeme);
+    LoxObject classObject(klass);
+    environment->assign(classDeclStmt->identifier, classObject);
 }
 
 
@@ -340,22 +336,22 @@ LoxObject Interpreter::visit(const AndExpr *andExpr) {
     return LoxObject(rhs.truthy());
 }
 
-LoxObject Interpreter::visit(const FunctionCallExpr *functionCallExpr) {
-    LoxObject callee = interpret(functionCallExpr->callee.get());
+LoxObject Interpreter::visit(const CallExpr *callExpr) {
+    LoxObject callee = interpret(callExpr->callee.get());
 
     std::vector<LoxObject> arguments;
-    for (const UniqueExprPtr &arg : functionCallExpr->arguments){
+    for (const UniqueExprPtr &arg : callExpr->arguments){
         arguments.push_back(interpret(arg.get()));
     }
 
     if (!callee.isCallable()){
-        throw LoxRuntimeError("Expression is not callable", functionCallExpr->closingParen.line);
+        throw LoxRuntimeError("Expression is not callable", callExpr->closingParen.line);
     }
     LoxCallable* function = callee.getCallable();
     if (arguments.size() != function->arity()){
         std::stringstream ss;
         ss << "Function " << function->name() << " expected " << function->arity() << " arguments but instead got " << arguments.size();
-        throw LoxRuntimeError(ss.str(), functionCallExpr->closingParen.line);
+        throw LoxRuntimeError(ss.str(), callExpr->closingParen.line);
     }
 
     return function->call(*this, arguments);

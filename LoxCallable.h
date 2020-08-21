@@ -4,9 +4,9 @@
 
 #include <string>
 #include <vector>
-#include "LoxObject.h"
-#include "Interpreter.h"
 
+class LoxObject;
+class Interpreter;
 
 class LoxCallable {
 public:

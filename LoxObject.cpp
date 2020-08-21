@@ -19,6 +19,8 @@ LoxObject LoxObject::Nil() {
 
 LoxObject::LoxObject(SharedCallablePtr callable) : type(LoxType::CALLABLE), callable(std::move(callable)) {}
 
+LoxObject::LoxObject(SharedInstancePtr instance) : type(LoxType::INSTANCE), instance(std::move(instance)) {}
+
 LoxObject::LoxObject(const Token &token) {
     switch (token.type) {
         case NUMBER:
@@ -68,6 +70,10 @@ bool LoxObject::isCallable() const {
     return type == LoxType::CALLABLE;
 }
 
+bool LoxObject::isClassInstance() const {
+    return type == LoxType::INSTANCE;
+}
+
 double LoxObject::getNumber() const {
     if (!isNumber()){
         throw std::runtime_error("LoxObject does not contain a number");
@@ -94,6 +100,13 @@ LoxCallable *LoxObject::getCallable() const {
         throw std::runtime_error("LoxObject does not contain a callable");
     }
     return callable.get();
+}
+
+LoxClassInstance *LoxObject::getClassInstance() const {
+    if (!isClassInstance()){
+        throw std::runtime_error("LoxObject does not contain a class instance");
+    }
+    return instance.get();
 }
 
 bool LoxObject::truthy() const {//In lox every literal is considered true except for nil and false
@@ -240,6 +253,8 @@ std::ostream &operator<<(std::ostream &os, const LoxObject &object) {
         os << std::string("nil");
     } else if (object.isCallable()) {
         os << object.getCallable()->to_string();
+    } else if (object.isClassInstance()){
+        os << object.getClassInstance()->to_string();
     } else {
         throw std::runtime_error("Object has no string representation");
     }

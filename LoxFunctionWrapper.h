@@ -3,6 +3,9 @@
 
 #include <utility>
 #include "LoxCallable.h"
+#include "Stmt.h"
+#include "Environment.h"
+#include "Expr.h"
 
 //This class wraps a FunctionDeclStmt into a LoxCallable. Basically it acts as the intermediary between the parser and the interpreter.
 class LoxFunctionWrapper : public LoxCallable {
