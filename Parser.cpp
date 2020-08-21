@@ -221,11 +221,19 @@ UniqueExprPtr Parser::assignment() {
     if (match(EQUAL)){
         Token op = previous();
         UniqueExprPtr rvalue = assignment();
-        VariableExpr* lvalue = dynamic_cast<VariableExpr*>(expr.get());
 
+        //Checks if the parsed expression to the left of the '=' is a variable expression that we can assign to
+        VariableExpr* lvalue = dynamic_cast<VariableExpr*>(expr.get());
         if (lvalue){
             Token identifier = lvalue->identifier;
             return std::make_unique<AssignmentExpr>(identifier, std::move(rvalue));
+        }
+
+        //Checks if the parsed expression to the left of the '=' is a get expression such as obj.field that we can assign to
+        GetExpr* lvalue_property = dynamic_cast<GetExpr*>(expr.get());
+        if (lvalue_property){
+            Token identifier = lvalue_property->identifier;
+            return std::make_unique<SetExpr>(std::move(lvalue_property->expr), identifier, std::move(rvalue));
         }
 
         throw error("Invalid assignment target", op.line);

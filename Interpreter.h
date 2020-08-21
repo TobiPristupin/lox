@@ -45,6 +45,7 @@ public:
     LoxObject visit(const DecrementExpr *decrementExpr) override;
     LoxObject visit(const LambdaExpr *lambdaExpr) override;
     LoxObject visit(const GetExpr *getExpr) override;
+    LoxObject visit(const SetExpr *setExpr) override;
 
     void interpretReplMode(Stmt* stmt);
     LoxObject interpret(Expr* expr);

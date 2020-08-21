@@ -38,6 +38,10 @@ LoxObject LoxClassInstance::getProperty(const Token &identifier) {
     return fields[key];
 }
 
+void LoxClassInstance::setProperty(const Token &identifier, const LoxObject &value) {
+    fields[identifier.lexeme] = value;
+}
+
 std::string LoxClassInstance::to_string() {
     std::stringstream ss;
     ss << "<Instance of class " << loxClass->name() << " at " << this << ">";

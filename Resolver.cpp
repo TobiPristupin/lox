@@ -76,7 +76,10 @@ void Resolver::visit(const ExpressionStmt *expressionStmt) {
 }
 
 void Resolver::visit(const PrintStmt *printStmt) {
-    resolve(printStmt->expr.get());
+    if (printStmt->expr != nullptr){
+        resolve(printStmt->expr.get());
+    }
+
 }
 
 void Resolver::visit(const VarDeclarationStmt *varStmt) {
@@ -238,6 +241,12 @@ LoxObject Resolver::visit(const CallExpr *functionCallExpr) {
 
 LoxObject Resolver::visit(const GetExpr *getExpr) {
     resolve(getExpr->expr.get());
+    return LoxObject::Nil();
+}
+
+LoxObject Resolver::visit(const SetExpr *setExpr) {
+    resolve(setExpr->object.get());
+    resolve(setExpr->value.get());
     return LoxObject::Nil();
 }
 

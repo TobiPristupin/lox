@@ -29,6 +29,7 @@ class LoxClassInstance {
 public:
     explicit LoxClassInstance(std::shared_ptr<LoxClassWrapper> loxClass);
     LoxObject getProperty(const Token &identifier);
+    void setProperty(const Token &identifier, const LoxObject &value);
     std::string to_string();
 
 private:

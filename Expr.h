@@ -21,6 +21,7 @@ class IncrementExpr;
 class DecrementExpr;
 class LambdaExpr;
 class GetExpr;
+class SetExpr;
 
 class Stmt;
 
@@ -40,6 +41,7 @@ public:
     virtual LoxObject visit(const DecrementExpr* decrementExpr) = 0;
     virtual LoxObject visit(const LambdaExpr* lambdaExpr) = 0;
     virtual LoxObject visit(const GetExpr* getExpr) = 0;
+    virtual LoxObject visit(const SetExpr* setExpr) = 0;
 };
 
 
@@ -166,12 +168,31 @@ public:
 
 class GetExpr : public Expr {
 public:
+    /*VariableExpr that refers to the object (not the field!) that is being accessed. For example if the parsed code were
+     * 'obj.a' then this variable would hold a pointer to 'obj' */
     UniqueExprPtr expr;
+    /*Token of the identifier of the field being accessed. If the parsed code were 'obj.a' then this variable would contain
+     * the token corresponding to 'a' */
     Token identifier;
 
     GetExpr(UniqueExprPtr expr, const Token &identifier);
     LoxObject accept(ExprVisitor &visitor) override;
 };
 
+class SetExpr : public Expr {
+public:
+    /*VariableExpr that refers to the object (not the field!) that is being accessed. For example if the parsed code were
+     * 'obj.a' then this variable would hold a pointer to 'obj' */
+    UniqueExprPtr object;
+    /*Token of the identifier of the field being accessed. If the parsed code were 'obj.a' then this variable would contain
+     * the token corresponding to 'a' */
+    Token identifier;
+
+    UniqueExprPtr value;
+
+
+    SetExpr(UniqueExprPtr object, const Token &identifier, UniqueExprPtr value);
+    LoxObject accept(ExprVisitor &visitor) override;
+};
 
 #endif //JLOX_EXPR_H

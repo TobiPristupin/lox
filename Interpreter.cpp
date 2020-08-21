@@ -359,11 +359,22 @@ LoxObject Interpreter::visit(const CallExpr *callExpr) {
 
 LoxObject Interpreter::visit(const GetExpr *getExpr) {
     LoxObject obj = interpret(getExpr->expr.get());
-    if (obj.isClassInstance()){
-        return obj.getClassInstance()->getProperty(getExpr->identifier);
+    if (!obj.isClassInstance()){
+        throw LoxRuntimeError("Only instances have properties", getExpr->identifier.line);
     }
 
-    throw LoxRuntimeError("Only instances have properties", getExpr->identifier.line);
+    return obj.getClassInstance()->getProperty(getExpr->identifier);
+}
+
+LoxObject Interpreter::visit(const SetExpr *setExpr) {
+    LoxObject obj = interpret(setExpr->object.get());
+    if (!obj.isClassInstance()){
+        throw LoxRuntimeError("Cannot access a field on something that isn't an object instance", setExpr->identifier.line);
+    }
+
+    LoxObject value = interpret(setExpr->value.get());
+    obj.getClassInstance()->setProperty(setExpr->identifier, value);
+    return value;
 }
 
 void Interpreter::executeBlock(const std::vector<UniqueStmtPtr> &stmts, Environment::SharedPtr newEnv) {

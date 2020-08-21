@@ -1,4 +1,14 @@
-obj.a;
-obj.a.f;
-obj.funn(10).property;
-obj.funn(10).getA();
+class object {
+}
+
+
+var a = object();
+var b = object();
+print a;
+print b;
+
+print;
+
+print object();
+var c = object();
+print object();

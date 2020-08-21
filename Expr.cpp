@@ -87,3 +87,10 @@ GetExpr::GetExpr(UniqueExprPtr expr, const Token &identifier) : expr(std::move(e
 LoxObject GetExpr::accept(ExprVisitor &visitor) {
     return visitor.visit(this);
 }
+
+SetExpr::SetExpr(UniqueExprPtr object, const Token &identifier, UniqueExprPtr value) : object(std::move(object)),
+    identifier(identifier), value(std::move(value)) {}
+
+LoxObject SetExpr::accept(ExprVisitor &visitor) {
+    return visitor.visit(this);
+}

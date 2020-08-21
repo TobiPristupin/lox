@@ -2,6 +2,7 @@
 #define JLOX_STMT_H
 
 #include <vector>
+#include <optional>
 #include "Token.h"
 #include "LoxObject.h"
 #include "typedefs.h"
@@ -36,7 +37,6 @@ public:
     virtual void visit(const FunctionDeclStmt *functionStmt) = 0;
     virtual void visit(const ReturnStmt *returnStmt) = 0;
     virtual void visit(const ClassDeclStmt *classDeclStmt) = 0;
-
 };
 
 
@@ -50,7 +50,7 @@ class ExpressionStmt : public Stmt {
 public:
     UniqueExprPtr expr;
 
-    ExpressionStmt(UniqueExprPtr expr);
+    explicit ExpressionStmt(UniqueExprPtr expr);
     void accept(StmtVisitor &visitor) override;
 };
 
@@ -58,7 +58,7 @@ class PrintStmt : public Stmt {
 public:
     UniqueExprPtr expr;
 
-    PrintStmt(UniqueExprPtr expr);
+    explicit PrintStmt(UniqueExprPtr expr);
     void accept(StmtVisitor &visitor) override;
 };
 
@@ -75,7 +75,7 @@ class BlockStmt : public Stmt {
 public:
     std::vector<UniqueStmtPtr> statements;
 
-    BlockStmt(std::vector<UniqueStmtPtr> statements);
+    explicit BlockStmt(std::vector<UniqueStmtPtr> statements);
     void accept(StmtVisitor &visitor) override;
 };
 
@@ -119,7 +119,7 @@ class BreakStmt : public Stmt {
 public:
     Token keyword;
 
-    BreakStmt(const Token &keyword);
+    explicit BreakStmt(const Token &keyword);
     void accept(StmtVisitor &visitor) override;
 };
 
@@ -129,7 +129,7 @@ class ContinueStmt : public Stmt {
 public:
     Token keyword;
 
-    ContinueStmt(const Token &keyword);
+    explicit ContinueStmt(const Token &keyword);
     void accept(StmtVisitor &visitor) override;
 };
 
