@@ -41,5 +41,6 @@ primary :== NUMBER | STRING | IDENTIFIER | "false" | "true" | "nil" | "(" expres
 * break and continue
 * print supports "\n" and "\t", empty print prints a newline
 * support for prefix and postfix ++ and --
+* Added a str() native function that takes in one argument and returns its string representation
 
 #14(6+1)61 68yeee79y

@@ -167,6 +167,11 @@ void Resolver::resolveFunction(const FunctionDeclStmt *functionStmt, FunctionTyp
 void Resolver::visit(const ClassDeclStmt *classDeclStmt) {
     declare(classDeclStmt->identifier);
     define(classDeclStmt->identifier);
+
+    for (const auto& method : classDeclStmt->methods){
+        FunctionType type = FunctionType::METHOD;
+        resolveFunction(method.get(), type);
+    }
 }
 
 void Resolver::visit(const ReturnStmt *returnStmt) {

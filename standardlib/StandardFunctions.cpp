@@ -2,6 +2,7 @@
 #include <chrono>
 #include <iostream>
 #include <thread>
+#include <sstream>
 
 
 LoxObject standardFunctions::Clock::call(Interpreter &interpreter, const std::vector<LoxObject> &arguments) {
@@ -22,9 +23,14 @@ std::string standardFunctions::Clock::name() {
     return "clock";
 }
 
-//TODO: there should be some type checking here.
 LoxObject standardFunctions::Sleep::call(Interpreter &interpreter, const std::vector<LoxObject> &arguments) {
-    int time = (int) arguments[0].getNumber();
+    int time;
+    try {
+        time = (int) arguments[0].getNumber();
+    } catch (const std::runtime_error &error) {
+        throw LoxRuntimeError("Function 'sleep' expected an integer as its argument");
+    }
+
     std::this_thread::sleep_for(std::chrono::milliseconds(time));
     return LoxObject::Nil();
 }
@@ -41,3 +47,21 @@ std::string standardFunctions::Sleep::name() {
     return "sleep";
 }
 
+
+LoxObject standardFunctions::Str::call(Interpreter &interpreter, const std::vector<LoxObject> &arguments) {
+    std::stringstream ss; //Use stringstream because LoxObject overrides operator '<<' for printing
+    ss << arguments[0];
+    return LoxObject(ss.str());
+}
+
+int standardFunctions::Str::arity() {
+    return 1;
+}
+
+std::string standardFunctions::Str::to_string() {
+    return "<native function " + name() + ">";
+}
+
+std::string standardFunctions::Str::name() {
+    return "str";
+}

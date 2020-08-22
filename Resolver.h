@@ -42,7 +42,7 @@ public:
 
 private:
     enum class FunctionType {
-        NONE, FUNCTION
+        NONE, FUNCTION, METHOD
     };
 
     std::unordered_map<const Expr*, int> distances;

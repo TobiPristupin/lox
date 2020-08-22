@@ -206,7 +206,15 @@ void Interpreter::visit(const ReturnStmt *returnStmt) {
 
 void Interpreter::visit(const ClassDeclStmt *classDeclStmt) {
     environment->define(classDeclStmt->identifier, LoxObject::Nil());
-    SharedCallablePtr klass = std::make_shared<LoxClassWrapper>(classDeclStmt->identifier.lexeme);
+
+    std::unordered_map<std::string, LoxObject> methods;
+    for (const auto& method : classDeclStmt->methods){
+        SharedCallablePtr callable = std::make_shared<LoxFunctionWrapper>(method.get(), environment);
+        LoxObject functionObject(callable);
+        methods[method->name.lexeme] = functionObject;
+    }
+
+    SharedCallablePtr klass = std::make_shared<LoxClassWrapper>(classDeclStmt->identifier.lexeme, methods);
     LoxObject classObject(klass);
     environment->assign(classDeclStmt->identifier, classObject);
 }
@@ -383,10 +391,11 @@ void Interpreter::executeBlock(const std::vector<UniqueStmtPtr> &stmts, Environm
 }
 
 void Interpreter::loadBuiltinFunctions() {
-    std::shared_ptr<LoxCallable> clock = std::make_shared<standardFunctions::Clock>();
-    std::shared_ptr<LoxCallable> sleep = std::make_shared<standardFunctions::Sleep>();
+    SharedCallablePtr clock = std::make_shared<standardFunctions::Clock>();
+    SharedCallablePtr sleep = std::make_shared<standardFunctions::Sleep>();
+    SharedCallablePtr str = std::make_shared<standardFunctions::Str>();
 
-    std::vector<LoxObject> functions = {LoxObject(clock), LoxObject(sleep)};
+    std::vector<LoxObject> functions = {LoxObject(clock), LoxObject(sleep), LoxObject(str)};
     for (const auto &function : functions){
         globalEnv->define(function.getCallable()->name(), function);
     }

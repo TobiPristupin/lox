@@ -11,16 +11,14 @@
 class LoxClassWrapper : public LoxCallable, public std::enable_shared_from_this<LoxClassWrapper> {
 
 public:
-    explicit LoxClassWrapper(const std::string &name);
+    std::unordered_map<std::string, LoxObject> methods;
+    std::string className;
 
+    explicit LoxClassWrapper(const std::string &name, const std::unordered_map<std::string, LoxObject> &methods);
     LoxObject call(Interpreter &interpreter, const std::vector<LoxObject> &arguments) override;
     int arity() override;
     std::string to_string() override;
     std::string name() override;
-
-private:
-    std::string className;
-    std::shared_ptr<LoxClassWrapper> loxClass;
 
 };
 
@@ -35,6 +33,8 @@ public:
 private:
     std::shared_ptr<LoxClassWrapper> loxClass;
     std::unordered_map<std::string, LoxObject> fields;
+
+    std::optional<LoxObject> findMethod(const std::string &key);
 };
 
 

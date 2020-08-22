@@ -125,10 +125,17 @@ LoxObject operator+(const LoxObject &lhs, const LoxObject &rhs) {
         return LoxObject(lhs.getNumber() + rhs.getNumber());
     } else if (lhs.isString() && rhs.isString()){
         return LoxObject(lhs.getString() + rhs.getString());
-    }  else {
+    }
+
+//    else if (lhs.isString() && rhs.isNumber()){
+//        return LoxObject(lhs.getString() + std::to_string(rhs.getNumber()));
+//    } else if (lhs.isNumber() && rhs.isString()){
+//        return LoxObject(std::to_string(lhs.getNumber()) + rhs.getString());
+//    }
+
+    else {
         throw std::runtime_error("Cannot apply operator '+' to operands of type " + loxTypeToString(lhs.type) + " and " + loxTypeToString(rhs.type));
     }
-    //TODO: Should we allow implicitly converting a number into str to concatenate them?
 }
 
 LoxObject operator-(const LoxObject &lhs, const LoxObject &rhs) {

@@ -1,5 +1,8 @@
-if (false){
-    print 10;
-} elif (true){
-    print 20;
+class animal {
+    eat(a, b){
+        print "eating" ;
+    }
 }
+
+var dog = animal();
+dog.eat(0, 1);
