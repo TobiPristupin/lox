@@ -1,14 +1,5 @@
-class object {
+if (false){
+    print 10;
+} elif (true){
+    print 20;
 }
-
-
-var a = object();
-var b = object();
-print a;
-print b;
-
-print;
-
-print object();
-var c = object();
-print object();

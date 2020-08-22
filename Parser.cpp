@@ -11,6 +11,8 @@ std::vector<UniqueStmtPtr> Parser::parse(bool &successFlag) {
     successFlag = true;
     std::vector<UniqueStmtPtr> statements;
     while (!isAtEnd()){
+        //declaration() may return nullptr if there is a parsing error. It doesn't matter if we still add it to the vector because
+        //if an error occurs then successFlag will be false and we cannot guarantee that the vector statements is correct.
         UniqueStmtPtr stmt = declaration();
         statements.push_back(std::move(stmt));
     }
@@ -38,7 +40,7 @@ UniqueStmtPtr Parser::declaration() {
 
 UniqueStmtPtr Parser::varDeclStatement() {
     Token identifier = expect(TokenType::IDENTIFIER, "Expected identifier");
-    UniqueExprPtr initializer = nullptr;
+    std::optional<UniqueExprPtr> initializer = std::nullopt;
     if (match(TokenType::EQUAL)){
         initializer = expression();
     }
@@ -118,7 +120,7 @@ UniqueStmtPtr Parser::exprStatement() {
 
 UniqueStmtPtr Parser::printStatement() {
     if (match(TokenType::SEMICOLON)){
-        return std::make_unique<PrintStmt>(nullptr);
+        return std::make_unique<PrintStmt>(std::nullopt);
     }
 
     UniqueExprPtr expr = expression();
@@ -145,7 +147,7 @@ UniqueStmtPtr Parser::ifStatement() {
     }
 
 
-    UniqueStmtPtr elseStmt = nullptr;
+    std::optional<UniqueStmtPtr> elseStmt = std::nullopt;
     if (match(TokenType::ELSE)){
         elseStmt = statement();
     }
@@ -163,22 +165,22 @@ UniqueStmtPtr Parser::whileStatement() {
 
 UniqueStmtPtr Parser::forStatement() {
     expect(TokenType::LEFT_PAREN, "Expect '(' after for");
-    UniqueStmtPtr initializer = nullptr;
+    std::optional<UniqueStmtPtr> initializer = std::nullopt;
     if (match(TokenType::VAR)){
         initializer = varDeclStatement();
     } else if (match(TokenType::SEMICOLON)){
-        initializer = nullptr;
+        initializer = std::nullopt;
     } else {
         initializer = exprStatement();
     }
 
-    UniqueExprPtr condition = nullptr;
+    std::optional<UniqueExprPtr> condition = std::nullopt;
     if (!check(TokenType::SEMICOLON)){
         condition = expression();
     }
     expect(TokenType::SEMICOLON, "Expect ';' after condition");
 
-    UniqueStmtPtr increment = nullptr;
+    std::optional<UniqueStmtPtr> increment = std::nullopt;
     if (!check(TokenType::RIGHT_PAREN)){
         increment = std::make_unique<ExpressionStmt>(expression());
     }
@@ -202,7 +204,7 @@ UniqueStmtPtr Parser::continueStatement() {
 
 UniqueStmtPtr Parser::returnStatement() {
     Token keyword = previous();
-    UniqueExprPtr expr = nullptr;
+    std::optional<UniqueExprPtr> expr = std::nullopt;
     if (!check(TokenType::SEMICOLON)){
         expr = expression();
     }

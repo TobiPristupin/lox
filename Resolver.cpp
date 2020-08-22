@@ -76,17 +76,17 @@ void Resolver::visit(const ExpressionStmt *expressionStmt) {
 }
 
 void Resolver::visit(const PrintStmt *printStmt) {
-    if (printStmt->expr != nullptr){
-        resolve(printStmt->expr.get());
+    if (printStmt->expr.has_value()){
+        resolve(printStmt->expr.value().get());
     }
-
 }
 
 void Resolver::visit(const VarDeclarationStmt *varStmt) {
     declare(varStmt->identifier);
-    if (varStmt->expr != nullptr){
-        resolve(varStmt->expr.get());
+    if (varStmt->expr.has_value()){
+        resolve(varStmt->expr.value().get());
     }
+
     define(varStmt->identifier);
 }
 
@@ -104,8 +104,8 @@ void Resolver::visit(const IfStmt *ifStmt) {
         resolve(branch.statement.get());
     }
 
-    if (ifStmt->elseBranch != nullptr){
-        resolve(ifStmt->elseBranch.get());
+    if (ifStmt->elseBranch.has_value()){
+        resolve(ifStmt->elseBranch.value().get());
     }
 }
 
@@ -134,9 +134,10 @@ void Resolver::visit(const ForStmt *forStmt) {
     auto finalAction = gsl::finally([this] {this->loopNestingLevel--;});
 
     beginScope();
-    if (forStmt->initializer.get() != nullptr) resolve(forStmt->initializer.get());
-    if (forStmt->condition.get() != nullptr) resolve(forStmt->condition.get());
-    if (forStmt->increment.get() != nullptr) resolve(forStmt->increment.get());
+    if (forStmt->initializer.has_value()) resolve(forStmt->initializer.value().get());
+    if (forStmt->condition.has_value()) resolve(forStmt->condition.value().get());
+    if (forStmt->increment.has_value()) resolve(forStmt->increment.value().get());
+
     resolve(forStmt->body.get());
     endScope();
 }
@@ -173,8 +174,8 @@ void Resolver::visit(const ReturnStmt *returnStmt) {
         throw LoxParsingError("'return' statement must be inside a function", returnStmt->keyword.line);
     }
 
-    if (returnStmt->expr != nullptr){
-        resolve(returnStmt->expr.get());
+    if (returnStmt->expr.has_value()){
+        resolve(returnStmt->expr.value().get());
     }
 }
 

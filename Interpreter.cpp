@@ -69,8 +69,8 @@ void Interpreter::execute(Stmt* stmt) {
 //STATEMENTS
 
 void Interpreter::visit(const VarDeclarationStmt *varDeclarationStmt) {
-    if (varDeclarationStmt->expr != nullptr){
-        LoxObject initializer = interpret(varDeclarationStmt->expr.get());
+    if (varDeclarationStmt->expr.has_value()){
+        LoxObject initializer = interpret(varDeclarationStmt->expr.value().get());
         environment->define(varDeclarationStmt->identifier, initializer);
     } else {
         environment->define(varDeclarationStmt->identifier, LoxObject::Nil());
@@ -94,12 +94,12 @@ void Interpreter::visit(const ExpressionStmt *expressionStmt) {
 }
 
 void Interpreter::visit(const PrintStmt *printStmt) {
-    if (printStmt->expr.get() == nullptr){
+    if (!printStmt->expr.has_value()){
         std::cout << "\n";
         return;
     }
 
-    LoxObject result = interpret(printStmt->expr.get());
+    LoxObject result = interpret(printStmt->expr.value().get());
     std::cout << result << "\n";
 }
 
@@ -118,8 +118,8 @@ void Interpreter::visit(const IfStmt *ifStmt) {
         }
     }
 
-    if (ifStmt->elseBranch.get() != nullptr){
-        execute(ifStmt->elseBranch.get());
+    if (ifStmt->elseBranch.has_value()){
+        execute(ifStmt->elseBranch.value().get());
     }
 }
 
@@ -140,19 +140,15 @@ void Interpreter::visit(const WhileStmt *whileStmt) {
 }
 
 void Interpreter::visit(const ForStmt *forStmt) {
-//    Environment::SharedPtr previous_env = environment;
-//    environment = std::make_shared<Environment>(environment);
-
-//    //TODO: Could I do this with RAII?
-//    auto finalAction = gsl::finally([this, previous_env] {this->environment = previous_env;}); //Make sure that the new environment is popped even if exceptions are thrown
-
     Environment::SharedPtr newEnv = std::make_shared<Environment>(environment);
     ScopedEnvironment scoped(environment, newEnv);
 
-    if (forStmt->initializer.get() != nullptr) {execute(forStmt->initializer.get());}
-    bool noCondition = forStmt->condition.get() == nullptr;
+    if (forStmt->initializer.has_value()) {
+        execute(forStmt->initializer.value().get());
+    }
 
-    while (noCondition || interpret(forStmt->condition.get()).truthy()){
+    bool noCondition = !forStmt->condition.has_value();
+    while (noCondition || interpret(forStmt->condition.value().get()).truthy()){
         try {
             execute(forStmt->body.get());
         } catch (const BreakException &exception) {
@@ -161,7 +157,9 @@ void Interpreter::visit(const ForStmt *forStmt) {
             //empty
         }
 
-        if (forStmt->increment.get() != nullptr) { execute(forStmt->increment.get()); }
+        if (forStmt->increment.has_value()) {
+            execute(forStmt->increment.value().get());
+        }
     }
 }
 
@@ -196,8 +194,8 @@ LoxObject Interpreter::visit(const LambdaExpr *lambdaExpr) {
 
 void Interpreter::visit(const ReturnStmt *returnStmt) {
     LoxObject value = LoxObject::Nil();
-    if (returnStmt->expr.get() != nullptr){
-        value = interpret(returnStmt->expr.get());
+    if (returnStmt->expr.has_value()){
+        value = interpret(returnStmt->expr.value().get());
     }
 
     /*NOTE: We're using exceptions as control flow here because it is the cleanest way to implement return given

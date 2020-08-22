@@ -50,12 +50,9 @@ public:
 
 
 int main(){
-    std::unordered_map<int, std::string> pp;
-    pp[1] = "hey";
-    if (pp[2] == "hey"){
-        std::cout << "true\n";
-    }
-
-    std::cout << pp[2] << "\n";
+    std::optional<std::unique_ptr<Res>> res = std::nullopt;
+//    std::optional<std::unique_ptr<Res>> res = std::make_unique<Res>();
+    std::cout << res.has_value() << "\n";
+//    std::cout << res.has_value() << "\n";
 }
 

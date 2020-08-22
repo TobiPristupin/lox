@@ -10,14 +10,14 @@ void ExpressionStmt::accept(StmtVisitor &visitor) {
 }
 
 
-PrintStmt::PrintStmt(UniqueExprPtr expr) : expr(std::move(expr)) {}
+PrintStmt::PrintStmt(std::optional<UniqueExprPtr> expr) : expr(std::move(expr)) {}
 
 void PrintStmt::accept(StmtVisitor &visitor) {
     visitor.visit(this);
 }
 
 
-VarDeclarationStmt::VarDeclarationStmt(const Token &identifier, UniqueExprPtr expr) : identifier(identifier), expr(std::move(expr)) {}
+VarDeclarationStmt::VarDeclarationStmt(const Token &identifier, std::optional<UniqueExprPtr> expr) : identifier(identifier), expr(std::move(expr)) {}
 
 void VarDeclarationStmt::accept(StmtVisitor &visitor) {
     visitor.visit(this);
@@ -32,7 +32,7 @@ void BlockStmt::accept(StmtVisitor &visitor) {
 
 IfBranch::IfBranch(UniqueExprPtr condition, UniqueStmtPtr statement) : condition(std::move(condition)), statement(std::move(statement)) {}
 
-IfStmt::IfStmt(IfBranch mainBranch, std::vector<IfBranch> elifBranches, UniqueStmtPtr elseBranch) : mainBranch(std::move(mainBranch)), elifBranches(std::move(elifBranches)), elseBranch(std::move(elseBranch)){}
+IfStmt::IfStmt(IfBranch mainBranch, std::vector<IfBranch> elifBranches, std::optional<UniqueStmtPtr> elseBranch) : mainBranch(std::move(mainBranch)), elifBranches(std::move(elifBranches)), elseBranch(std::move(elseBranch)){}
 
 void IfStmt::accept(StmtVisitor &visitor) {
     visitor.visit(this);
@@ -46,7 +46,7 @@ void WhileStmt::accept(StmtVisitor &visitor) {
 }
 
 
-ForStmt::ForStmt(UniqueStmtPtr initializer, UniqueExprPtr condition, UniqueStmtPtr increment, UniqueStmtPtr body)
+ForStmt::ForStmt(std::optional<UniqueStmtPtr> initializer, std::optional<UniqueExprPtr> condition, std::optional<UniqueStmtPtr> increment, UniqueStmtPtr body)
 : initializer(std::move(initializer)), condition(std::move(condition)), increment(std::move(increment)), body(std::move(body)) {}
 
 void ForStmt::accept(StmtVisitor &visitor) {
@@ -75,7 +75,7 @@ void FunctionDeclStmt::accept(StmtVisitor &visitor) {
 }
 
 
-ReturnStmt::ReturnStmt(const Token &keyword, UniqueExprPtr expr) : keyword(keyword), expr(std::move(expr)) {}
+ReturnStmt::ReturnStmt(const Token &keyword, std::optional<UniqueExprPtr> expr) : keyword(keyword), expr(std::move(expr)) {}
 
 void ReturnStmt::accept(StmtVisitor &visitor) {
     visitor.visit(this);

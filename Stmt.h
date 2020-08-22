@@ -56,18 +56,19 @@ public:
 
 class PrintStmt : public Stmt {
 public:
-    UniqueExprPtr expr;
+    std::optional<UniqueExprPtr> expr;
 
-    explicit PrintStmt(UniqueExprPtr expr);
+    explicit PrintStmt(std::optional<UniqueExprPtr> expr);
     void accept(StmtVisitor &visitor) override;
 };
 
 class VarDeclarationStmt : public Stmt {
 public:
     Token identifier;
-    UniqueExprPtr expr; //may be nullptr when declaring a variable without initializing
+    //Optional because you may declare a variable without initializing it.
+    std::optional<UniqueExprPtr> expr;
 
-    VarDeclarationStmt(const Token &identifier, UniqueExprPtr expr);
+    VarDeclarationStmt(const Token &identifier, std::optional<UniqueExprPtr> expr);
     void accept(StmtVisitor &visitor) override;
 };
 
@@ -91,9 +92,9 @@ class IfStmt : public Stmt {
 public:
     IfBranch mainBranch;
     std::vector<IfBranch> elifBranches;
-    UniqueStmtPtr elseBranch;
+    std::optional<UniqueStmtPtr> elseBranch;
 
-    IfStmt(IfBranch mainBranch, std::vector<IfBranch> elifBranches, UniqueStmtPtr elseBranch);
+    IfStmt(IfBranch mainBranch, std::vector<IfBranch> elifBranches, std::optional<UniqueStmtPtr> elseBranch);
     void accept(StmtVisitor &visitor) override;
 };
 
@@ -108,10 +109,11 @@ public:
 
 class ForStmt : public Stmt {
 public:
-    UniqueStmtPtr initializer, body, increment;
-    UniqueExprPtr condition;
+    std::optional<UniqueStmtPtr> initializer, increment;
+    std::optional<UniqueExprPtr> condition;
+    UniqueStmtPtr body;
 
-    ForStmt(UniqueStmtPtr initializer, UniqueExprPtr condition, UniqueStmtPtr increment, UniqueStmtPtr body);
+    ForStmt(std::optional<UniqueStmtPtr> initializer, std::optional<UniqueExprPtr> condition, std::optional<UniqueStmtPtr> increment, UniqueStmtPtr body);
     void accept(StmtVisitor &visitor) override;
 };
 
@@ -147,10 +149,10 @@ public:
 
 class ReturnStmt : public Stmt {
 public:
-    UniqueExprPtr expr;
+    std::optional<UniqueExprPtr> expr;
     Token keyword;
 
-    explicit ReturnStmt(const Token &keyword, UniqueExprPtr expr);
+    explicit ReturnStmt(const Token &keyword, std::optional<UniqueExprPtr> expr);
     void accept(StmtVisitor &visitor) override;
 };
 
