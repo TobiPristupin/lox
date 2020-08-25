@@ -7,7 +7,6 @@
 #include "LoxObject.h"
 #include "typedefs.h"
 
-class Expr;
 class BinaryExpr;
 class GroupingExpr;
 class UnaryExpr;
@@ -22,9 +21,6 @@ class DecrementExpr;
 class LambdaExpr;
 class GetExpr;
 class SetExpr;
-
-class Stmt;
-
 
 class ExprVisitor {
 public:

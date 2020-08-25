@@ -1,6 +1,6 @@
 //#define DEBUG
 
-#include <iostream>
+#include <memory>
 #include "Runner.h"
 
 #ifdef DEBUG

@@ -1,8 +1,11 @@
 #ifndef JLOX_LOXOBJECT_H
 #define JLOX_LOXOBJECT_H
 
+#include <iosfwd>
 #include <memory>
-#include "Token.h"
+#include <string>
+
+struct Token;
 
 enum class LoxType {
     NIL, BOOL, NUMBER, STRING, CALLABLE, INSTANCE

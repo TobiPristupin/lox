@@ -1,9 +1,13 @@
 #include "StandardFunctions.h"
 #include <chrono>
 #include <iostream>
+#include <memory>
+#include <stdexcept>
 #include <thread>
 #include <sstream>
+#include "../LoxError.h"
 
+class Interpreter;
 
 LoxObject standardFunctions::Clock::call(Interpreter &interpreter, const std::vector<LoxObject> &arguments) {
     using namespace std::chrono;

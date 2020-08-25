@@ -1,4 +1,5 @@
 #include "Utils.h"
+#include <cstddef>
 
 //Changes every occurrence of from into to
 void utils::replaceAll(std::string &str, const std::string &from, const std::string &to) {

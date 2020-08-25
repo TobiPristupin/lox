@@ -2,8 +2,7 @@
 #define JLOX_TOKEN_H
 
 #include <string>
-#include <any>
-#include <variant>
+#include <iosfwd>
 #include "TokenType.h"
 
 

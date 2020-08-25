@@ -1,13 +1,13 @@
 #ifndef JLOX_STMT_H
 #define JLOX_STMT_H
 
+#include <memory>
 #include <vector>
 #include <optional>
 #include "Token.h"
 #include "LoxObject.h"
 #include "typedefs.h"
 
-class Stmt;
 class ExpressionStmt;
 class PrintStmt;
 class VarDeclarationStmt;
@@ -20,8 +20,6 @@ class ContinueStmt;
 class FunctionDeclStmt;
 class ReturnStmt;
 class ClassDeclStmt;
-
-class Expr;
 
 class StmtVisitor {
 public:

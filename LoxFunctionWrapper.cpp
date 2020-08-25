@@ -1,7 +1,13 @@
-#include <cassert>
-#include <sstream>
 #include "LoxFunctionWrapper.h"
+#include <cassert>
+#include <memory>
+#include <sstream>
+#include <utility>
+#include "Expr.h"
 #include "Interpreter.h"
+#include "Stmt.h"
+#include "Token.h"
+#include "typedefs.h"
 
 LoxFunctionWrapper::LoxFunctionWrapper(const FunctionDeclStmt *functionDeclStmt, Environment::SharedPtr closure)  : functionDeclStmt(functionDeclStmt), closure(std::move(closure)) {}
 

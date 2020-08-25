@@ -1,6 +1,8 @@
 
 #include "FileReader.h"
+#include <iterator>
 #include "LoxError.h"
+
 
 FileReader::FileReader(const std::string &filename) : filename(filename) {
     fileStream.open(filename);

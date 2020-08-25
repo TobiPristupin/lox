@@ -1,12 +1,17 @@
-#include <fstream>
-#include <iostream>
 #include "Runner.h"
-#include "Scanner.h"
-#include "LoxError.h"
-#include "Parser.h"
+#include <iostream>
+#include <unordered_map>
+#include <vector>
 #include "FileReader.h"
 #include "Interpreter.h"
+#include "LoxError.h"
+#include "Parser.h"
 #include "Resolver.h"
+#include "Scanner.h"
+#include "Token.h"
+#include "typedefs.h"
+
+class Expr;
 
 
 Interpreter Runner::interpreter = Interpreter();

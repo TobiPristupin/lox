@@ -1,5 +1,7 @@
-#include <cassert>
 #include "Environment.h"
+#include <cassert>
+#include <stdexcept>
+#include <utility>
 #include "LoxError.h"
 #include "LoxObject.h"
 #include "Token.h"

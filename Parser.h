@@ -1,12 +1,12 @@
 #ifndef JLOX_PARSER_H
 #define JLOX_PARSER_H
 
-#include <vector>
-#include <optional>
-#include "Token.h"
-#include "Expr.h"
-#include "LoxError.h"
-#include "Stmt.h"
+#include <string>       // for string
+#include <vector>       // for vector
+#include "LoxError.h"   // for LoxParsingError
+#include "Token.h"      // for Token
+#include "TokenType.h"  // for TokenType
+#include "typedefs.h"   // for UniqueExprPtr, UniqueStmtPtr
 
 
 class Parser {

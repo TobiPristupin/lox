@@ -2,10 +2,15 @@
 #define JLOX_RESOLVER_H
 
 
-#include <stack>
-#include <unordered_map>
-#include "Stmt.h"
-#include "Expr.h"
+#include <string>         // for string
+#include <unordered_map>  // for unordered_map
+#include <vector>         // for vector
+#include "Expr.h"         // for ExprVisitor
+#include "LoxObject.h"    // for LoxObject
+#include "Stmt.h"         // for StmtVisitor
+#include "typedefs.h"     // for UniqueStmtPtr
+
+struct Token;
 
 class Resolver : public ExprVisitor, StmtVisitor {
 

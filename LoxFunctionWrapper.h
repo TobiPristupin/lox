@@ -1,11 +1,15 @@
 #ifndef JLOX_LOXFUNCTIONWRAPPER_H
 #define JLOX_LOXFUNCTIONWRAPPER_H
 
-#include <utility>
-#include "LoxCallable.h"
-#include "Stmt.h"
+#include <string>
+#include <vector>
 #include "Environment.h"
-#include "Expr.h"
+#include "LoxCallable.h"
+#include "LoxObject.h"
+
+class FunctionDeclStmt;
+class Interpreter;
+class LambdaExpr;
 
 //This class wraps a FunctionDeclStmt into a LoxCallable. Basically it acts as the intermediary between the parser and the interpreter.
 class LoxFunctionWrapper : public LoxCallable {

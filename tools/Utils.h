@@ -1,7 +1,3 @@
-//
-// Created by pristu on 7/15/20.
-//
-
 #ifndef JLOX_UTILS_H
 #define JLOX_UTILS_H
 

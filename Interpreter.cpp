@@ -1,14 +1,16 @@
-#include <stdexcept>
-#include <iostream>
-#include <cassert>
-#include <sstream>
 #include "Interpreter.h"
-#include "Token.h"
+#include <cassert>
+#include <iostream>
+#include <memory>
+#include <stdexcept>
+#include <string>
+#include <sstream>
+#include "LoxClass.h"
 #include "LoxError.h"
+#include "LoxFunctionWrapper.h"
+#include "TokenType.h"
 #include "LoxCallable.h"
 #include "standardlib/StandardFunctions.h"
-#include "LoxFunctionWrapper.h"
-#include "LoxClass.h"
 
 //TODO: Add support for loading standard function in a more clean way
 
@@ -353,14 +355,14 @@ LoxObject Interpreter::visit(const CallExpr *callExpr) {
     if (!callee.isCallable()){
         throw LoxRuntimeError("Expression is not callable", callExpr->closingParen.line);
     }
-    LoxCallable* function = callee.getCallable();
-    if (arguments.size() != function->arity()){
+    LoxCallable* callable = callee.getCallable();
+    if (arguments.size() != callable->arity()){
         std::stringstream ss;
-        ss << "Function " << function->name() << " expected " << function->arity() << " arguments but instead got " << arguments.size();
+        ss << "Function " << callable->name() << " expected " << callable->arity() << " arguments but instead got " << arguments.size();
         throw LoxRuntimeError(ss.str(), callExpr->closingParen.line);
     }
 
-    return function->call(*this, arguments);
+    return callable->call(*this, arguments);
 }
 
 LoxObject Interpreter::visit(const GetExpr *getExpr) {

@@ -1,9 +1,14 @@
-#include <iostream>
 #include "Parser.h"
+#include <algorithm>    // for max
+#include <iostream>     // for operator<<, char_traits, basic_ostream, cout
+#include <memory>       // for make_unique, unique_ptr, _MakeUniq<>::__singl...
+#include <optional>     // for optional, nullopt
+#include <utility>      // for move
+#include "Expr.h"       // for LiteralExpr, BinaryExpr, VariableExpr, Decrem...
+#include "LoxError.h"   // for LoxParsingError
+#include "LoxObject.h"  // for LoxObject
+#include "Stmt.h"       // for IfBranch, FunctionDeclStmt, PrintStmt, Expres...
 #include "TokenType.h"
-#include "LoxError.h"
-#include "Expr.h"
-#include "gsl/gsl"
 
 Parser::Parser(const std::vector<Token> &tokens) : tokens(tokens) {}
 

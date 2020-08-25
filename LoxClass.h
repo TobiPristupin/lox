@@ -2,11 +2,15 @@
 #define JLOX_LOXCLASS_H
 
 
-#include <string>
-#include <memory>
-#include <unordered_map>
-#include "LoxCallable.h"
-#include "LoxObject.h"
+#include <memory>         // for shared_ptr, enable_shared_from_this
+#include <optional>       // for optional
+#include <string>         // for string
+#include <unordered_map>  // for unordered_map
+#include <vector>         // for vector
+#include "LoxCallable.h"  // for LoxCallable
+#include "LoxObject.h"    // for LoxObject
+class Interpreter;
+struct Token;
 
 class LoxClassWrapper : public LoxCallable, public std::enable_shared_from_this<LoxClassWrapper> {
 

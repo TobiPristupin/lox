@@ -3,6 +3,7 @@
 
 
 #include <string>
+#include <bits/exception.h>
 
 class LoxError : public std::exception {
 public:

@@ -1,7 +1,8 @@
 #ifndef JLOX_RUNNER_H
 #define JLOX_RUNNER_H
 #include <string>
-#include "Interpreter.h"
+
+class Interpreter;
 
 class Runner {
 public:

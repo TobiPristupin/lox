@@ -1,12 +1,13 @@
 #ifndef JLOX_INTERPRETER_H
 #define JLOX_INTERPRETER_H
 
-#include <vector>
-#include <stack>
-#include "Expr.h"
-#include "LoxError.h"
-#include "Stmt.h"
-#include "Environment.h"
+#include <unordered_map>               // for unordered_map
+#include <vector>                      // for vector
+#include "Environment.h"               // for Environment, Environment::Shar...
+#include "Expr.h"                      // for ExprVisitor
+#include "Stmt.h"                      // for StmtVisitor
+#include "LoxObject.h"  // for LoxObject
+#include "typedefs.h"                  // for UniqueStmtPtr
 
 class Interpreter : public ExprVisitor, public StmtVisitor {
 public:

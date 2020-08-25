@@ -1,8 +1,10 @@
-class animal {
-    eat(a, b){
-        print "eating" ;
-    }
+class Cake {
+  taste() {
+    var adjective = "delicious";
+    print adjective;
+  }
 }
 
-var dog = animal();
-dog.eat(0, 1);
+var cake = Cake();
+cake.flavor = "German chocolate";
+cake.taste(); // Prints "The German chocolate cake is delicious!".

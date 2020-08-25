@@ -2,9 +2,10 @@
 #define JLOX_STANDARDFUNCTIONS_H
 
 #include <string>
-#include "../LoxObject.h"
+#include <vector>
 #include "../LoxCallable.h"
-#include "../Interpreter.h"
+#include "../LoxObject.h"
+class Interpreter;
 
 namespace standardFunctions {
 

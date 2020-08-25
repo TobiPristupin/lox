@@ -2,12 +2,12 @@
 #define JLOX_ENVIRONMENT_H
 
 
-#include <unordered_map>
-#include <string>
 #include <memory>
-#include <utility>
-#include "Token.h"
+#include <string>
+#include <unordered_map>
 #include "LoxObject.h"
+
+struct Token;
 
 class Environment {
 public:

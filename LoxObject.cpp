@@ -1,10 +1,12 @@
-#include <stdexcept>
-#include <cmath>
-#include <algorithm>
 #include "LoxObject.h"
-#include "tools/Utils.h"
+#include <cmath>
+#include <stdexcept>
+#include <utility>
 #include "LoxCallable.h"
 #include "LoxClass.h"
+#include "Token.h"
+#include "TokenType.h"
+#include "tools/Utils.h"
 
 LoxObject::LoxObject(double number) : type(LoxType::NUMBER), number(number) {}
 

@@ -1,9 +1,12 @@
 #ifndef JLOX_SCANNER_H
 #define JLOX_SCANNER_H
+
+#include <map>
+#include <optional>
+#include <string>
 #include <vector>
 #include "Token.h"
-#include <optional>
-#include <map>
+#include "TokenType.h"
 
 class Scanner {
 public:

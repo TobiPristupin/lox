@@ -1,9 +1,13 @@
-#include <iostream>
-#include <utility>
-#include <sstream>
 #include "LoxClass.h"
-#include "LoxObject.h"
-#include "LoxError.h"
+#include <iostream>     // for operator<<, basic_ostream, stringstream, basi...
+#include <utility>      // for move
+#include <sstream>      // for move
+#include "LoxError.h"   // for LoxRuntimeError
+#include "LoxObject.h"  // for LoxObject, SharedInstancePtr
+#include "Token.h"      // for Token
+
+
+class Interpreter;
 
 
 LoxClassWrapper::LoxClassWrapper(const std::string &name, const std::unordered_map<std::string, LoxObject> &methods)

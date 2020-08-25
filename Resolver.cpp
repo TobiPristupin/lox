@@ -1,7 +1,8 @@
-#include <iostream>
-#include <gsl/gsl_util>
 #include "Resolver.h"
-#include "LoxError.h"
+#include <gsl/gsl_util>        // for finally
+#include <iostream>            // for operator<<, char_traits, basic_ostream
+#include "LoxError.h"          // for LoxParsingError
+#include "Token.h"             // for Token
 
 
 std::unordered_map<const Expr*, int> Resolver::resolve(const std::vector<UniqueStmtPtr> &stmts, bool &successFlag) {

@@ -1,9 +1,9 @@
-#include <optional>
-#include <iostream>
-#include <algorithm>
 #include "Scanner.h"
-#include "TokenType.h"
+#include <cctype>
+#include <algorithm>
+#include <optional>
 #include "LoxError.h"
+#include "TokenType.h"
 
 std::map<std::string, TokenType> Scanner::reservedKeywords = {
         {"and", TokenType::AND},
