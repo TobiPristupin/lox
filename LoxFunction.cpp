@@ -1,4 +1,4 @@
-#include "LoxFunctionWrapper.h"
+#include "LoxFunction.h"
 #include <cassert>
 #include <memory>
 #include <sstream>
@@ -8,13 +8,15 @@
 #include "Stmt.h"
 #include "Token.h"
 #include "typedefs.h"
+#include "LoxClass.h"
 
-LoxFunctionWrapper::LoxFunctionWrapper(const FunctionDeclStmt *functionDeclStmt, Environment::SharedPtr closure)  : functionDeclStmt(functionDeclStmt), closure(std::move(closure)) {}
+LoxFunction::LoxFunction(const FunctionDeclStmt *functionDeclStmt, Environment::SharedPtr closure, bool isConstructor)
+    : functionDeclStmt(functionDeclStmt), closure(std::move(closure)), isConstructor(isConstructor) {}
 
 
-LoxObject LoxFunctionWrapper::call(Interpreter &interpreter, const std::vector<LoxObject> &arguments) {
+LoxObject LoxFunction::call(Interpreter &interpreter, const std::vector<LoxObject> &arguments) {
     Environment::SharedPtr newEnv = std::make_shared<Environment>(closure);
-    assert(functionDeclStmt->params.size() == arguments.size()); //This should have already been checked.
+    assert(functionDeclStmt->params.size() == arguments.size()); //This should have already been checked by the interpreter
     for (int i = 0; i < arguments.size(); i++){
         newEnv->define(functionDeclStmt->params[i], arguments[i]);
     }
@@ -24,21 +26,39 @@ LoxObject LoxFunctionWrapper::call(Interpreter &interpreter, const std::vector<L
     } catch (const ReturnException &returnStmt) {
         /*NOTE: We're using exceptions as control flow here because it is the cleanest way to implement return given
         how the book implements the interpreter. This exception was thrown in the visitReturnStmt method of the interpreter*/
+
+        //Constructor should always implicitly return "this".
+        if (isConstructor) return closure->getAt("this", 0);
+
         return returnStmt.value;
+    }
+
+
+    if (isConstructor) {
+        //Constructor should always implicitly return "this". This line covers the case where the constructor has no return stmt
+        //but we still need to return "this".
+        return closure->getAt("this", 0);
     }
 
     return LoxObject::Nil();
 }
 
-int LoxFunctionWrapper::arity() {
+LoxFunction *LoxFunction::bindThis(SharedInstancePtr instance) {
+    Environment::SharedPtr newEnv = std::make_shared<Environment>(closure);
+    LoxObject instanceObj(std::move(instance));
+    newEnv->define("this", instanceObj);
+    return new LoxFunction(functionDeclStmt, newEnv, isConstructor);
+}
+
+int LoxFunction::arity() {
     return functionDeclStmt->params.size();
 }
 
-std::string LoxFunctionWrapper::to_string() {
+std::string LoxFunction::to_string() {
     return "<function " + name() + ">";
 }
 
-std::string LoxFunctionWrapper::name() {
+std::string LoxFunction::name() {
     return functionDeclStmt->name.lexeme;
 }
 
@@ -47,7 +67,7 @@ LoxLambdaWrapper::LoxLambdaWrapper(const LambdaExpr *lambdaExpr, Environment::Sh
 
 LoxObject LoxLambdaWrapper::call(Interpreter &interpreter, const std::vector<LoxObject> &arguments) {
     Environment::SharedPtr newEnv = std::make_shared<Environment>(closure);
-    assert(lambdaExpr->params.size() == arguments.size()); //This should have already been checked.
+    assert(lambdaExpr->params.size() == arguments.size()); //This should have already been checked by the interpreter
     for (int i = 0; i < arguments.size(); i++){
         newEnv->define(lambdaExpr->params[i], arguments[i]);
     }

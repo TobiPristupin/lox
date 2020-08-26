@@ -7,7 +7,7 @@
 #include <sstream>
 #include "LoxClass.h"
 #include "LoxError.h"
-#include "LoxFunctionWrapper.h"
+#include "LoxFunction.h"
 #include "TokenType.h"
 #include "LoxCallable.h"
 #include "standardlib/StandardFunctions.h"
@@ -183,7 +183,7 @@ void Interpreter::visit(const ContinueStmt *continueStmt) {
 }
 
 void Interpreter::visit(const FunctionDeclStmt *functionStmt) {
-    SharedCallablePtr function = std::make_shared<LoxFunctionWrapper>(functionStmt, environment);
+    SharedCallablePtr function = std::make_shared<LoxFunction>(functionStmt, environment);
     LoxObject functionObject(function);
     environment->define(functionStmt->name, functionObject);
 }
@@ -201,7 +201,7 @@ void Interpreter::visit(const ReturnStmt *returnStmt) {
     }
 
     /*NOTE: We're using exceptions as control flow here because it is the cleanest way to implement return given
-    how the book implements the interpreter. This exception should be catched in the call method of LoxFunctionWrapper*/
+    how the book implements the interpreter. This exception should be catched in the call method of LoxFunction*/
     throw ReturnException(value);
 }
 
@@ -211,7 +211,8 @@ void Interpreter::visit(const ClassDeclStmt *classDeclStmt) {
 
     std::unordered_map<std::string, LoxObject> methods;
     for (const auto& method : classDeclStmt->methods){
-        SharedCallablePtr callable = std::make_shared<LoxFunctionWrapper>(method.get(), environment);
+        bool isConstructor = method->name.lexeme == "init";
+        SharedCallablePtr callable = std::make_shared<LoxFunction>(method.get(), environment, isConstructor);
         LoxObject functionObject(callable);
         methods[method->name.lexeme] = functionObject;
     }
@@ -358,7 +359,7 @@ LoxObject Interpreter::visit(const CallExpr *callExpr) {
     LoxCallable* callable = callee.getCallable();
     if (arguments.size() != callable->arity()){
         std::stringstream ss;
-        ss << "Function " << callable->name() << " expected " << callable->arity() << " arguments but instead got " << arguments.size();
+        ss  << callable->name() << " expected " << callable->arity() << " argument(s) but instead got " << arguments.size();
         throw LoxRuntimeError(ss.str(), callExpr->closingParen.line);
     }
 

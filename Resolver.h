@@ -48,7 +48,7 @@ public:
 
 private:
     enum class FunctionType {
-        NONE, FUNCTION, METHOD
+        NONE, FUNCTION, METHOD, CONSTRUCTOR
     };
 
     enum class ClassType {

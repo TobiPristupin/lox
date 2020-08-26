@@ -20,6 +20,7 @@ public:
 
     explicit LoxClassWrapper(const std::string &name, const std::unordered_map<std::string, LoxObject> &methods);
     LoxObject call(Interpreter &interpreter, const std::vector<LoxObject> &arguments) override;
+    std::optional<LoxObject> findMethod(const std::string &key);
     int arity() override;
     std::string to_string() override;
     std::string name() override;
@@ -38,7 +39,6 @@ private:
     std::shared_ptr<LoxClassWrapper> loxClass;
     std::unordered_map<std::string, LoxObject> fields;
 
-    std::optional<LoxObject> findMethod(const std::string &key);
 };
 
 

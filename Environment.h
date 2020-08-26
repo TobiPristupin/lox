@@ -15,11 +15,15 @@ public:
     using SharedPtr = std::shared_ptr<Environment>;
     explicit Environment(Environment::SharedPtr parent = nullptr);
 
+    //Use the Token overload because it can then report errors using the token's line. Only use the string overload when there's no token.
     void define(const Token &identifier, const LoxObject &val);
     void define(const std::string &key, const LoxObject &val);
 
     LoxObject get(const Token &identifier);
+
+    //Use the Token overload because it can then report errors using the token's line. Only use the string overload when there's no token.
     LoxObject getAt(const Token &identifier, int distance);
+    LoxObject getAt(const std::string &key, int distance);
 
     void assign(const Token &identifier, const LoxObject &val);
     void assignAt(const Token &identifier, const LoxObject &val, int distance);

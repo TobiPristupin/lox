@@ -23,8 +23,11 @@ LoxObject Environment::get(const Token &identifier) {
 }
 
 LoxObject Environment::getAt(const Token &identifier, int distance) {
+    return getAt(identifier.lexeme, distance);
+}
+
+LoxObject Environment::getAt(const std::string &key, int distance) {
     Environment* env = ancestor(distance);
-    std::string key = identifier.lexeme;
     if (env->variables.count(key) == 0){
         throw std::runtime_error("Variable does not exist. Bug in resolver, this should not be happening");
     }

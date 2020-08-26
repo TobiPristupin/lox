@@ -178,7 +178,7 @@ void Resolver::visit(const ClassDeclStmt *classDeclStmt) {
     scopes.back()["this"] = true;
 
     for (const auto& method : classDeclStmt->methods){
-        FunctionType type = FunctionType::METHOD;
+        FunctionType type = method->name.lexeme == "init" ? FunctionType::CONSTRUCTOR : FunctionType::METHOD;
         resolveFunction(method.get(), type);
     }
 
@@ -188,6 +188,10 @@ void Resolver::visit(const ClassDeclStmt *classDeclStmt) {
 void Resolver::visit(const ReturnStmt *returnStmt) {
     if (currentFunction == FunctionType::NONE){
         throw LoxParsingError("'return' statement must be inside a function", returnStmt->keyword.line);
+    }
+
+    if (currentFunction == FunctionType::CONSTRUCTOR && returnStmt->expr.has_value()){
+        throw LoxParsingError("Cannot return a value from a constructor", returnStmt->keyword.line);
     }
 
     if (returnStmt->expr.has_value()){

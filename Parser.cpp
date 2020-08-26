@@ -83,9 +83,11 @@ UniqueStmtPtr Parser::classDeclStatement() {
     Token name = expect(TokenType::IDENTIFIER, "Expected class name");
     expect(TokenType::LEFT_BRACE, "Expected '{' before class body");
     std::vector<std::unique_ptr<FunctionDeclStmt>> methods;
+
     while (!check(TokenType::RIGHT_BRACE) && !isAtEnd()){
         UniqueStmtPtr functionDecl = functionDeclStatement(FunctionType::METHOD);
         std::unique_ptr<FunctionDeclStmt> method(dynamic_cast<FunctionDeclStmt*>(functionDecl.release()));
+
         methods.push_back(std::move(method));
     }
 

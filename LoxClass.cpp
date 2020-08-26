@@ -5,7 +5,7 @@
 #include "LoxError.h"   // for LoxRuntimeError
 #include "LoxObject.h"  // for LoxObject, SharedInstancePtr
 #include "Token.h"      // for Token
-#include "LoxFunctionWrapper.h"
+#include "LoxFunction.h"
 
 
 class Interpreter;
@@ -16,11 +16,30 @@ LoxClassWrapper::LoxClassWrapper(const std::string &name, const std::unordered_m
 
 LoxObject LoxClassWrapper::call(Interpreter &interpreter, const std::vector<LoxObject> &arguments) {
     SharedInstancePtr instance = std::make_shared<LoxClassInstance>(shared_from_this());
+    std::optional<LoxObject> constructor = findMethod("init");
+    if (constructor.has_value()){
+        LoxFunction *function = dynamic_cast<LoxFunction*>(constructor.value().getCallable());
+        function->bindThis(instance)->call(interpreter, arguments);
+    }
+
     LoxObject instanceObj(instance);
     return instanceObj;
 }
 
+std::optional<LoxObject> LoxClassWrapper::findMethod(const std::string &key) {
+    if (methods.find(key) != methods.end()){
+        return methods[key];
+    }
+
+    return std::nullopt;
+}
+
 int LoxClassWrapper::arity() {
+    std::optional<LoxObject> constructor = findMethod("init");
+    if (constructor.has_value()){
+        return constructor->getCallable()->arity();
+    }
+
     return 0;
 }
 
@@ -41,29 +60,11 @@ LoxObject LoxClassInstance::getProperty(const Token &identifier) {
         return fields[key];
     }
 
-    std::optional<LoxObject> method = findMethod(key);
+    std::optional<LoxObject> method = loxClass->findMethod(key);
     if (method.has_value()){
-        //Trying to stay close to the book's Java implementation while porting it to C++ and maintaining type safety
-        // (as explained in a comment in LoxObject.h) has lead to some pretty contrived code here.
-
-        //To implement usage of the "this" keyword, every time a method is accessed with the "." operator we retrieve the method,
-        //create a new environment whose parent is the method's closure and bind "this" to this current instance. Then we create
-        //a new method that is a copy of the one we retrieved but uses this new environment. We have to create a new method each
-        //time because the same method may be called from two different instances.
-
-        //Cast the LoxObject into its LoxFunction representation
-        LoxFunctionWrapper *function = dynamic_cast<LoxFunctionWrapper*>(method.value().getCallable());
-
-        //Create a new environment that has the function's closure as its parent
-        Environment::SharedPtr newEnv = std::make_shared<Environment>(function->closure);
-
-        //Create a LoxObject that contains this instance
-        LoxObject instanceObject(shared_from_this());
-        //In the new env we created, bind "this" to this instance
-        newEnv->define("this", instanceObject);
-
-        //Create a new function that is a copy of "function" but with the new env.
-        SharedCallablePtr newFunction = std::make_shared<LoxFunctionWrapper>(function->functionDeclStmt, newEnv);
+        LoxFunction *function = dynamic_cast<LoxFunction*>(method.value().getCallable());
+        //Create a new function where the variable "this" is binded to this instance
+        SharedCallablePtr newFunction(function->bindThis(shared_from_this()));
         LoxObject newFunctionObject(newFunction);
         return newFunctionObject;
     }
@@ -73,14 +74,6 @@ LoxObject LoxClassInstance::getProperty(const Token &identifier) {
 
 void LoxClassInstance::setProperty(const Token &identifier, const LoxObject &value) {
     fields[identifier.lexeme] = value;
-}
-
-std::optional<LoxObject> LoxClassInstance::findMethod(const std::string &key) {
-    if (loxClass->methods.find(key) != loxClass->methods.end()){
-        return loxClass->methods[key];
-    }
-
-    return std::nullopt;
 }
 
 std::string LoxClassInstance::to_string() {

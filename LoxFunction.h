@@ -1,5 +1,5 @@
-#ifndef JLOX_LOXFUNCTIONWRAPPER_H
-#define JLOX_LOXFUNCTIONWRAPPER_H
+#ifndef JLOX_LOXFUNCTION_H
+#define JLOX_LOXFUNCTION_H
 
 #include <string>
 #include <vector>
@@ -12,14 +12,17 @@ class Interpreter;
 class LambdaExpr;
 
 //This class wraps a FunctionDeclStmt into a LoxCallable. Basically it acts as the intermediary between the parser and the interpreter.
-class LoxFunctionWrapper : public LoxCallable {
+class LoxFunction : public LoxCallable {
 public:
-    //LoxFunctionWrapper does not own the stmt, it only uses it. All statements are owned by Runner.cpp by using unique_ptrs
+    //LoxFunction does not own the stmt, it only uses it. All statements are owned by Runner.cpp by using unique_ptrs
     const FunctionDeclStmt* functionDeclStmt;
     Environment::SharedPtr closure;
+    bool isConstructor;
 
-    LoxFunctionWrapper(const FunctionDeclStmt* functionDeclStmt, Environment::SharedPtr closure);
+    LoxFunction(const FunctionDeclStmt* functionDeclStmt, Environment::SharedPtr closure, bool isConstructor = false);
     LoxObject call(Interpreter &interpreter, const std::vector<LoxObject> &arguments) override;
+    //Creates a NEW LoxFunction that is a copy of the current LoxFunction but with a different closure where "this" is binded to an instance;
+    LoxFunction* bindThis(SharedInstancePtr instance);
     int arity() override;
     std::string to_string() override;
     std::string name() override;
@@ -42,4 +45,4 @@ public:
 };
 
 
-#endif //JLOX_LOXFUNCTIONWRAPPER_H
+#endif //JLOX_LOXFUNCTION_H

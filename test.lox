@@ -1,8 +1,21 @@
 class pp {
+
+    init(flav){
+        print "initializing";
+        return;
+        this.flavor = flav;
+    }
+
+
     say(){
-        print this + 2;
+        print this.flavor;
+        return;
     }
 }
 
-pp().say();
+var a = pp("gg");
+print a;
+print a.init("gg");
+
+
 
