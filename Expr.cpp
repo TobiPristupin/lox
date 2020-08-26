@@ -91,3 +91,9 @@ SetExpr::SetExpr(UniqueExprPtr object, const Token &identifier, UniqueExprPtr va
 LoxObject SetExpr::accept(ExprVisitor &visitor) {
     return visitor.visit(this);
 }
+
+ThisExpr::ThisExpr(const Token &keyword) : keyword(keyword) {}
+
+LoxObject ThisExpr::accept(ExprVisitor &visitor) {
+    return visitor.visit(this);
+}

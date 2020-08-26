@@ -169,10 +169,15 @@ void Resolver::visit(const ClassDeclStmt *classDeclStmt) {
     declare(classDeclStmt->identifier);
     define(classDeclStmt->identifier);
 
+    beginScope();
+    scopes.back()["this"] = true;
+
     for (const auto& method : classDeclStmt->methods){
         FunctionType type = FunctionType::METHOD;
         resolveFunction(method.get(), type);
     }
+
+    endScope();
 }
 
 void Resolver::visit(const ReturnStmt *returnStmt) {
@@ -210,7 +215,7 @@ LoxObject Resolver::visit(const LiteralExpr *literalExpr) {
 LoxObject Resolver::visit(const VariableExpr *variableExpr) {
     std::string name = variableExpr->identifier.lexeme;
     if (!scopes.empty()){
-        Scope scope = scopes.back();
+        Scope &scope = scopes.back();
         if (scope.find(name) != scope.end() && scope.find(name)->second == false){
             throw LoxParsingError("Cannot read local variable in its own initializer", variableExpr->identifier.line);
         }
@@ -275,5 +280,10 @@ LoxObject Resolver::visit(const LambdaExpr *lambdaExpr) {
     }
     resolve(lambdaExpr->body.get());
     endScope();
+    return LoxObject::Nil();
+}
+
+LoxObject Resolver::visit(const ThisExpr *thisExpr) {
+    resolveLocal(thisExpr, thisExpr->keyword);
     return LoxObject::Nil();
 }

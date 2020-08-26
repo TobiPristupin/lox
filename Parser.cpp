@@ -1,13 +1,13 @@
 #include "Parser.h"
-#include <algorithm>    // for max
-#include <iostream>     // for operator<<, char_traits, basic_ostream, cout
-#include <memory>       // for make_unique, unique_ptr, _MakeUniq<>::__singl...
-#include <optional>     // for optional, nullopt
-#include <utility>      // for move
-#include "Expr.h"       // for LiteralExpr, BinaryExpr, VariableExpr, Decrem...
-#include "LoxError.h"   // for LoxParsingError
-#include "LoxObject.h"  // for LoxObject
-#include "Stmt.h"       // for IfBranch, FunctionDeclStmt, PrintStmt, Expres...
+#include <algorithm>
+#include <iostream>     
+#include <memory>
+#include <optional>
+#include <utility>
+#include "Expr.h"
+#include "LoxError.h"
+#include "LoxObject.h"
+#include "Stmt.h"
 #include "TokenType.h"
 
 Parser::Parser(const std::vector<Token> &tokens) : tokens(tokens) {}
@@ -438,7 +438,7 @@ UniqueExprPtr Parser::primary() {
     if (match(TokenType::FALSE)) return std::make_unique<LiteralExpr>(LoxObject(previous()));
     if (match(TokenType::NIL)) return std::make_unique<LiteralExpr>(LoxObject(previous()));
     if (match(TokenType::IDENTIFIER)) return std::make_unique<VariableExpr>(previous());
-
+    if (match(TokenType::THIS)) return std::make_unique<ThisExpr>(previous());
 
     if (match(TokenType::LEFT_PAREN)){
         UniqueExprPtr expr = expression();

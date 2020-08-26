@@ -5,6 +5,7 @@
 #include "LoxError.h"   // for LoxRuntimeError
 #include "LoxObject.h"  // for LoxObject, SharedInstancePtr
 #include "Token.h"      // for Token
+#include "LoxFunctionWrapper.h"
 
 
 class Interpreter;
@@ -42,7 +43,29 @@ LoxObject LoxClassInstance::getProperty(const Token &identifier) {
 
     std::optional<LoxObject> method = findMethod(key);
     if (method.has_value()){
-        return method.value();
+        //Trying to stay close to the book's Java implementation while porting it to C++ and maintaining type safety
+        // (as explained in a comment in LoxObject.h) has lead to some pretty contrived code here.
+
+        //To implement usage of the "this" keyword, every time a method is accessed with the "." operator we retrieve the method,
+        //create a new environment whose parent is the method's closure and bind "this" to this current instance. Then we create
+        //a new method that is a copy of the one we retrieved but uses this new environment. We have to create a new method each
+        //time because the same method may be called from two different instances.
+
+        //Cast the LoxObject into its LoxFunction representation
+        LoxFunctionWrapper *function = dynamic_cast<LoxFunctionWrapper*>(method.value().getCallable());
+
+        //Create a new environment that has the function's closure as its parent
+        Environment::SharedPtr newEnv = std::make_shared<Environment>(function->closure);
+
+        //Create a LoxObject that contains this instance
+        LoxObject instanceObject(shared_from_this());
+        //In the new env we created, bind "this" to this instance
+        newEnv->define("this", instanceObject);
+
+        //Create a new function that is a copy of "function" but with the new env.
+        SharedCallablePtr newFunction = std::make_shared<LoxFunctionWrapper>(function->functionDeclStmt, newEnv);
+        LoxObject newFunctionObject(newFunction);
+        return newFunctionObject;
     }
 
     throw LoxRuntimeError("Undefined property '" + key + "'", identifier.line);

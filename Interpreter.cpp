@@ -314,15 +314,15 @@ LoxObject Interpreter::visit(const LiteralExpr *literalExpr) {
 }
 
 LoxObject Interpreter::visit(const VariableExpr *variableExpr) {
-    LoxObject obj = lookupVariable(variableExpr);
+    LoxObject obj = lookupVariable(variableExpr, variableExpr->identifier);
     return obj;
 }
 
-LoxObject Interpreter::lookupVariable(const VariableExpr *variableExpr) {
+LoxObject Interpreter::lookupVariable(const Expr *variableExpr, const Token &identifier) {
     if (localsDistances.find(variableExpr) != localsDistances.end()){
-        return environment->getAt(variableExpr->identifier, localsDistances[variableExpr]);
+        return environment->getAt(identifier, localsDistances[variableExpr]);
     }
-    return globalEnv->get(variableExpr->identifier);
+    return globalEnv->get(identifier);
 }
 
 LoxObject Interpreter::visit(const OrExpr *orExpr) {
@@ -383,6 +383,10 @@ LoxObject Interpreter::visit(const SetExpr *setExpr) {
     LoxObject value = interpret(setExpr->value.get());
     obj.getClassInstance()->setProperty(setExpr->identifier, value);
     return value;
+}
+
+LoxObject Interpreter::visit(const ThisExpr *thisExpr) {
+    return lookupVariable(thisExpr, thisExpr->keyword);
 }
 
 void Interpreter::executeBlock(const std::vector<UniqueStmtPtr> &stmts, Environment::SharedPtr newEnv) {

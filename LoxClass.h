@@ -26,7 +26,7 @@ public:
 
 };
 
-class LoxClassInstance {
+class LoxClassInstance : public std::enable_shared_from_this<LoxClassInstance> {
 
 public:
     explicit LoxClassInstance(std::shared_ptr<LoxClassWrapper> loxClass);

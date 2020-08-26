@@ -1,13 +1,13 @@
 #ifndef JLOX_INTERPRETER_H
 #define JLOX_INTERPRETER_H
 
-#include <unordered_map>               // for unordered_map
-#include <vector>                      // for vector
-#include "Environment.h"               // for Environment, Environment::Shar...
-#include "Expr.h"                      // for ExprVisitor
-#include "Stmt.h"                      // for StmtVisitor
-#include "LoxObject.h"  // for LoxObject
-#include "typedefs.h"                  // for UniqueStmtPtr
+#include <unordered_map>
+#include <vector>
+#include "Environment.h"
+#include "Expr.h"
+#include "Stmt.h"
+#include "LoxObject.h"
+#include "typedefs.h"
 
 class Interpreter : public ExprVisitor, public StmtVisitor {
 public:
@@ -47,6 +47,7 @@ public:
     LoxObject visit(const LambdaExpr *lambdaExpr) override;
     LoxObject visit(const GetExpr *getExpr) override;
     LoxObject visit(const SetExpr *setExpr) override;
+    LoxObject visit(const ThisExpr *thisExpr) override;
 
     void interpretReplMode(Stmt* stmt);
     LoxObject interpret(Expr* expr);
@@ -54,7 +55,7 @@ public:
     void execute(Stmt* pStmt);
     void executeBlock(const std::vector<UniqueStmtPtr> &stmts, Environment::SharedPtr newEnv);
     void loadBuiltinFunctions();
-    LoxObject lookupVariable(const VariableExpr *pExpr);
+    LoxObject lookupVariable(const Expr *pExpr, const Token &identifier);
 };
 
 

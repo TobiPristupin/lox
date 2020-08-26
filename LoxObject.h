@@ -21,7 +21,10 @@ by more than one LoxObject.*/
 using SharedCallablePtr = std::shared_ptr<LoxCallable>;
 using SharedInstancePtr = std::shared_ptr<LoxClassInstance>;
 
-/* This class is a wrapper to represent bool, nil, numbers, strings, callables, and instances.
+/*The book uses Java's Object class to represent variables, instances, functions, etc, essentially surrendering type safety
+ * and having to depend on instanceof checks. When porting it to C++ I attempted to maintain some type safety while still
+ * staying close to the book. LoxObject is my attempt to do that. LoxObject is a wrapper that can hold literals, callables
+ * such as functions and classes, and instances.
  * */
 class LoxObject {
 public:
