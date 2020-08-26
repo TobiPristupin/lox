@@ -284,6 +284,8 @@ std::string loxTypeToString(LoxType type) {
             return "string";
         case LoxType::CALLABLE:
             return "callable";
+        case LoxType::INSTANCE:
+            return "instance";
     }
 
     return "unreachable";

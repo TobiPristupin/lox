@@ -166,6 +166,11 @@ void Resolver::resolveFunction(const FunctionDeclStmt *functionStmt, FunctionTyp
 }
 
 void Resolver::visit(const ClassDeclStmt *classDeclStmt) {
+    ClassType enclosing = currentClass;
+    currentClass = ClassType::CLASS;
+    auto finalAction = gsl::finally([this, enclosing] {this->currentClass = enclosing;});
+
+
     declare(classDeclStmt->identifier);
     define(classDeclStmt->identifier);
 
@@ -284,6 +289,10 @@ LoxObject Resolver::visit(const LambdaExpr *lambdaExpr) {
 }
 
 LoxObject Resolver::visit(const ThisExpr *thisExpr) {
+    if (currentClass == ClassType::NONE){
+        throw LoxParsingError("'this' must be inside a class declaration", thisExpr->keyword.line);
+    }
+
     resolveLocal(thisExpr, thisExpr->keyword);
     return LoxObject::Nil();
 }

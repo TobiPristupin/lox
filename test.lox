@@ -1,14 +1,8 @@
-class Cake {
-  taste() {
-    this.flavor = "yummy";
-    var adjective = "delicious";
-    print this.flavor;
-  }
+class pp {
+    say(){
+        print this + 2;
+    }
 }
 
-var a = Cake();
-a.flavor = "tetas";
-a.taste();
-print a.flavor;
-a.flavor = 10;
-print a.flavor;
+pp().say();
+

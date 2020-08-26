@@ -51,9 +51,14 @@ private:
         NONE, FUNCTION, METHOD
     };
 
+    enum class ClassType {
+        NONE, CLASS
+    };
+
     std::unordered_map<const Expr*, int> distances;
     int loopNestingLevel = 0;
     FunctionType currentFunction = FunctionType::NONE;
+    ClassType currentClass = ClassType::NONE;
 
     //the string is the variable name, the boolean is true if the variable has been initialized, false otherwise
     using Scope = std::unordered_map<std::string, bool>;
