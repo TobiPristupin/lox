@@ -21,6 +21,8 @@ class FunctionDeclStmt;
 class ReturnStmt;
 class ClassDeclStmt;
 
+class VariableExpr;
+
 class StmtVisitor {
 public:
     virtual void visit(const ExpressionStmt *expressionStmt) = 0;
@@ -164,9 +166,11 @@ public:
 class ClassDeclStmt : public Stmt {
 public:
     Token identifier;
+    //Superclass is a VariableExpr instead of a Token because the resolver needs to resolve the superclass and it needs an expr to do so.
+    std::optional<std::unique_ptr<VariableExpr>> superclass;
     std::vector<std::unique_ptr<FunctionDeclStmt>> methods;
 
-    ClassDeclStmt(const Token &identifier, std::vector<std::unique_ptr<FunctionDeclStmt>> methods);
+    ClassDeclStmt(const Token &identifier, std::vector<std::unique_ptr<FunctionDeclStmt>> methods, std::optional<std::unique_ptr<VariableExpr>> superclass);
     void accept(StmtVisitor &visitor) override;
 };
 

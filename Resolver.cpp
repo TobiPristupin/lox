@@ -174,6 +174,12 @@ void Resolver::visit(const ClassDeclStmt *classDeclStmt) {
     declare(classDeclStmt->identifier);
     define(classDeclStmt->identifier);
 
+    if (classDeclStmt->superclass.has_value()) {
+        if (classDeclStmt->superclass.value()->identifier.lexeme == classDeclStmt->identifier.lexeme){
+            throw LoxParsingError("Class cannot inherit from itself", classDeclStmt->identifier.line);
+        }
+    }
+
     beginScope();
     scopes.back()["this"] = true;
 

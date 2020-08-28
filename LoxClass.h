@@ -1,24 +1,23 @@
 #ifndef JLOX_LOXCLASS_H
 #define JLOX_LOXCLASS_H
 
-
-#include <memory>         // for shared_ptr, enable_shared_from_this
-#include <optional>       // for optional
-#include <string>         // for string
-#include <unordered_map>  // for unordered_map
-#include <vector>         // for vector
-#include "LoxCallable.h"  // for LoxCallable
-#include "LoxObject.h"    // for LoxObject
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
+#include "LoxCallable.h"
+#include "LoxObject.h"
 class Interpreter;
 struct Token;
 
-class LoxClassWrapper : public LoxCallable, public std::enable_shared_from_this<LoxClassWrapper> {
+class LoxClass : public LoxCallable, public std::enable_shared_from_this<LoxClass> {
 
 public:
     std::unordered_map<std::string, LoxObject> methods;
     std::string className;
 
-    explicit LoxClassWrapper(const std::string &name, const std::unordered_map<std::string, LoxObject> &methods);
+    explicit LoxClass(const std::string &name, const std::unordered_map<std::string, LoxObject> &methods);
     LoxObject call(Interpreter &interpreter, const std::vector<LoxObject> &arguments) override;
     std::optional<LoxObject> findMethod(const std::string &key);
     int arity() override;
@@ -30,13 +29,13 @@ public:
 class LoxClassInstance : public std::enable_shared_from_this<LoxClassInstance> {
 
 public:
-    explicit LoxClassInstance(std::shared_ptr<LoxClassWrapper> loxClass);
+    explicit LoxClassInstance(std::shared_ptr<LoxClass> loxClass);
     LoxObject getProperty(const Token &identifier);
     void setProperty(const Token &identifier, const LoxObject &value);
     std::string to_string();
 
 private:
-    std::shared_ptr<LoxClassWrapper> loxClass;
+    std::shared_ptr<LoxClass> loxClass;
     std::unordered_map<std::string, LoxObject> fields;
 
 };

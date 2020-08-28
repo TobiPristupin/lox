@@ -207,6 +207,13 @@ void Interpreter::visit(const ReturnStmt *returnStmt) {
 
 
 void Interpreter::visit(const ClassDeclStmt *classDeclStmt) {
+    if (classDeclStmt->superclass.has_value()){
+        LoxObject superclass = interpret(classDeclStmt->superclass.value().get());
+//        if (superclass.)
+    }
+
+
+
     environment->define(classDeclStmt->identifier, LoxObject::Nil());
 
     std::unordered_map<std::string, LoxObject> methods;
@@ -217,7 +224,7 @@ void Interpreter::visit(const ClassDeclStmt *classDeclStmt) {
         methods[method->name.lexeme] = functionObject;
     }
 
-    SharedCallablePtr klass = std::make_shared<LoxClassWrapper>(classDeclStmt->identifier.lexeme, methods);
+    SharedCallablePtr klass = std::make_shared<LoxClass>(classDeclStmt->identifier.lexeme, methods);
     LoxObject classObject(klass);
     environment->assign(classDeclStmt->identifier, classObject);
 }

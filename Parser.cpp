@@ -81,6 +81,14 @@ UniqueStmtPtr Parser::functionDeclStatement(FunctionType type) {
 
 UniqueStmtPtr Parser::classDeclStatement() {
     Token name = expect(TokenType::IDENTIFIER, "Expected class name");
+
+    std::optional<std::unique_ptr<VariableExpr>> superclass = std::nullopt;
+
+    if (match(TokenType::LESS)){
+        Token token = expect(TokenType::IDENTIFIER, "Expected superclass name after '<' operator");
+        superclass = std::make_unique<VariableExpr>(token);
+    }
+
     expect(TokenType::LEFT_BRACE, "Expected '{' before class body");
     std::vector<std::unique_ptr<FunctionDeclStmt>> methods;
 
@@ -92,7 +100,7 @@ UniqueStmtPtr Parser::classDeclStatement() {
     }
 
     expect(TokenType::RIGHT_BRACE, "Expected '}' after class body");
-    return std::make_unique<ClassDeclStmt>(name, std::move(methods));
+    return std::make_unique<ClassDeclStmt>(name, std::move(methods), std::move(superclass));
 }
 
 UniqueStmtPtr Parser::statement() {

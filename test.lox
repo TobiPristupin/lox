@@ -1,4 +1,4 @@
-class pp {
+class pp < pp {
 
     init(flav){
         print "initializing";
@@ -12,10 +12,3 @@ class pp {
         return;
     }
 }
-
-var a = pp("gg");
-print a;
-print a.init("gg");
-
-
-

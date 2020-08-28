@@ -85,8 +85,8 @@ void ReturnStmt::accept(StmtVisitor &visitor) {
 ReturnException::ReturnException(const LoxObject &value) : value(value) {}
 
 
-ClassDeclStmt::ClassDeclStmt(const Token &identifier, std::vector<std::unique_ptr<FunctionDeclStmt>> methods) :
-    identifier(identifier), methods(std::move(methods)) {}
+ClassDeclStmt::ClassDeclStmt(const Token &identifier, std::vector<std::unique_ptr<FunctionDeclStmt>> methods, std::optional<std::unique_ptr<VariableExpr>> superclass)
+    : identifier(identifier), methods(std::move(methods)), superclass(std::move(superclass)) {}
 
 void ClassDeclStmt::accept(StmtVisitor &visitor) {
     visitor.visit(this);

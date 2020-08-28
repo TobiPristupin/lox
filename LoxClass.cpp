@@ -11,22 +11,28 @@
 class Interpreter;
 
 
-LoxClassWrapper::LoxClassWrapper(const std::string &name, const std::unordered_map<std::string, LoxObject> &methods)
+LoxClass::LoxClass(const std::string &name, const std::unordered_map<std::string, LoxObject> &methods)
     : className(name), methods(methods) {}
 
-LoxObject LoxClassWrapper::call(Interpreter &interpreter, const std::vector<LoxObject> &arguments) {
+LoxObject LoxClass::call(Interpreter &interpreter, const std::vector<LoxObject> &arguments) {
     SharedInstancePtr instance = std::make_shared<LoxClassInstance>(shared_from_this());
     std::optional<LoxObject> constructor = findMethod("init");
     if (constructor.has_value()){
         LoxFunction *function = dynamic_cast<LoxFunction*>(constructor.value().getCallable());
-        function->bindThis(instance)->call(interpreter, arguments);
+
+        //Create a new version of the constructor with "this" bound
+        LoxFunction *newFunction = function->bindThis(instance);
+        //call the constructor
+        newFunction->call(interpreter, arguments);
+        //Once we call the constructor we no longer need the newFunction so delete it before it leaks.
+        delete newFunction;
     }
 
     LoxObject instanceObj(instance);
     return instanceObj;
 }
 
-std::optional<LoxObject> LoxClassWrapper::findMethod(const std::string &key) {
+std::optional<LoxObject> LoxClass::findMethod(const std::string &key) {
     if (methods.find(key) != methods.end()){
         return methods[key];
     }
@@ -34,7 +40,7 @@ std::optional<LoxObject> LoxClassWrapper::findMethod(const std::string &key) {
     return std::nullopt;
 }
 
-int LoxClassWrapper::arity() {
+int LoxClass::arity() {
     std::optional<LoxObject> constructor = findMethod("init");
     if (constructor.has_value()){
         return constructor->getCallable()->arity();
@@ -43,16 +49,16 @@ int LoxClassWrapper::arity() {
     return 0;
 }
 
-std::string LoxClassWrapper::to_string() {
+std::string LoxClass::to_string() {
     return "<class " + name() + ">";
 }
 
-std::string LoxClassWrapper::name() {
+std::string LoxClass::name() {
     return className;
 }
 
 
-LoxClassInstance::LoxClassInstance(std::shared_ptr<LoxClassWrapper> loxClass) : loxClass(std::move(loxClass)) {}
+LoxClassInstance::LoxClassInstance(std::shared_ptr<LoxClass> loxClass) : loxClass(std::move(loxClass)) {}
 
 LoxObject LoxClassInstance::getProperty(const Token &identifier) {
     std::string key = identifier.lexeme;

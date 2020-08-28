@@ -5,7 +5,7 @@ program :== declaration* EOF ;
 //statements
 declaration :== varDecl | funDecl | classDecl | statement ;
 funDecl :== "fun" function ;
-classDecl :== "class" IDENTIFIER "{" function* "}" ;
+classDecl :== "class" IDENTIFIER ("<" IDENTIFIER)? "{" function* "}" ;
 function :== IDENTIFIER "(" parameters? ")" block ;
 parameters :== IDENTIFIER ("," IDENTIFIER)* ;
 varDecl :== "var" IDENTIFIER ("=" expression)? ";" ;

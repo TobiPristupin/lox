@@ -20,6 +20,7 @@ class LoxClassInstance;
 by more than one LoxObject.*/
 using SharedCallablePtr = std::shared_ptr<LoxCallable>;
 using SharedInstancePtr = std::shared_ptr<LoxClassInstance>;
+//using SharedClassPtr = std::shared_ptr<LoxClass>;
 
 /*The book uses Java's Object class to represent variables, instances, functions, etc, essentially surrendering type safety
  * and having to depend on instanceof checks. When porting it to C++ I attempted to maintain some type safety while still
