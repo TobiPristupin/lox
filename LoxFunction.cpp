@@ -11,7 +11,7 @@
 #include "LoxClass.h"
 
 LoxFunction::LoxFunction(const FunctionDeclStmt *functionDeclStmt, Environment::SharedPtr closure, bool isConstructor)
-    : functionDeclStmt(functionDeclStmt), closure(std::move(closure)), isConstructor(isConstructor) {}
+    : LoxCallable(CallableType::FUNCTION), functionDeclStmt(functionDeclStmt), closure(std::move(closure)), isConstructor(isConstructor) {}
 
 
 LoxObject LoxFunction::call(Interpreter &interpreter, const std::vector<LoxObject> &arguments) {
@@ -63,7 +63,8 @@ std::string LoxFunction::name() {
 }
 
 
-LoxLambdaWrapper::LoxLambdaWrapper(const LambdaExpr *lambdaExpr, Environment::SharedPtr closure) : lambdaExpr(lambdaExpr), closure(std::move(closure)) {}
+LoxLambdaWrapper::LoxLambdaWrapper(const LambdaExpr *lambdaExpr, Environment::SharedPtr closure)
+    : LoxCallable(CallableType::FUNCTION), lambdaExpr(lambdaExpr), closure(std::move(closure)) {}
 
 LoxObject LoxLambdaWrapper::call(Interpreter &interpreter, const std::vector<LoxObject> &arguments) {
     Environment::SharedPtr newEnv = std::make_shared<Environment>(closure);

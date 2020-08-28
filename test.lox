@@ -1,8 +1,13 @@
-class pp < pp {
+class hey {
+
+    putoo(){
+        print "puto called";
+    }
+}
+
+class pp < hey {
 
     init(flav){
-        print "initializing";
-        return;
         this.flavor = flav;
     }
 
@@ -11,4 +16,11 @@ class pp < pp {
         print this.flavor;
         return;
     }
+
+    putooo(){
+        print "hheyey";
+    }
 }
+
+var a = pp("chocolate");
+a.putoo();

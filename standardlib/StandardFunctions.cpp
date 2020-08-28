@@ -9,6 +9,8 @@
 
 class Interpreter;
 
+standardFunctions::Clock::Clock() : LoxCallable(CallableType::FUNCTION) {}
+
 LoxObject standardFunctions::Clock::call(Interpreter &interpreter, const std::vector<LoxObject> &arguments) {
     using namespace std::chrono;
     double ms = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
@@ -26,6 +28,8 @@ std::string standardFunctions::Clock::to_string() {
 std::string standardFunctions::Clock::name() {
     return "clock";
 }
+
+standardFunctions::Sleep::Sleep() : LoxCallable(CallableType::FUNCTION) {}
 
 LoxObject standardFunctions::Sleep::call(Interpreter &interpreter, const std::vector<LoxObject> &arguments) {
     int time;
@@ -51,6 +55,8 @@ std::string standardFunctions::Sleep::name() {
     return "sleep";
 }
 
+
+standardFunctions::Str::Str() : LoxCallable(CallableType::FUNCTION) {}
 
 LoxObject standardFunctions::Str::call(Interpreter &interpreter, const std::vector<LoxObject> &arguments) {
     std::stringstream ss; //Use stringstream because LoxObject overrides operator '<<' for printing

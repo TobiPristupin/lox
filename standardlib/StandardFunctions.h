@@ -11,6 +11,7 @@ namespace standardFunctions {
 
     class Clock : public LoxCallable {
     public:
+        Clock();
         LoxObject call(Interpreter &interpreter, const std::vector<LoxObject> &arguments) override;
         int arity() override;
         std::string to_string() override;
@@ -19,6 +20,7 @@ namespace standardFunctions {
 
     class Sleep : public LoxCallable {
     public:
+        Sleep();
         LoxObject call(Interpreter &interpreter, const std::vector<LoxObject> &arguments) override;
         int arity() override;
         std::string to_string() override;
@@ -27,6 +29,7 @@ namespace standardFunctions {
 
     class Str : public LoxCallable {
     public:
+        Str();
         LoxObject call(Interpreter &interpreter, const std::vector<LoxObject> &arguments) override;
         int arity() override;
         std::string to_string() override;

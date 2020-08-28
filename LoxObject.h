@@ -16,11 +16,11 @@ std::string loxTypeToString(LoxType type);
 class LoxCallable;
 class LoxClassInstance;
 
-/*A shared ptr is used because there may be scenarios where a Callable object such as a function has to be owned
-by more than one LoxObject.*/
+/* A shared ptr is used because resources such as functions, classes, and instances are created and stored in memory only once but can
+ * be shared with multiple users. For example, two variables can refer to the same function.
+ * */
 using SharedCallablePtr = std::shared_ptr<LoxCallable>;
 using SharedInstancePtr = std::shared_ptr<LoxClassInstance>;
-//using SharedClassPtr = std::shared_ptr<LoxClass>;
 
 /*The book uses Java's Object class to represent variables, instances, functions, etc, essentially surrendering type safety
  * and having to depend on instanceof checks. When porting it to C++ I attempted to maintain some type safety while still
@@ -55,8 +55,8 @@ public:
     double getNumber() const;
     bool getBoolean() const ;
     std::string getString() const;
-    LoxCallable* getCallable() const;
-    LoxClassInstance* getClassInstance() const;
+    SharedCallablePtr getCallable() const;
+    SharedInstancePtr getClassInstance() const;
 
 
     friend std::ostream& operator<<(std::ostream& os, const LoxObject& object);

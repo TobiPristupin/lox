@@ -207,12 +207,15 @@ void Interpreter::visit(const ReturnStmt *returnStmt) {
 
 
 void Interpreter::visit(const ClassDeclStmt *classDeclStmt) {
+    std::optional<SharedCallablePtr> superclassPtr = std::nullopt;
     if (classDeclStmt->superclass.has_value()){
         LoxObject superclass = interpret(classDeclStmt->superclass.value().get());
-//        if (superclass.)
+        if (!superclass.isCallable() || superclass.getCallable()->type != LoxCallable::CallableType::CLASS){
+            throw LoxRuntimeError("Superclass must be a class.", classDeclStmt->identifier.line);
+        }
+
+        superclassPtr = superclass.getCallable();
     }
-
-
 
     environment->define(classDeclStmt->identifier, LoxObject::Nil());
 
@@ -224,10 +227,12 @@ void Interpreter::visit(const ClassDeclStmt *classDeclStmt) {
         methods[method->name.lexeme] = functionObject;
     }
 
-    SharedCallablePtr klass = std::make_shared<LoxClass>(classDeclStmt->identifier.lexeme, methods);
+    SharedCallablePtr klass = std::make_shared<LoxClass>(classDeclStmt->identifier.lexeme, methods, superclassPtr);
     LoxObject classObject(klass);
     environment->assign(classDeclStmt->identifier, classObject);
 }
+
+
 
 
 //EXPRESSIONS
@@ -363,7 +368,7 @@ LoxObject Interpreter::visit(const CallExpr *callExpr) {
     if (!callee.isCallable()){
         throw LoxRuntimeError("Expression is not callable", callExpr->closingParen.line);
     }
-    LoxCallable* callable = callee.getCallable();
+    LoxCallable* callable = callee.getCallable().get();
     if (arguments.size() != callable->arity()){
         std::stringstream ss;
         ss  << callable->name() << " expected " << callable->arity() << " argument(s) but instead got " << arguments.size();

@@ -98,18 +98,18 @@ std::string LoxObject::getString() const {
     return str;
 }
 
-LoxCallable *LoxObject::getCallable() const {
+SharedCallablePtr LoxObject::getCallable() const {
     if (!isCallable()){
         throw std::runtime_error("LoxObject does not contain a callable");
     }
-    return callable.get();
+    return callable;
 }
 
-LoxClassInstance *LoxObject::getClassInstance() const {
+SharedInstancePtr LoxObject::getClassInstance() const {
     if (!isClassInstance()){
         throw std::runtime_error("LoxObject does not contain a class instance");
     }
-    return instance.get();
+    return instance;
 }
 
 bool LoxObject::truthy() const {//In lox every literal is considered true except for nil and false
@@ -168,6 +168,8 @@ LoxObject operator/(const LoxObject &lhs, const LoxObject &rhs) {
 }
 
 bool operator==(const LoxObject &lhs, const LoxObject &rhs) {
+    if (lhs.type != rhs.type) return false;
+
     if (lhs.isNumber() && rhs.isNumber()){
         return lhs.getNumber() == rhs.getNumber();
     } else if (lhs.isString() && rhs.isString()){
@@ -176,9 +178,13 @@ bool operator==(const LoxObject &lhs, const LoxObject &rhs) {
         return lhs.getBoolean() == rhs.getBoolean();
     } else if (lhs.isNil() && rhs.isNil()){
         return true;
+    } else if (lhs.isCallable() && rhs.isCallable()){
+        return lhs.getCallable() == rhs.getCallable();
+    } else if (rhs.isClassInstance() && rhs.isClassInstance()){
+        return lhs.getClassInstance() == rhs.getClassInstance();
     }
 
-    return false; //Comparing between two different types will always be false
+    throw std::runtime_error("This should be unreachable. Missing case");
 }
 
 bool operator!=(const LoxObject &lhs, const LoxObject &rhs) {
@@ -246,29 +252,37 @@ LoxObject LoxObject::operator--() {
 }
 
 std::ostream &operator<<(std::ostream &os, const LoxObject &object) {
-    if (object.isString()){
-        std::string s = object.getString();
-        utils::replaceAll(s, "\\n", "\n");
-        utils::replaceAll(s, "\\t", "\t");
-        os << s;
-    } else if (object.isBoolean()){
-        os << (object.getBoolean() ? std::string("true") : std::string("false"));
-    } else if (object.isNumber()){
-        if (std::abs(floor(object.getNumber())) == std::abs(object.getNumber())){ //If it has no decimal part
-            os << std::to_string((long long) object.getNumber());
-        } else {
-            os << std::to_string(object.getNumber());
-        }
-    } else if (object.isNil()){
-        os << std::string("nil");
-    } else if (object.isCallable()) {
-        os << object.getCallable()->to_string();
-    } else if (object.isClassInstance()){
-        os << object.getClassInstance()->to_string();
-    } else {
-        throw std::runtime_error("Object has no string representation");
+    switch (object.type) {
+        case LoxType::NIL:
+            os << std::string("nil");
+            return os;
+        case LoxType::BOOL:
+            os << (object.getBoolean() ? std::string("true") : std::string("false"));
+            return os;
+        case LoxType::NUMBER:
+            if (std::abs(floor(object.getNumber())) == std::abs(object.getNumber())){ //If it has no decimal part
+                os << std::to_string((long long) object.getNumber());
+            } else {
+                os << std::to_string(object.getNumber());
+            }
+            return os;
+        case LoxType::STRING:
+            {
+            std::string s = object.getString();
+            utils::replaceAll(s, "\\n", "\n");
+            utils::replaceAll(s, "\\t", "\t");
+            os << s;
+            return os;
+            }
+        case LoxType::CALLABLE:
+            os << object.getCallable()->to_string();
+            return os;
+        case LoxType::INSTANCE:
+            os << object.getClassInstance()->to_string();
+            return os;
+        default:
+            throw std::runtime_error("Object has no string representation");
     }
-    return os;
 }
 
 
@@ -288,7 +302,7 @@ std::string loxTypeToString(LoxType type) {
             return "instance";
     }
 
-    return "unreachable";
+    throw std::runtime_error("This should be unreachable. Missing case.");
 }
 
 
