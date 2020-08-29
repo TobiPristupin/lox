@@ -175,9 +175,13 @@ void Resolver::visit(const ClassDeclStmt *classDeclStmt) {
     define(classDeclStmt->identifier);
 
     if (classDeclStmt->superclass.has_value()) {
+        currentClass = ClassType::SUBCLASS;
         if (classDeclStmt->superclass.value()->identifier.lexeme == classDeclStmt->identifier.lexeme){
             throw LoxParsingError("Class cannot inherit from itself", classDeclStmt->identifier.line);
         }
+
+        beginScope();
+        scopes.back()["super"] = true;
     }
 
     beginScope();
@@ -188,7 +192,13 @@ void Resolver::visit(const ClassDeclStmt *classDeclStmt) {
         resolveFunction(method.get(), type);
     }
 
+
+    if (classDeclStmt->superclass.has_value()){
+        endScope();
+    }
+
     endScope();
+
 }
 
 void Resolver::visit(const ReturnStmt *returnStmt) {
@@ -304,5 +314,16 @@ LoxObject Resolver::visit(const ThisExpr *thisExpr) {
     }
 
     resolveLocal(thisExpr, thisExpr->keyword);
+    return LoxObject::Nil();
+}
+
+LoxObject Resolver::visit(const SuperExpr *superExpr) {
+    if (currentClass == ClassType::NONE){
+        throw LoxParsingError("Cannot use 'super' outside of a class", superExpr->keyword.line);
+    } else if (currentClass != ClassType::SUBCLASS){
+        throw LoxParsingError("Cannot use 'super' in a class with no superclass", superExpr->keyword.line);
+    }
+
+    resolveLocal(superExpr, superExpr->keyword);
     return LoxObject::Nil();
 }

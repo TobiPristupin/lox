@@ -207,17 +207,16 @@ void Interpreter::visit(const ReturnStmt *returnStmt) {
 
 
 void Interpreter::visit(const ClassDeclStmt *classDeclStmt) {
-    std::optional<SharedCallablePtr> superclassPtr = std::nullopt;
-    if (classDeclStmt->superclass.has_value()){
-        LoxObject superclass = interpret(classDeclStmt->superclass.value().get());
-        if (!superclass.isCallable() || superclass.getCallable()->type != LoxCallable::CallableType::CLASS){
-            throw LoxRuntimeError("Superclass must be a class.", classDeclStmt->identifier.line);
-        }
-
-        superclassPtr = superclass.getCallable();
-    }
-
     environment->define(classDeclStmt->identifier, LoxObject::Nil());
+
+    std::optional<LoxObject> superclass = getSuperclass(classDeclStmt);
+    std::optional<SharedCallablePtr> superclassPtr = std::nullopt;
+    if (superclass.has_value()){
+        superclassPtr = superclass.value().getCallable();
+        //create a new environment that binds "super" to the superclass
+        environment = std::make_shared<Environment>(environment);
+        environment->define("super", superclass.value());
+    }
 
     std::unordered_map<std::string, LoxObject> methods;
     for (const auto& method : classDeclStmt->methods){
@@ -227,13 +226,30 @@ void Interpreter::visit(const ClassDeclStmt *classDeclStmt) {
         methods[method->name.lexeme] = functionObject;
     }
 
+
+    if (superclass.has_value()){
+        //pop latest environment
+        environment = environment->parent();
+    }
+
     SharedCallablePtr klass = std::make_shared<LoxClass>(classDeclStmt->identifier.lexeme, methods, superclassPtr);
     LoxObject classObject(klass);
     environment->assign(classDeclStmt->identifier, classObject);
 }
 
+std::optional<LoxObject> Interpreter::getSuperclass(const ClassDeclStmt* classDeclStmt) {
+    std::optional<LoxObject> superclass = std::nullopt;
+    if (classDeclStmt->superclass.has_value()){
+        LoxObject object = interpret(classDeclStmt->superclass.value().get());
+        if (!object.isCallable() || object.getCallable()->type != LoxCallable::CallableType::CLASS){
+            throw LoxRuntimeError("Superclass must be a class.", classDeclStmt->identifier.line);
+        }
 
+        superclass = object;
+    }
 
+    return superclass;
+}
 
 //EXPRESSIONS
 
@@ -403,10 +419,34 @@ LoxObject Interpreter::visit(const ThisExpr *thisExpr) {
 }
 
 void Interpreter::executeBlock(const std::vector<UniqueStmtPtr> &stmts, Environment::SharedPtr newEnv) {
-    ScopedEnvironment scope(environment, newEnv);
+    ScopedEnvironment scope(environment, std::move(newEnv));
     for (auto const &stmt : stmts){
         execute(stmt.get());
     }
+}
+
+LoxObject Interpreter::visit(const SuperExpr *superExpr) {
+    int distance = localsDistances[superExpr]; //distance from current env to env where the superclass is stored
+    //Get the superclass object and cast it to LoxClass
+    LoxObject superclassObj = environment->getAt("super", distance);
+    LoxClass* superclass = dynamic_cast<LoxClass*>(superclassObj.getCallable().get());
+    assert(superclass);
+
+    //Get the method that the superExpr is referring to from the superclass and cast it as a LoxFunction
+    std::optional<LoxObject> methodObj = superclass->findMethod(superExpr->identifier.lexeme);
+    if (!methodObj.has_value()){
+        throw LoxRuntimeError("Undefined property " + superExpr->identifier.lexeme, superExpr->keyword.line);
+    }
+    LoxFunction* method = dynamic_cast<LoxFunction*>(methodObj.value().getCallable().get());
+    assert(method);
+
+    LoxObject instanceObj = environment->getAt("this", distance-1); // "this" is always one level nearer than "super"'s environment.
+
+    //Bind "this" to the superclass' method. Even though the method comes from the superclass, "this" refers to the instance that is
+    //calling the method.
+    SharedCallablePtr bindedMethod(method->bindThis(instanceObj.getClassInstance()));
+    LoxObject bindedMethodObj(bindedMethod);
+    return bindedMethodObj;
 }
 
 void Interpreter::loadBuiltinFunctions() {
@@ -420,6 +460,8 @@ void Interpreter::loadBuiltinFunctions() {
     }
 
 }
+
+
 
 
 

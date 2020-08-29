@@ -450,6 +450,13 @@ UniqueExprPtr Parser::primary() {
     if (match(TokenType::IDENTIFIER)) return std::make_unique<VariableExpr>(previous());
     if (match(TokenType::THIS)) return std::make_unique<ThisExpr>(previous());
 
+    if (match(TokenType::SUPER)){
+        Token keyword = previous();
+        expect(TokenType::DOT, "Expected '.' after super");
+        Token identifier = expect(TokenType::IDENTIFIER, "Expected identifier after super");
+        return std::make_unique<SuperExpr>(keyword, identifier);
+    }
+
     if (match(TokenType::LEFT_PAREN)){
         UniqueExprPtr expr = expression();
         expect(TokenType::RIGHT_PAREN, "Expect ')' after expression");

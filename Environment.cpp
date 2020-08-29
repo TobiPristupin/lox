@@ -95,8 +95,6 @@ ScopedEnvironment::ScopedEnvironment(Environment::SharedPtr &currentEnv, Environ
     mainReference = std::move(newEnv);
 }
 
-ScopedEnvironment::~ScopedEnvironment(){
+ScopedEnvironment::~ScopedEnvironment() {
     mainReference = copyOfPreviousEnv;
 }
-
-

@@ -97,3 +97,10 @@ ThisExpr::ThisExpr(const Token &keyword) : keyword(keyword) {}
 LoxObject ThisExpr::accept(ExprVisitor &visitor) {
     return visitor.visit(this);
 }
+
+
+SuperExpr::SuperExpr(const Token &keyword, const Token &identifier) : keyword(keyword), identifier(identifier){}
+
+LoxObject SuperExpr::accept(ExprVisitor &visitor) {
+    return visitor.visit(this);
+}

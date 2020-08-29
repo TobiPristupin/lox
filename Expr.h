@@ -22,6 +22,7 @@ class LambdaExpr;
 class GetExpr;
 class SetExpr;
 class ThisExpr;
+class SuperExpr;
 
 class ExprVisitor {
 public:
@@ -40,6 +41,7 @@ public:
     virtual LoxObject visit(const GetExpr* getExpr) = 0;
     virtual LoxObject visit(const SetExpr* setExpr) = 0;
     virtual LoxObject visit(const ThisExpr* setExpr) = 0;
+    virtual LoxObject visit(const SuperExpr* superExpr) = 0;
 };
 
 
@@ -198,6 +200,14 @@ public:
     Token keyword;
 
     explicit ThisExpr(const Token &keyword);
+    LoxObject accept(ExprVisitor &visitor) override;
+};
+
+class SuperExpr : public Expr {
+public:
+    Token keyword, identifier;
+
+    explicit SuperExpr(const Token &keyword, const Token &identifier);
     LoxObject accept(ExprVisitor &visitor) override;
 };
 

@@ -1,26 +1,20 @@
-class hey {
-
-    putoo(){
-        print "puto called";
-    }
-}
-
-class pp < hey {
-
-    init(flav){
-        this.flavor = flav;
-    }
-
+class pp {
 
     say(){
-        print this.flavor;
-        return;
-    }
-
-    putooo(){
-        print "hheyey";
+        this.caca = "pp";
+        print 100;
     }
 }
 
-var a = pp("chocolate");
-a.putoo();
+
+class hey < pp {
+
+    say(){
+        return super.say;
+    }
+}
+
+var inst = hey();
+var upper = inst.say();
+upper();
+print inst.caca;

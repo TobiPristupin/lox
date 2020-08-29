@@ -2,13 +2,13 @@
 #define JLOX_RESOLVER_H
 
 
-#include <string>         // for string
-#include <unordered_map>  // for unordered_map
-#include <vector>         // for vector
-#include "Expr.h"         // for ExprVisitor
-#include "LoxObject.h"    // for LoxObject
-#include "Stmt.h"         // for StmtVisitor
-#include "typedefs.h"     // for UniqueStmtPtr
+#include <string>
+#include <unordered_map>
+#include <vector>
+#include "Expr.h"
+#include "LoxObject.h"
+#include "Stmt.h"
+#include "typedefs.h"
 
 struct Token;
 
@@ -32,6 +32,7 @@ public:
     LoxObject visit(const GetExpr *getExpr) override;
     LoxObject visit(const SetExpr *setExpr) override;
     LoxObject visit(const ThisExpr *thisExpr) override;
+    LoxObject visit(const SuperExpr *superExpr) override;
 
     void visit(const ExpressionStmt *expressionStmt) override;
     void visit(const PrintStmt *printStmt) override;
@@ -52,7 +53,7 @@ private:
     };
 
     enum class ClassType {
-        NONE, CLASS
+        NONE, CLASS, SUBCLASS
     };
 
     std::unordered_map<const Expr*, int> distances;
