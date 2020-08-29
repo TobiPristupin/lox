@@ -317,6 +317,14 @@ LoxObject Resolver::visit(const ThisExpr *thisExpr) {
     return LoxObject::Nil();
 }
 
+LoxObject Resolver::visit(const ListExpr *listExpr) {
+    for (const auto& item : listExpr->items){
+        resolve(item.get());
+    }
+
+    return LoxObject::Nil();
+}
+
 LoxObject Resolver::visit(const SuperExpr *superExpr) {
     if (currentClass == ClassType::NONE){
         throw LoxParsingError("Cannot use 'super' outside of a class", superExpr->keyword.line);

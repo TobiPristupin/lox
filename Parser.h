@@ -41,6 +41,7 @@ private:
 
     UniqueExprPtr expression();
     UniqueExprPtr assignment();
+    UniqueExprPtr listDeclaration();
     UniqueExprPtr lambda();
     UniqueExprPtr logicOr();
     UniqueExprPtr logicAnd();

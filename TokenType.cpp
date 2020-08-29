@@ -96,6 +96,10 @@ std::string tokenTypeToString(TokenType type) {
             return "WHILE";
         case TokenType::END_OF_FILE:
             return "END_OF_FILE";
+        case LEFT_BRACKET:
+            return "LEFT_BRACKET";
+        case RIGHT_BRACKET:
+            return "RIGHT_BRACKET";
     }
 
     return "unreachable";

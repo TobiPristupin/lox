@@ -104,3 +104,9 @@ SuperExpr::SuperExpr(const Token &keyword, const Token &identifier) : keyword(ke
 LoxObject SuperExpr::accept(ExprVisitor &visitor) {
     return visitor.visit(this);
 }
+
+ListExpr::ListExpr(const Token &openingBracket, std::vector<UniqueExprPtr> items) : openingBracket(openingBracket), items(std::move(items)){}
+
+LoxObject ListExpr::accept(ExprVisitor &visitor) {
+    return visitor.visit(this);
+}

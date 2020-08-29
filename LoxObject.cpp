@@ -4,6 +4,7 @@
 #include <utility>
 #include "LoxCallable.h"
 #include "LoxClass.h"
+#include "LoxList.h"
 #include "Token.h"
 #include "TokenType.h"
 #include "tools/Utils.h"
@@ -23,6 +24,8 @@ LoxObject LoxObject::Nil() {
 LoxObject::LoxObject(SharedCallablePtr callable) : type(LoxType::CALLABLE), callable(std::move(callable)) {}
 
 LoxObject::LoxObject(SharedInstancePtr instance) : type(LoxType::INSTANCE), instance(std::move(instance)) {}
+
+LoxObject::LoxObject(SharedListPtr list) : type(LoxType::LIST), list(std::move(list)) {}
 
 LoxObject::LoxObject(const Token &token) {
     switch (token.type) {
@@ -77,6 +80,10 @@ bool LoxObject::isClassInstance() const {
     return type == LoxType::INSTANCE;
 }
 
+bool LoxObject::isList() const {
+    return type == LoxType::LIST;
+}
+
 double LoxObject::getNumber() const {
     if (!isNumber()){
         throw std::runtime_error("LoxObject does not contain a number");
@@ -110,6 +117,13 @@ SharedInstancePtr LoxObject::getClassInstance() const {
         throw std::runtime_error("LoxObject does not contain a class instance");
     }
     return instance;
+}
+
+SharedListPtr LoxObject::getList() const {
+    if (!isList()){
+        throw std::runtime_error("LoxObject does not contain a list");
+    }
+    return list;
 }
 
 bool LoxObject::truthy() const {//In lox every literal is considered true except for nil and false
@@ -180,8 +194,10 @@ bool operator==(const LoxObject &lhs, const LoxObject &rhs) {
         return true;
     } else if (lhs.isCallable() && rhs.isCallable()){
         return lhs.getCallable() == rhs.getCallable();
-    } else if (rhs.isClassInstance() && rhs.isClassInstance()){
+    } else if (lhs.isClassInstance() && rhs.isClassInstance()){
         return lhs.getClassInstance() == rhs.getClassInstance();
+    } else if (lhs.isList() && rhs.isList()){
+        return lhs.getList() == rhs.getList();
     }
 
     throw std::runtime_error("This should be unreachable. Missing case");
@@ -280,6 +296,9 @@ std::ostream &operator<<(std::ostream &os, const LoxObject &object) {
         case LoxType::INSTANCE:
             os << object.getClassInstance()->to_string();
             return os;
+        case LoxType::LIST:
+            os << object.getList()->to_string();
+            return os;
         default:
             throw std::runtime_error("Object has no string representation");
     }
@@ -300,6 +319,8 @@ std::string loxTypeToString(LoxType type) {
             return "callable";
         case LoxType::INSTANCE:
             return "instance";
+        case LoxType::LIST:
+            return "list";
     }
 
     throw std::runtime_error("This should be unreachable. Missing case.");

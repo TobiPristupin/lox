@@ -8,19 +8,21 @@
 struct Token;
 
 enum class LoxType {
-    NIL, BOOL, NUMBER, STRING, CALLABLE, INSTANCE
+    NIL, BOOL, NUMBER, STRING, CALLABLE, INSTANCE, LIST
 };
 
 std::string loxTypeToString(LoxType type);
 
 class LoxCallable;
 class LoxClassInstance;
+class LoxList;
 
 /* A shared ptr is used because resources such as functions, classes, and instances are created and stored in memory only once but can
  * be shared with multiple users. For example, two variables can refer to the same function.
  * */
 using SharedCallablePtr = std::shared_ptr<LoxCallable>;
 using SharedInstancePtr = std::shared_ptr<LoxClassInstance>;
+using SharedListPtr = std::shared_ptr<LoxList>;
 
 /*The book uses Java's Object class to represent variables, instances, functions, etc, essentially surrendering type safety
  * and having to depend on instanceof checks. When porting it to C++ I attempted to maintain some type safety while still
@@ -40,6 +42,8 @@ public:
     explicit LoxObject(LoxCallable* ptr) = delete;
     explicit LoxObject(SharedInstancePtr instance);
     explicit LoxObject(LoxClassInstance* ptr) = delete;
+    explicit LoxObject(SharedListPtr list);
+    explicit LoxObject(LoxList* ptr) = delete;
     static LoxObject Nil();
     LoxObject(); //Initializes the object as NIL
 
@@ -49,6 +53,7 @@ public:
     bool isNil() const;
     bool isCallable() const;
     bool isClassInstance() const;
+    bool isList() const;
 
     bool truthy() const;
 
@@ -57,6 +62,7 @@ public:
     std::string getString() const;
     SharedCallablePtr getCallable() const;
     SharedInstancePtr getClassInstance() const;
+    SharedListPtr getList() const;
 
 
     friend std::ostream& operator<<(std::ostream& os, const LoxObject& object);
@@ -83,6 +89,7 @@ private:
     std::string str = "";
     SharedCallablePtr callable;
     SharedInstancePtr instance;
+    SharedListPtr list;
 };
 
 #endif //JLOX_LOXOBJECT_H

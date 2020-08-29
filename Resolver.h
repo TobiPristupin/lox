@@ -33,6 +33,7 @@ public:
     LoxObject visit(const SetExpr *setExpr) override;
     LoxObject visit(const ThisExpr *thisExpr) override;
     LoxObject visit(const SuperExpr *superExpr) override;
+    LoxObject visit(const ListExpr *listExpr) override;
 
     void visit(const ExpressionStmt *expressionStmt) override;
     void visit(const PrintStmt *printStmt) override;

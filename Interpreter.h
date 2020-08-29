@@ -53,6 +53,7 @@ public:
     LoxObject visit(const SetExpr *setExpr) override;
     LoxObject visit(const ThisExpr *thisExpr) override;
     LoxObject visit(const SuperExpr *superExpr) override;
+    LoxObject visit(const ListExpr *listExpr) override;
 
 private:
     void interpretReplMode(Stmt* stmt);

@@ -10,6 +10,7 @@
 #include "LoxFunction.h"
 #include "TokenType.h"
 #include "LoxCallable.h"
+#include "LoxList.h"
 #include "standardlib/StandardFunctions.h"
 
 //TODO: Add support for loading standard function in a more clean way
@@ -447,6 +448,17 @@ LoxObject Interpreter::visit(const SuperExpr *superExpr) {
     SharedCallablePtr bindedMethod(method->bindThis(instanceObj.getClassInstance()));
     LoxObject bindedMethodObj(bindedMethod);
     return bindedMethodObj;
+}
+
+LoxObject Interpreter::visit(const ListExpr *listExpr) {
+    std::vector<LoxObject> items;
+    for (const auto& item : listExpr->items){
+        items.push_back(interpret(item.get()));
+    }
+
+    SharedListPtr list = std::make_shared<LoxList>(listExpr, items);
+    LoxObject listObj(list);
+    return listObj;
 }
 
 void Interpreter::loadBuiltinFunctions() {

@@ -23,6 +23,7 @@ class GetExpr;
 class SetExpr;
 class ThisExpr;
 class SuperExpr;
+class ListExpr;
 
 class ExprVisitor {
 public:
@@ -42,6 +43,7 @@ public:
     virtual LoxObject visit(const SetExpr* setExpr) = 0;
     virtual LoxObject visit(const ThisExpr* setExpr) = 0;
     virtual LoxObject visit(const SuperExpr* superExpr) = 0;
+    virtual LoxObject visit(const ListExpr* superExpr) = 0;
 };
 
 
@@ -209,6 +211,15 @@ public:
 
     explicit SuperExpr(const Token &keyword, const Token &identifier);
     LoxObject accept(ExprVisitor &visitor) override;
+};
+
+class ListExpr : public Expr {
+public:
+    Token openingBracket;
+    std::vector<UniqueExprPtr> items;
+
+    ListExpr(const Token &openingBracket, std::vector<UniqueExprPtr> items);
+    LoxObject accept(ExprVisitor &visitor);
 };
 
 #endif //JLOX_EXPR_H

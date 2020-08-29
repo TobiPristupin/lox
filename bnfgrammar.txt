@@ -20,7 +20,8 @@ block = "{" declaration* "}" ;
 
 //expressions
 expression :== assignment
-assignment :== (call ".")? IDENTIFIER ""=" equality ";" | lambda;
+assignment :== (call ".")? IDENTIFIER ""=" equality ";" | listDecl;
+listDecl :== "[" arguments? "]" | lambda
 lambda :== "lambda" arguments? ":" statement | logic_or ;
 logic_or :== logic_and ("or" logic_and)* ;
 logic_and :== equality ("and" equality)* ;
@@ -31,7 +32,7 @@ multiplication :== unary ( ("/" | "*") unary )* ;
 unary :== ("!" | "-") unary | prefix ;
 prefix :== ("++" | "--") postfix |
 postfix :==  call ("++" | "--")* ;
-call :== primary ( "(" arguments ")" | "." IDENTIFIER)* ;
+call :== primary ( "(" arguments? ")" | "." IDENTIFIER)* ;
 arguments :== expression ( "," expression)* ;
 primary :== NUMBER | STRING | IDENTIFIER | "false" | "true" | "nil" | "this" | "super" "." IDENTIFIER | (" expression ")" ;
 
@@ -42,5 +43,6 @@ primary :== NUMBER | STRING | IDENTIFIER | "false" | "true" | "nil" | "this" | "
 * print supports "\n" and "\t", empty print prints a newline
 * support for prefix and postfix ++ and --
 * Added a str() native function that takes in one argument and returns its string representation
+* lambda expressions
 
 #14(6+1)61 68yeee79y

@@ -70,6 +70,10 @@ std::optional<Token> Scanner::scanNextToken() {
             return createToken(TokenType::LEFT_BRACE);
         case '}':
             return createToken(TokenType::RIGHT_BRACE);
+        case '[':
+            return createToken(TokenType::LEFT_BRACKET);
+        case ']':
+            return createToken(TokenType::RIGHT_BRACKET);
         case ',':
             return createToken(TokenType::COMMA);
         case '.':

@@ -234,7 +234,7 @@ UniqueExprPtr Parser::expression() {
 }
 
 UniqueExprPtr Parser::assignment() {
-    UniqueExprPtr expr = lambda();
+    UniqueExprPtr expr = listDeclaration();
     if (match(EQUAL)){
         Token op = previous();
         UniqueExprPtr rvalue = assignment();
@@ -257,6 +257,23 @@ UniqueExprPtr Parser::assignment() {
     }
 
     return expr;
+}
+
+UniqueExprPtr Parser::listDeclaration() {
+    if (!match(TokenType::LEFT_BRACKET)){
+        return lambda();
+    }
+
+    Token openingBracket = previous();
+    std::vector<UniqueExprPtr> items;
+    if (!check(TokenType::RIGHT_BRACKET)){
+        do {
+            items.push_back(std::move(expression()));
+        } while (match(TokenType::COMMA));
+    }
+
+    expect(TokenType::RIGHT_BRACKET, "Expected ']' after list items");
+    return std::make_unique<ListExpr>(openingBracket, std::move(items));
 }
 
 UniqueExprPtr Parser::lambda() {

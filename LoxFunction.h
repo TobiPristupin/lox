@@ -14,7 +14,7 @@ class LambdaExpr;
 //This class wraps a FunctionDeclStmt into a LoxCallable. Basically it acts as the intermediary between the parser and the interpreter.
 class LoxFunction : public LoxCallable {
 public:
-    //LoxFunction does not own the stmt, it only uses it. All statements are owned by Runner.cpp by using unique_ptrs
+    //non owning. All AST nodes are owned by runner.cpp
     const FunctionDeclStmt* functionDeclStmt;
     Environment::SharedPtr closure;
     bool isConstructor;
